@@ -348,3 +348,18 @@ body {
     padding: 4px 8px;
     border-radius: 4px;
 }
+
+/* --- SCADA CLOCK GRID PLACEMENT --- */
+
+/* Force the clock card to always sit perfectly at the top right of your grid layout */
+.hmi-header-clock-card {
+    grid-column: 4;      /* Forces it into the 4th column */
+    grid-row: 1;         /* Forces it into the 1st row */
+    background-color: var(--hmi-bg-card);
+    border: 1px dashed var(--hmi-border-dark);
+}
+
+.hmi-header-clock-card .hmi-value {
+    color: #b03030;      /* Muted SCADA alert crimson draws attention to freshness */
+    font-size: 15px;
+}

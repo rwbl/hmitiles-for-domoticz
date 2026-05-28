@@ -1,6 +1,7 @@
 // hmitiles.js
 
 // --- CONFIGURATION ---
+// Configuration Setup
 const DOMOTICZ_URL = window.parent && window.parent.$ ? window.parent.$.domoticzurl : window.location.origin;
 const REFRESH_RATE = 5000; 
 
@@ -286,12 +287,9 @@ async function sendDomoticzSetpointCommand(idx, targetTemperature) {
     }
 }
 
-// Configuration Setup
-const DOMOTICZ_BASE_URL = "http://192.168.1.118:8080";
-
 // 1. Click on card to open Domoticz Device Chart Log
 function openDomoticzChart(idx) {
-    const logUrl = `${DOMOTICZ_BASE_URL}/#/Devices/${idx}/Log`;
+    const logUrl = `${DOMOTICZ_URL}/#/Devices/${idx}/Log`;
     window.open(logUrl, '_blank'); // Opens your chart in a new browser tab
 }
 
@@ -352,6 +350,16 @@ function toggleManualRequest() {
         btnBadge.innerText = "OFF";
         updateDashboardTimestamp(); // Refresh stamp on successful run completion
     }, 2000);
+}
+
+/**
+ * Redirects the active window viewport session back to the native Domoticz home landing tab
+ */
+function goToDomoticzDashboard() {
+    console.log("SCADA Navigation -> Shifting viewport window back to main Domoticz desk.");
+    
+    // Directs the top-level frame layer window path to load the native dashboard
+    window.top.location.href = `${DOMOTICZ_URL}/`;
 }
 
 // --- UNIFIED INITIALIZATION ROUTINE ---

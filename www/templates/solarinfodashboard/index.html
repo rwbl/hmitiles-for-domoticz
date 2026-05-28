@@ -16,20 +16,19 @@
 </head>
 <body>
 
-    <header class="hmi-header-container">
-        <h1>Solar Info Dashboard</h1>
-        <!-- Added global placeholder for the last update timestamp -->
-        <div class="hmi-timestamp-box">
-            Last Update: <span id="hmi-last-update">--:--:--</span>
-        </div>
-    </header>
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; gap: 15px;">
+			<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
+			<h1>Solar Info Dashboard</h1>
+		</div>
+	</header>
 
     <!-- Master outer panel containing your grid -->
     <main class="hmi-panel">
         
-        <!-- ==================== ROW 1: POWER OVERVIEW ==================== -->
+        <!-- ==================== ROW 1: POWER PRODUCTION & CONSUMPTION ==================== -->
         
-        <!-- IDX 5: Solar Production (Clickable Link to Chart) -->
+        <!-- IDX 5: Solar Production -->
         <div id="idx-5" class="hmi-pack-card hmi-clickable-card" data-alarm="normal" onclick="openDomoticzChart(5)">
             <div class="hmi-card-header">
                 <div class="hmi-pack-label">Solar Production</div>
@@ -37,9 +36,9 @@
             </div>
             <div class="hmi-value-grid">
                 <div class="hmi-value-box">
-                    <div class="hmi-box-label">Generation</div>
                     <div class="hmi-box-data">
-                        <span class="hmi-value">--</span><span class="hmi-box-unit">W</span>
+                        <!-- Removed hardcoded W unit tag -->
+                        <span class="hmi-value">--</span>
                     </div>
                 </div>
             </div>
@@ -53,9 +52,9 @@
             </div>
             <div class="hmi-value-grid">
                 <div class="hmi-value-box">
-                    <div class="hmi-box-label">To Grid</div>
                     <div class="hmi-box-data">
-                        <span class="hmi-value">--</span><span class="hmi-box-unit">W</span>
+                        <!-- Removed hardcoded W unit tag -->
+                        <span class="hmi-value">--</span>
                     </div>
                 </div>
             </div>
@@ -69,9 +68,9 @@
             </div>
             <div class="hmi-value-grid">
                 <div class="hmi-value-box">
-                    <div class="hmi-box-label">From Grid</div>
                     <div class="hmi-box-data">
-                        <span class="hmi-value">--</span><span class="hmi-box-unit">W</span>
+                        <!-- Removed hardcoded W unit tag -->
+                        <span class="hmi-value">--</span>
                     </div>
                 </div>
             </div>
@@ -85,15 +84,15 @@
             </div>
             <div class="hmi-value-grid">
                 <div class="hmi-value-box">
-                    <div class="hmi-box-label">Consumption</div>
                     <div class="hmi-box-data">
-                        <span class="hmi-value">--</span><span class="hmi-box-unit">W</span>
+                        <!-- Removed hardcoded W unit tag -->
+                        <span class="hmi-value">--</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ==================== ROW 2: BATTERY OVERVIEW & CONTROLS ==================== -->
+        <!-- ==================== ROW 2: BATTERY STORAGE MANAGEMENT ==================== -->
 
         <!-- IDX 10: Battery Charging -->
         <div id="idx-10" class="hmi-pack-card hmi-clickable-card" onclick="openDomoticzChart(10)">
@@ -103,9 +102,9 @@
             </div>
             <div class="hmi-value-grid">
                 <div class="hmi-value-box">
-                    <div class="hmi-box-label">Power In</div>
                     <div class="hmi-box-data">
-                        <span class="hmi-value">--</span><span class="hmi-box-unit">W</span>
+                        <!-- Removed hardcoded W unit tag -->
+                        <span class="hmi-value">--</span>
                     </div>
                 </div>
             </div>
@@ -119,15 +118,15 @@
             </div>
             <div class="hmi-value-grid">
                 <div class="hmi-value-box">
-                    <div class="hmi-box-label">Power Out</div>
                     <div class="hmi-box-data">
-                        <span class="hmi-value">--</span><span class="hmi-box-unit">W</span>
+                        <!-- Removed hardcoded W unit tag -->
+                        <span class="hmi-value">--</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- IDX 12: Battery State (with custom alarm hook) -->
+        <!-- IDX 12: Battery State -->
         <div id="idx-12" class="hmi-pack-card hmi-clickable-card" data-alarm="normal" onclick="openDomoticzChart(12)">
             <div class="hmi-card-header">
                 <div class="hmi-pack-label">Battery State</div>
@@ -139,29 +138,63 @@
             </div>
             <div class="hmi-value-grid">
                 <div class="hmi-value-box">
-                    <div class="hmi-box-label">State of Charge</div>
                     <div class="hmi-box-data">
-                        <span class="hmi-value">--</span><span class="hmi-box-unit">%</span>
+                        <!-- Removed hardcoded % unit tag -->
+                        <span class="hmi-value">--</span>
                     </div>
                 </div>
             </div>
         </div>
 
-		<!-- IDX 6: Manual Data Request Button (Click changes state via separate function) -->
+		<!-- IDX 13: System Time -->
+		<div id="idx-13" class="hmi-pack-card">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">System Time</div>
+			</div>
+			<div class="hmi-value-grid">
+				<div class="hmi-value-box">
+					<div class="hmi-box-data hmi-time-display">
+                        <span class="hmi-value">--:--:--</span>
+                    </div>
+				</div>
+			</div>
+		</div>
+
+        <!-- ==================== ROW 3: SYSTEM ACTIONS ==================== -->
+
+		<!-- IDX 6: Manual Data Request Button -->
 		<div id="idx-6" class="hmi-pack-card" data-type="switch">
 			<div class="hmi-card-header">
 				<div class="hmi-pack-label">Manual Data Request</div>
 				<div id="btn-badge-6" class="hmi-badge hmi-clickable-badge" onclick="toggleManualRequest()">OFF</div>
 			</div>
 			<div class="hmi-value-grid">
-				<div class="hmi-value-box">
-					<div class="hmi-box-label">Status</div>
-					<div class="hmi-box-data">
-                        <span id="btn-text-6" class="hmi-value">OFF</span>
-                    </div>
-				</div>
+				<div class="hmi-box-data">
+                    <span id="btn-text-6" class="hmi-value">OFF</span>
+                </div>
 			</div>
 		</div>
+
+        <!-- SPARE BAY 10 -->
+        <div class="hmi-pack-card hmi-card-placeholder">
+            <div class="hmi-card-header">
+                <div class="hmi-pack-label">[ SPARE BAY 10 ]</div>
+            </div>
+        </div>
+
+        <!-- SPARE BAY 11 -->
+        <div class="hmi-pack-card hmi-card-placeholder">
+            <div class="hmi-card-header">
+                <div class="hmi-pack-label">[ SPARE BAY 11 ]</div>
+            </div>
+        </div>
+
+        <!-- SPARE BAY 12 -->
+        <div class="hmi-pack-card hmi-card-placeholder">
+            <div class="hmi-card-header">
+                <div class="hmi-pack-label">[ SPARE BAY 12 ]</div>
+            </div>
+        </div>
 
     </main>
 

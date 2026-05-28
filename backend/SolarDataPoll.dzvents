@@ -22,6 +22,7 @@ local IDX_POWER_TO_HOUSE = 9            -- Usage, Electric
 local IDX_POWER_TO_BATTERY = 10         -- Usage, Electric
 local IDX_POWER_FROM_BATTERY = 11       -- Usage, Electric
 local IDX_BATTERY_CHARGE_STATE = 12     -- Percentage
+local IDX_SOLAR_TIMESTAMP = 13          -- Text
 
 local URL_SERVER = 'http://homeassistant.local:1880/endpoint/solarinfo?data=all'
 local TIMER_INTERVAL = 'every minute'
@@ -85,8 +86,16 @@ return {
                     domoticz.devices(IDX_POWER_TO_HOUSE).updateEnergy(result[4])
                     domoticz.devices(IDX_POWER_TO_BATTERY).updateEnergy(result[5])
                     domoticz.devices(IDX_POWER_FROM_BATTERY).updateEnergy(result[6])
-                    -- POWER_DATE_STAMP not used
-                    -- POWER_TIME_STAMP not used
+                    domoticz.devices(IDX_BATTERY_CHARGE_STATE).updatePercentage(result[7])
+                    
+                    -- Convert date & time stamp
+                    local rawDate = tostring(result[8]) -- e.g. "20260429"
+                    local rawTime = tostring(result[9]) -- e.g. "1612"
+                    -- Format it to look nice: "2026-04-29 16:12"
+                    local formattedTimestamp = string.sub(rawDate, 1, 4) .. "-" .. string.sub(rawDate, 5, 6) .. "-" .. string.sub(rawDate, 7, 8) .. " " .. string.sub(rawTime, 1, 2) .. ":" .. string.sub(rawTime, 3, 4)
+                    -- Push to Domoticz
+                    domoticz.devices(IDX_SOLAR_TIMESTAMP).updateText(formattedTimestamp)
+
                     domoticz.log('Solar devices updated successfully.', domoticz.LOG_INFO)
                 else
                     domoticz.log('Error: CSV data missing fields. Expected 9, got ' .. #result, domoticz.LOG_ERROR)
@@ -105,13 +114,15 @@ return {
                     -- Cleanly resets the push button; Silent prevents the infinite loop!
                     item.switchOff().afterSec(2).silent()
                 end
-                -- Send the HTTP request safely
-                domoticz.openURL({
-                    url = URL_SERVER,
-                    method = 'GET',
-                    callback = HTTP_RESPONSE
-                })
             end
+        
+            -- Send the HTTP request safely
+            domoticz.openURL({
+                url = URL_SERVER,
+                method = 'GET',
+                callback = HTTP_RESPONSE
+            })
+
         end
     end
 }

@@ -8,7 +8,7 @@ This project aims to bring structured, industry-inspired HMI design principles i
 
 ## Features
 * **Industry-Inspired Design:** Structured, clean tiles focus heavily on situational awareness and clear data hierarchy.
-* **Perfect 4x2 Grid Matrix:** Instant layout mapping across all critical solar infrastructure points.
+* **Perfect 4x3 Grid Matrix:** Instant layout mapping across all critical solar infrastructure points.
 * **Interactive Logger Integration:** Clicking any active tile element instantly targets and opens the native Domoticz device chart log.
 * **Asynchronous Manual Updates:** Trigger real-time, ad-hoc server data polls safely with a looping-protected manual switch layout.
 * **Dynamic Industrial Alarms:** Live data-alarm attribute injection handles dynamic boundary colors (Warning/Critical) natively.
@@ -99,7 +99,7 @@ Create the following virtual devices using the **Dummy** hardware type in your D
 | **10** | `PowerToBattery` | Usage, Electric | Battery Charging (W) |
 | **11** | `PowerFromBattery` | Usage, Electric | Battery Discharging (W) |
 | **12** | `BatteryState` | Percentage | State of Charge (%) |
-
+| **13** | `SolarTimeStamp`| Text | Timestamp last poll / sync |
 ---
 
 ### 2. dzVents Backend Setup
