@@ -1,6 +1,6 @@
 # Domoticz-HMITiles
 
-An open-source HMI (Human Machine Interface) tile layout framework for Domoticz, following widely accepted industrial HMI principles.
+An open-source HMI (Human Machine Interface) tile layout framework for [Domoticz](http://www.domoticz.com), following widely accepted industrial HMI principles.
 
 This project aims to bring structured, industry-inspired HMI design principles into the Domoticz ecosystem, bridging **Node-RED** (Modbus data fetching), an optimized **dzVents engine script** (safe data parsing), and a **lightweight HTML5/CSS3/JS user interface**.
 
@@ -22,7 +22,7 @@ Want to see this project in action immediately? Follow this quick-start loop to 
 
 1. **Download the Repository:** Save the `www/` and `backend/` folders onto your local PC.
 2. **Launch a Local View:** Simply double-click the `www/templates/solarinfodashboard/index.html` file inside Windows 11. It will spin up your clean grid matrix right inside your web browser.
-3. **Change the Data Hooks:** Open `index.html` in any text editor. Locate the `data-device-idx="5"` attribute fields. Swap out those numbers to match any running virtual device numbers inside your active Domoticz system dashboard.
+3. **Change the Data Hooks:** Open `index.html` in any text editor. Locate the `data-device-idx="NNN"` attribute fields. Swap out those numbers to match any running virtual device numbers inside your active Domoticz system dashboard.
 4. **Connect the Engine:** Drop the `SyncSolarMetrics.lua` routine into your Domoticz events script panel, and your dashboard will immediately begin auto-refreshing with your live metrics!
 
 ---
