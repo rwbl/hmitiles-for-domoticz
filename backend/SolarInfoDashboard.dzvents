@@ -1,5 +1,5 @@
 --[[
-Event:      SolarDataPoll
+Event:      SolarInfoDashboard
 Brief:      Periodically polls the local solar endpoint to extract and update device metrics.
 Date:       2026-05-28
 Description:
@@ -33,7 +33,7 @@ return {
     active = true,
     logging = {
         level = domoticz.LOG_INFO,
-        marker = '[SolarDataPoll]'
+        marker = '[SolarInfoDashboard]'
     },
     on = {
         timer = {

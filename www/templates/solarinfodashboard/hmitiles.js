@@ -22,7 +22,6 @@ async function fetchDomoticzData() {
 }
 
 // --- DATA PROCESSING CORE ---
-// --- DATA PROCESSING CORE ---
 function processDevices(devices) {
     updateCommunicationsStatus(true);
 
@@ -74,8 +73,25 @@ function processDevices(devices) {
                 displayStatus = isRawOn ? "ON" : "OFF"; // Perfect fallback for old On/Off switches
             }
         }
+
+		// --- TYPE 4: SENSOR SUB-PARSING COMPATIBILITY LOGIC ---
+		else if (cardType === "temp_hum" || cardType === "temp_hum_baro") {
+			// Domoticz combo sensors pass specific individual float values alongside the raw data string
+			if (device.Temp !== undefined) {
+				const tempEl = tileElement.querySelector('.hmi-value-temp');
+				if (tempEl) tempEl.textContent = `${parseFloat(device.Temp).toFixed(1)} °C`;
+			}
+			if (device.Humidity !== undefined) {
+				const humEl = tileElement.querySelector('.hmi-value-hum');
+				if (humEl) humEl.textContent = `${device.Humidity} %`;
+			}
+			if (device.Barometer !== undefined && cardType === "temp_hum_baro") {
+				const baroEl = tileElement.querySelector('.hmi-value-baro');
+				if (baroEl) baroEl.textContent = `${device.Barometer} hPa`;
+			}
+		}
         
-        // --- TYPE 4: ANALOG PROCESS VALUE SENSORS (Tanks, Gauges, Pressure) ---
+        // --- TYPE 5: ANALOG PROCESS VALUE SENSORS (Tanks, Gauges, Pressure) ---
         else {
             displayStatus = device.Status || device.Data || "";
         }
