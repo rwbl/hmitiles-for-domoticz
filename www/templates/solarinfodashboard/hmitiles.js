@@ -22,12 +22,14 @@ async function fetchDomoticzData() {
 }
 
 // --- DATA PROCESSING CORE ---
+// --- DATA PROCESSING CORE ---
 function processDevices(devices) {
     updateCommunicationsStatus(true);
 
     devices.forEach(device => {
-        const tileElement = document.getElementById(`idx-${device.idx}`);
-        if (!tileElement) return; 
+        // CLEAN FIX: Search natively by the custom HTML5 data-attribute instead of standard IDs
+        const tileElement = document.querySelector(`[data-device-idx="${device.idx}"]`);
+        if (!tileElement) return; // Safely skips any devices not built into your HTML layout
 
         const rawValue = parseFloat(device.Data) || parseFloat(device.Status) || 0; 
         let displayStatus = "";
@@ -119,7 +121,7 @@ function updateCommunicationsStatus(isOnline) {
 // --- INTERACTIVE COMMAND HANDLING ---
 function setupControlListeners() {
     
-    // 1. CLICK ACTIONS (Switches, Badges, Up/Down Thermostat buttons)
+    // 1. CLICK ACTIONS (Switches, Badges, Up/Down Thermostat buttons, and Graphs)
     document.body.addEventListener('click', async function(event) {
         
         // HANDLE BADGE CLICK ACTIONS (Switches, Pumps, Valves)
@@ -128,10 +130,8 @@ function setupControlListeners() {
             const card = badge.closest('.hmi-pack-card');
             if (!card) return;
 
-            const idx = parseInt(card.id.replace('idx-', ''), 10);
+			const idx = parseInt(card.getAttribute('data-device-idx'), 10);
             const currentStatus = badge.textContent.trim().toUpperCase();
-            
-            // Check if the current visible text state is active
             const isCurrentlyOn = (currentStatus === "ON" || currentStatus === "RUNNING" || currentStatus === "OPEN" || (parseInt(currentStatus, 10) > 0));
             const targetCommand = isCurrentlyOn ? "Turn Off" : "Turn On";
 
@@ -146,7 +146,7 @@ function setupControlListeners() {
             const card = tempBtn.closest('.hmi-pack-card');
             if (!card) return;
 
-            const idx = parseInt(card.id.replace('idx-', ''), 10);
+            const idx = parseInt(card.getAttribute('data-device-idx'), 10);
             const valueField = card.querySelector('.hmi-value');
             if (!valueField) return;
 
@@ -161,16 +161,25 @@ function setupControlListeners() {
             await sendDomoticzSetpointCommand(idx, newTemp);
             return;
         }
+
+        // --- NEW SECTION 4: HANDLE CLICKING THE CARD TO OPEN CHARTS ---
+        const clickableCard = event.target.closest('.hmi-clickable-card');
+        if (clickableCard) {
+            const idx = clickableCard.getAttribute('data-device-idx');
+            if (idx) {
+                // Call your existing graph opening function
+                openDomoticzChart(idx);
+                return;
+            }
+        }
     });
 
     // 2. SLIDER MOVING ACTION (Real-time numbers while dragging)
-    // A. FLAG ON: User touches and begins moving the slider handle knob
     document.body.addEventListener('input', function(event) {
         const slider = event.target.closest('.hmi-slider');
         if (!slider) return;
 
-        slider.isDragging = true; // Tell the system to temporarily pause remote background updates
-
+        slider.isDragging = true; 
         const card = slider.closest('.hmi-pack-card');
         if (!card) return;
 
@@ -179,33 +188,17 @@ function setupControlListeners() {
             dimmerText.textContent = slider.value;
         }
     });
-	/*
-	document.body.addEventListener('input', function(event) {
-        const slider = event.target.closest('.hmi-slider');
-        if (!slider) return;
-
-        const card = slider.closest('.hmi-pack-card');
-        if (!card) return;
-
-        const dimmerText = card.querySelector('.hmi-dimmer-text');
-        if (dimmerText) {
-            dimmerText.textContent = slider.value;
-        }
-    });
-	*/
 	
     // 3. SLIDER RELEASED ACTION (Fires command link to network)
-	// B. FLAG OFF & COMMAND DISPATCH: User lets go of the mouse button
     document.body.addEventListener('change', async function(event) {
         const slider = event.target.closest('.hmi-slider');
         if (!slider) return;
 
-        slider.isDragging = false; // Unlocks the handle so background updates from Domoticz can move it again
-
+        slider.isDragging = false; 
         const card = slider.closest('.hmi-pack-card');
         if (!card) return;
 
-        const idx = parseInt(card.id.replace('idx-', ''), 10);
+        const idx = parseInt(card.getAttribute('data-device-idx'), 10);
         const targetLevel = slider.value;
 
         console.log(`Dimmer Hardware Action -> Setting IDX ${idx} -> ${targetLevel}%`);
@@ -224,34 +217,6 @@ function setupControlListeners() {
             console.error(`Failed to dispatch dimmer execution:`, error);
         }
     });	
-	/*
-    document.body.addEventListener('change', async function(event) {
-        const slider = event.target.closest('.hmi-slider');
-        if (!slider) return;
-
-        const card = slider.closest('.hmi-pack-card');
-        if (!card) return;
-
-        const idx = parseInt(card.id.replace('idx-', ''), 10);
-        const targetLevel = slider.value;
-
-        console.log(`Dimmer Hardware Action -> Setting IDX ${idx} -> ${targetLevel}%`);
-        
-        const switchCmd = (targetLevel == 0) ? "Off" : "Set%20Level";
-        const commandUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=switchlight&idx=${idx}&switchcmd=${switchCmd}&level=${targetLevel}`;
-
-        try {
-            const response = await fetch(commandUrl);
-            if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-            const result = await response.json();
-            if (result.status === "OK") {
-                setTimeout(fetchDomoticzData, 400);
-            }
-        } catch (error) {
-            console.error(`Failed to dispatch dimmer execution:`, error);
-        }
-    });
-	*/
 }
 
 // Command execution dispatcher for standard toggle switches

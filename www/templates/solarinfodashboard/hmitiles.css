@@ -363,3 +363,18 @@ body {
     color: #b03030;      /* Muted SCADA alert crimson draws attention to freshness */
     font-size: 15px;
 }
+
+.hmi-sparkline-container {
+    width: 100%; /* Spans across the full width of the card card layout */
+    height: 120px;
+    background: #f7f7f7;
+    border-radius: 4px;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+.hmi-sparkline-svg {
+    width: 100%;
+    height: 100%;
+    display: block; /* Disables inline margins blocking the element from expanding */
+}
