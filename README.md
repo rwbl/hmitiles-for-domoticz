@@ -101,8 +101,9 @@ The `SolarInfoDashboard.html` file acts as your main custom tab. Make sure its h
 
 ```html
 <!-- Inside SolarInfoDashboard.html -->
-<link rel="stylesheet" href="solarinfodashboard/hmitiles.css">
-<script src="solarinfodashboard/hmitiles.js" defer></script>
+<script>
+  window.location.href = "templates/solarinfodashboard/index.html";
+</script>
 ```
 
 ---
