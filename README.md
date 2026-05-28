@@ -6,7 +6,7 @@ This project aims to bring structured, industry-inspired HMI design principles i
 
 > 💡 **Related Project:** This repository is the web-based Domoticz implementation of the original [B4X HMITiles Library](https://github.com), extending its core design philosophy into home automation web ecosystems.
 
-## 📊 Features
+## Features
 * **Industry-Inspired Design:** Structured, clean tiles focus heavily on situational awareness and clear data hierarchy.
 * **Perfect 4x2 Grid Matrix:** Instant layout mapping across all critical solar infrastructure points.
 * **Interactive Logger Integration:** Clicking any active tile element instantly targets and opens the native Domoticz device chart log.
@@ -56,9 +56,34 @@ Domoticz-HMITiles/
             └── hmitiles.js             # Chart linking script engine
 ```
 
+--- 
+
+## File Installation Paths
+
+For a standard Domoticz installation, deploy the front-end files into your local web templates directory:
+
+```text
+/home/pi/domoticz/www/templates/
+├── SolarInfoDashboard.html
+└── solarinfodashboard/
+    ├── index.html
+    ├── hmitiles.css
+    └── hmitiles.js
+```
+
+### Custom Dashboard Loading
+
+The `SolarInfoDashboard.html` file acts as your main custom tab. Make sure its header links target the assets inside the subfolder correctly:
+
+```html
+<!-- Inside SolarInfoDashboard.html -->
+<link rel="stylesheet" href="solarinfodashboard/hmitiles.css">
+<script src="solarinfodashboard/hmitiles.js" defer></script>
+```
+
 ---
 
-## 🚀 Setup Instructions
+## Setup Instructions
 
 ### 1. Domoticz Device Configurations
 Create the following virtual devices using the **Dummy** hardware type in your Domoticz utility panel:
@@ -156,7 +181,7 @@ const DOMOTICZ_BASE_URL = "http://YOUR_DOMOTICZ_IP:8080";
 
 ---
 
-## 📜 License
+## License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-Developed with 💡 by **Robert W.B. Linn** (c) 2026.
+Developed by **Robert W.B. Linn** (c) 2026.
