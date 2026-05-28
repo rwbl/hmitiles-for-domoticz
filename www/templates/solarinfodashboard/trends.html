@@ -4,65 +4,72 @@
     <meta charset="UTF-8">
     <title>Solar Trends Dashboard</title>
     <link rel="stylesheet" href="hmitiles.css">
-
     <style>
-	/* Sizing rules for your new native sparkline charts */
-	.hmi-sparkline-container {
-		width: 100%;
-		height: 120px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background: #f7f7f7;
-		border-radius: 4px;
-		padding: 5px;
-		box-sizing: border-box; /* Prevents padding from breaking widths */
-	}
-
-	.hmi-sparkline-svg {
-		width: 100%;
-		height: 100%;
-		/* FORCE THE LINE TO STRETCH HORIZONTALLY */
-		preserveAspectRatio: none; 
-	}
-
-	.hmi-trend-line {
-		fill: none;
-		stroke: #4a90e2; /* Industrial blue trend line */
-		stroke-width: 2.5;
-		stroke-linecap: round;
-	}
+        .hmi-sparkline-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column; /* Stacks the graph on top of the text stats */
+            gap: 8px;
+            background: #f7f7f7;
+            border-radius: 4px;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .hmi-sparkline-svg-wrapper {
+            width: 100%;
+            height: 100px; /* Gives the graph a nice fixed area */
+        }
+        .hmi-sparkline-svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .hmi-trend-line {
+            fill: none;
+            stroke: #4a90e2;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+        }
+        /* Style for the Min/Max text under the graph */
+        .hmi-trend-stats {
+            display: flex;
+            justify-content: space-between;
+            font-family: monospace;
+            font-size: 11px;
+            color: #555555;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 4px;
+        }
+        .hmi-stat-label {
+            color: #888888;
+        }
     </style>
-
     <script>
-        // Clean global context link discovery setup matching your parent frame framework
         const DOMOTICZ_URL = window.parent && window.parent.$ ? window.parent.$.domoticzurl : window.location.origin;
 
         document.addEventListener("DOMContentLoaded", () => {
             document.querySelectorAll("[data-chart-idx]").forEach(container => {
                 const idx = container.getAttribute("data-chart-idx");
-                // Determine the correct Domoticz log sensor type table query criteria
                 const sensorType = (idx === "12") ? "Percentage" : "counter";
+                const unit = (idx === "12") ? "%" : "W"; // Sets correct label units
 
                 if (idx) {
-                    fetchTrendData(idx, sensorType, container);
+                    fetchTrendData(idx, sensorType, unit, container);
                 }
             });
         });
 
-        async function fetchTrendData(idx, sensor, container) {
+        async function fetchTrendData(idx, sensor, unit, container) {
             try {
-                // MODERN ENDPOINT: Compliance upgrade using type=command&param=graph and explicit sensor tables
                 const targetUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=graph&sensor=${sensor}&idx=${idx}&range=day`;
                 
                 const response = await fetch(targetUrl);
-                if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+                if (!response.ok) throw new Error();
                 const data = await response.json();
 
                 if (data.result && data.result.length > 0) {
-                    // Extract the values matching native counter ('v'/'v_1') or percentage values
                     const points = data.result.map(item => parseFloat(item.v || item.v_1 || item.u || item.svalue || 0));
-                    renderSparkline(container, points);
+                    renderSparkline(container, points, unit);
                 } else {
                     container.innerHTML = "<span style='color:#999; font-size:12px;'>No historical logs</span>";
                 }
@@ -72,11 +79,12 @@
             }
         }
 
-        function renderSparkline(container, dataPoints) {
+        function renderSparkline(container, dataPoints, unit) {
             const width = 300;
             const height = 100;
             const padding = 5;
 
+            // 1. Calculate the exact Min and Max values from the dataset
             const min = Math.min(...dataPoints);
             const max = Math.max(...dataPoints);
             const range = max - min === 0 ? 1 : max - min;
@@ -87,12 +95,18 @@
                 return `${x},${y}`;
             });
 
-			// Change your innerHTML rendering block to this:
-			container.innerHTML = `
-				<svg viewBox="0 0 ${width} ${height}" class="hmi-sparkline-svg" preserveAspectRatio="none">
-					<path class="hmi-trend-line" d="M ${coords.join(' L ')}" />
-				</svg>
-			`;
+            // 2. Generate the layout with the SVG line graph and the text stats row
+            container.innerHTML = `
+                <div class="hmi-sparkline-svg-wrapper">
+                    <svg viewBox="0 0 ${width} ${height}" class="hmi-sparkline-svg" preserveAspectRatio="none">
+                        <path class="hmi-trend-line" d="M ${coords.join(' L ')}" />
+                    </svg>
+                </div>
+                <div class="hmi-trend-stats">
+                    <div><span class="hmi-stat-label">MIN:</span> ${Math.round(min)}${unit}</div>
+                    <div><span class="hmi-stat-label">MAX:</span> ${Math.round(max)}${unit}</div>
+                </div>
+            `;
         }
 
         function goToMainDashboard() {
