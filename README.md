@@ -95,9 +95,9 @@ For a standard Domoticz installation, deploy the front-end files into your local
     └── hmitiles.js
 ```
 
-### Custom Dashboard Loading
+### Custom Dashboard Tab Redirect
 
-The `SolarInfoDashboard.html` file acts as your main custom tab. Make sure its header links target the assets inside the subfolder correctly:
+The `SolarInfoDashboard.html` file acts as your main custom Domoticz tab page. It cleanly routes your session traffic straight into your subfolder assets using a native JavaScript page redirect:
 
 ```html
 <!-- Inside SolarInfoDashboard.html -->
