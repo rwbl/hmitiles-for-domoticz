@@ -1,7 +1,7 @@
 --[[
 Event:      SolarInfoDashboard
 Brief:      Periodically polls the local solar endpoint to extract and update device metrics.
-Date:       2026-05-28
+Date:       2026-05-29
 Description:
             - Automates solar data updates via an HTTP GET request to a Home Assistant Node-RED flow endpoint.
             - Parses a 9-value CSV text string into individual numbers using an efficient Lua string iterator.
@@ -25,7 +25,7 @@ local IDX_BATTERY_CHARGE_STATE = 12     -- Percentage
 local IDX_SOLAR_TIMESTAMP = 13          -- Text
 
 local URL_SERVER = 'http://homeassistant.local:1880/endpoint/solarinfo?data=all'
-local TIMER_INTERVAL = 'every minute'
+local TIMER_INTERVAL = 'every 5 minutes'
 local HTTP_RESPONSE = 'OnHTTPResponse'
 
 
@@ -89,11 +89,20 @@ return {
                     domoticz.devices(IDX_BATTERY_CHARGE_STATE).updatePercentage(result[7])
                     
                     -- Convert date & time stamp
-                    local rawDate = tostring(result[8]) -- e.g. "20260429"
-                    local rawTime = tostring(result[9]) -- e.g. "1612"
-                    -- Format it to look nice: "2026-04-29 16:12"
-                    local formattedTimestamp = string.sub(rawDate, 1, 4) .. "-" .. string.sub(rawDate, 5, 6) .. "-" .. string.sub(rawDate, 7, 8) .. " " .. string.sub(rawTime, 1, 2) .. ":" .. string.sub(rawTime, 3, 4)
-                    -- Push to Domoticz
+                    -- Convert date & time stamp
+                    local rawDate = tostring(result[8]) -- e.g., "20260429"
+                    
+                    -- Force time to always be 4 digits with leading zeros (e.g., 801 becomes "0801")
+                    local rawTime = string.format("%04d", tonumber(result[9]) or 0) 
+                    
+                    -- Format it to look nice: "2026-04-29 08:01"
+                    local formattedTimestamp = string.sub(rawDate, 1, 4) .. "-" .. 
+                                               string.sub(rawDate, 5, 6) .. "-" .. 
+                                               string.sub(rawDate, 7, 8) .. " " .. 
+                                               string.sub(rawTime, 1, 2) .. ":" .. 
+                                               string.sub(rawTime, 3, 4)
+                    
+                    -- Push to Domoticz Text Device
                     domoticz.devices(IDX_SOLAR_TIMESTAMP).updateText(formattedTimestamp)
 
                     domoticz.log('Solar devices updated successfully.', domoticz.LOG_INFO)
@@ -102,7 +111,7 @@ return {
                 end
             else
                 -- Error Handling: Server is offline, timed out, or threw a 500 error
-                domoticz.log('Home Assistant server offline or error! Status Code: ' .. tostring(item.statusCode), domoticz.LOG_ERROR)
+                domoticz.log('Solar data server offline or error! Status Code: ' .. tostring(item.statusCode), domoticz.LOG_ERROR)
             end
 
         else

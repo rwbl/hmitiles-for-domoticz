@@ -1,5 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+<!--
+
+
+-->
+
 <head>
     <meta charset="UTF-8">
     <title>Solar Info Dashboard Rolling 24-Hour Trends</title>
@@ -15,21 +20,25 @@
             padding: 8px;
             box-sizing: border-box;
         }
+
         .hmi-sparkline-svg-wrapper {
             width: 100%;
             height: 100px; /* Gives the graph a nice fixed area */
         }
+
         .hmi-sparkline-svg {
             width: 100%;
             height: 100%;
             display: block;
         }
-        .hmi-trend-line {
-            fill: none;
-            stroke: #4a90e2;
-            stroke-width: 2.5;
-            stroke-linecap: round;
-        }
+
+		.hmi-trend-line {
+			fill: none;
+			stroke: #4a4a4a; /* Soft industrial slate gray */
+			stroke-width: 2.0;
+			stroke-linecap: round;
+		}
+
         /* Style for the Min/Max text under the graph */
         .hmi-trend-stats {
             display: flex;
@@ -47,17 +56,47 @@
     <script>
         const DOMOTICZ_URL = window.parent && window.parent.$ ? window.parent.$.domoticzurl : window.location.origin;
 
-        document.addEventListener("DOMContentLoaded", () => {
-            document.querySelectorAll("[data-chart-idx]").forEach(container => {
-                const idx = container.getAttribute("data-chart-idx");
-                const sensorType = (idx === "12") ? "Percentage" : "counter";
-                const unit = (idx === "12") ? "%" : "W"; // Sets correct label units
+			document.addEventListener("DOMContentLoaded", () => {
+				const baseUrl = window.parent && window.parent.$ ? window.parent.$.domoticzurl : window.location.origin;
 
-                if (idx) {
-                    fetchTrendData(idx, sensorType, unit, container);
-                }
-            });
-        });
+				document.querySelectorAll("[data-chart-idx]").forEach(container => {
+					const idx = container.getAttribute("data-chart-idx");
+					const sensorType = (idx === "12") ? "Percentage" : "counter";
+					const unit = (idx === "12") ? "%" : "W";
+
+					if (idx) {
+						fetchTrendData(idx, sensorType, unit, container);
+					}
+				});
+
+				// --- NEW TIMESTAMP CAPTURE COUPLING ---
+				// Target your text clock holder cell natively
+				const timeCard = document.querySelector('[data-device-idx="13"]');
+				if (timeCard) {
+					fetchTextTimestamp(timeCard, baseUrl);
+				}
+			});
+
+			/**
+			 * Fetches the raw string text history from your text device log channel.
+			 */
+			async function fetchTextTimestamp(element, baseUrl) {
+				try {
+					const response = await fetch(`${baseUrl}/json.htm?type=command&param=getdevices&rid=13`);
+					if (!response.ok) throw new Error();
+					const data = await response.json();
+
+					if (data.result && data.result[0]) {
+						const timeField = element.querySelector('.hmi-value');
+						// Grabs the exact, formatted text string updated by your dzVents engine script
+						if (timeField) {
+							timeField.textContent = data.result[0].Data || "--:--:--";
+						}
+					}
+				} catch (err) {
+					console.error("Failed to parse text stamp device info:", err);
+				}
+			}
 
         async function fetchTrendData(idx, sensor, unit, container) {
             try {
@@ -162,9 +201,28 @@
             <div class="hmi-value-grid"><div class="hmi-sparkline-container" data-chart-idx="12">Loading...</div></div>
         </div>
 
+		<!-- SYSTEM TIME BAY: Populates the 4th column of Row 2 -->
+		<div class="hmi-pack-card" data-device-idx="13">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">System Time</div>
+				<div class="hmi-badge">SYNCED</div>
+			</div>
+			<div class="hmi-value-grid">
+				<div class="hmi-sparkline-container" style="justify-content: center;">
+					<div style="text-align: center; font-family: monospace;">
+						<div style="font-size: 11px; color: #888888; text-transform: uppercase; margin-bottom: 4px;">Last Data Point</div>
+						<!-- Your update script will write the dzVents formatted time string right here -->
+						<div class="hmi-value" style="font-size: 14px; font-weight: bold; color: #2c3e50;">--:--:--</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!--
         <div class="hmi-pack-card hmi-card-placeholder">
-            <div class="hmi-card-header"><div class="hmi-pack-label">[ SYSTEM TIME BAY ]</div></div>
+            <div class="hmi-card-header"><div class="hmi-pack-label">[ NEW BAY ]</div></div>
         </div>
+		-->
 
     </main>
 

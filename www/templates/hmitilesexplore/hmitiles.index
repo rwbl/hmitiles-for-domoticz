@@ -1,0 +1,202 @@
+<!-- 
+	File: hmitiles.index
+	Project: Domoticz-HMITiles
+	Brief: Master Template Library for Standard HMI Tile Component Layouts.
+	Description: Copy and paste these cards into your index.html grid layout.
+-->
+
+<!-- ==================== 1. STANDARD ANALOG DISPLAY CARD ==================== -->
+<!-- Best for: Solar production, temperatures, house load, grid import/export -->
+<div class="hmi-pack-card hmi-clickable-card" data-device-idx="5" data-alarm="normal">
+    <div class="hmi-card-header">
+        <div class="hmi-pack-label">Analog Process Value</div>
+        <div class="hmi-badge">NORMAL</div>
+    </div>
+    <div class="hmi-value-grid">
+        <div class="hmi-value-box">
+            <div class="hmi-box-data">
+                <span class="hmi-value">--</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ==================== 2. ANALOG GAUGE / PERCENTAGE CARD ==================== -->
+<!-- Best for: Battery state of charge, tank levels, humidity metrics -->
+<div class="hmi-pack-card hmi-clickable-card" data-device-idx="12" data-alarm="normal">
+    <div class="hmi-card-header">
+        <div class="hmi-pack-label">Process Variable %</div>
+        <div class="hmi-bar-container">
+            <div class="hmi-bar-fill" style="width: 0%;"></div>
+            <div class="hmi-bar-text">--%</div>
+        </div>
+        <div class="hmi-badge">NORMAL</div>
+    </div>
+    <div class="hmi-value-grid">
+        <div class="hmi-value-box">
+            <div class="hmi-box-data">
+                <span class="hmi-value">--</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ==================== 3. MULTI-VARIABLE SENSOR: TEMP + HUMIDITY ==================== -->
+<!-- Best for: Room comfort sensors, outdoor weather blocks -->
+<div class="hmi-pack-card" data-type="temp_hum" data-device-idx="21">
+    <div class="hmi-card-header">
+        <div class="hmi-pack-label">Climate Monitor</div>
+        <div class="hmi-badge">NORMAL</div>
+    </div>
+    <!-- 2-column flex box grid layouts keep multi-value sub-boxes perfectly balanced -->
+    <div class="hmi-value-grid" style="display: flex; gap: 8px;">
+        <div class="hmi-value-box" style="flex: 1;">
+            <div class="hmi-box-label">Temp</div>
+            <div class="hmi-box-data"><span class="hmi-value-temp">--</span></div>
+        </div>
+        <div class="hmi-value-box" style="flex: 1;">
+            <div class="hmi-box-label">Humidity</div>
+            <div class="hmi-box-data"><span class="hmi-value-hum">--</span></div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ==================== 4. MULTI-VARIABLE SENSOR: TEMP + HUMIDITY + BARO ==================== -->
+<!-- Best for: Full meteo environmental stations, multi-sensor hardware combos -->
+<div class="hmi-pack-card" data-type="temp_hum_baro" data-device-idx="22">
+    <div class="hmi-card-header">
+        <div class="hmi-pack-label">Weather Station</div>
+        <div class="hmi-badge">NORMAL</div>
+    </div>
+    <!-- 3-column split to mirror your native HVAC system layout block -->
+    <div class="hmi-value-grid" style="display: flex; gap: 8px;">
+        <div class="hmi-value-box" style="flex: 1;">
+            <div class="hmi-box-label">Temp</div>
+            <div class="hmi-box-data"><span class="hmi-value-temp">--</span></div>
+        </div>
+        <div class="hmi-value-box" style="flex: 1;">
+            <div class="hmi-box-label">Humidity</div>
+            <div class="hmi-box-data"><span class="hmi-value-hum">--</span></div>
+        </div>
+        <div class="hmi-value-box" style="flex: 1;">
+            <div class="hmi-box-label">Pressure</div>
+            <div class="hmi-box-data"><span class="hmi-value-baro">--</span></div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ==================== 5. STANDALONE BAROMETER / PRESSURE CARD ==================== -->
+<!-- Best for: Pressure transmitters, atmospheric pressure lines -->
+<div class="hmi-pack-card hmi-clickable-card" data-device-idx="23" data-alarm="normal">
+    <div class="hmi-card-header">
+        <div class="hmi-pack-label">Barometer</div>
+        <div class="hmi-badge">NORMAL</div>
+    </div>
+    <div class="hmi-value-grid">
+        <div class="hmi-value-box">
+            <div class="hmi-box-data">
+                <span class="hmi-value">--</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ==================== 6. INTERACTIVE ON/OFF TOGGLE SWITCH ==================== -->
+<!-- Best for: Lights, ad-hoc data requests, manual triggers -->
+<div class="hmi-pack-card" data-type="switch" data-device-idx="6">
+    <div class="hmi-card-header">
+        <div class="hmi-pack-label">Control Switch</div>
+        <div class="hmi-badge hmi-clickable-badge">OFF</div>
+    </div>
+    <div class="hmi-value-grid">
+        <div class="hmi-value-box">
+            <div class="hmi-box-data">
+                <span class="hmi-value">OFF</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ==================== 7. PUMP / VALVE SYSTEM STATUS SWITCH ==================== -->
+<!-- Best for: Relays, pumps, irrigation, valves, cooling fans -->
+<div class="hmi-pack-card" data-type="pump" data-device-idx="14">
+    <div class="hmi-card-header">
+        <div class="hmi-pack-label">Circulation Pump</div>
+        <div class="hmi-badge hmi-clickable-badge">STOPPED</div>
+    </div>
+    <div class="hmi-value-grid">
+        <div class="hmi-value-box">
+            <div class="hmi-box-data">
+                <span class="hmi-value">STOPPED</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ==================== 8. THERMOSTAT / SETPOINT CARD ==================== -->
+<!-- Best for: Climate controls, target heating, temperature loops -->
+<div class="hmi-pack-card" data-type="thermostat" data-device-idx="15">
+    <div class="hmi-card-header">
+        <div class="hmi-pack-label">Zone Thermostat</div>
+        <div class="hmi-badge">HEATING</div>
+    </div>
+    <div class="hmi-value-grid">
+        <div class="hmi-value-box">
+            <div class="hmi-box-data" style="display: flex; gap: 8px; align-items: center;">
+                <button class="hmi-temp-btn btn-down">-</button>
+                <span class="hmi-value">21.0</span>
+                <button class="hmi-temp-btn btn-up">+</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ==================== 9. DIMMER SLIDER HARDWARE CARD ==================== -->
+<!-- Best for: Fan speed regulators, variable light dimming scales -->
+<div class="hmi-pack-card" data-type="dimmer" data-device-idx="16">
+    <div class="hmi-card-header">
+        <div class="hmi-pack-label">Speed Dimmer</div>
+        <div class="hmi-badge">OFF</div>
+    </div>
+    <div class="hmi-value-grid">
+        <div class="hmi-value-box">
+            <div class="layout-slider" style="display: flex; align-items: center; gap: 8px; width: 100%;">
+                <input type="range" min="0" max="100" value="0" class="hmi-slider" style="flex: 1;">
+                <div><span class="hmi-dimmer-text">0</span>%</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ==================== 10. TEXT / TIMING SYSTEM DISPLAY ==================== -->
+<!-- Best for: System times, raw data stamps, system state logging texts -->
+<div class="hmi-pack-card" data-device-idx="13">
+    <div class="hmi-card-header">
+        <div class="hmi-pack-label">System State Info</div>
+    </div>
+    <div class="hmi-value-grid">
+        <div class="hmi-value-box">
+            <div class="hmi-box-data">
+                <span class="hmi-value">--:--:--</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ==================== 11. HOLLOW GRID MATRIX PLACEHOLDER ==================== -->
+<!-- Best for: Future card expansion slots, balancing out grid columns -->
+<div class="hmi-pack-card hmi-card-placeholder">
+    <div class="hmi-card-header">
+        <div class="hmi-pack-label">[ SPARE BAY COMPONENT ]</div>
+    </div>
+</div>

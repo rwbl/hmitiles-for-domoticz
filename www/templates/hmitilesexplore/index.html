@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HMITiles Dashboard</title>
+    <link rel="stylesheet" href="hmitiles.css">
+    <script src="hmitiles.js" defer></script>
+</head>
+<body>
+
+    <header>
+        <h1>HMITiles (ISA-101) Plant Overview</h1>
+    </header>
+
+    <!-- Master outer panel containing your grid -->
+    <main class="hmi-panel">
+        
+        <!-- ROW 1 (4 Columns automatically filled) -->
+        <!-- Target Domoticz Device IDX 12 (e.g., Living Room Temp) -->
+        <div id="idx-12" class="hmi-pack-card">
+            <div class="hmi-card-header">
+                <div class="hmi-pack-label">Living Room</div>
+                <div class="hmi-badge">NORMAL</div>
+            </div>
+            <div class="hmi-value-grid">
+                <div class="hmi-value-box">
+                    <div class="hmi-box-label">Temperature</div>
+                    <div class="hmi-box-data">
+                        <span class="hmi-value">--.-</span><span class="hmi-box-unit">°C</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Target Domoticz Device IDX 3 (e.g., Water Tank Level Percentage) -->
+        <div id="idx-4" class="hmi-pack-card">
+            <div class="hmi-card-header">
+                <div class="hmi-pack-label">Water Tank</div>
+                <div class="hmi-bar-container">
+                    <div class="hmi-bar-fill" style="width: 0%;"></div>
+                    <div class="hmi-bar-text">--%</div>
+                </div>
+                <div class="hmi-badge">IDLE</div>
+            </div>
+            <div class="hmi-value-grid">
+                <div class="hmi-value-box">
+                    <div class="hmi-box-label">Level</div>
+                    <div class="hmi-box-data">
+                        <span class="hmi-value">--</span><span class="hmi-box-unit">%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+		<!-- Multi-Variable Component Example (IDX 20) -->
+		<div id="idx-20" class="hmi-pack-card">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">HVAC Unit</div>
+				<div class="hmi-badge">RUNNING</div>
+			</div>
+			<div class="hmi-value-grid">
+				<div class="hmi-value-box">
+					<div class="hmi-box-label">Temp</div>
+					<div class="hmi-box-data"><span class="hmi-value">21.5</span><span class="hmi-box-unit">°C</span></div>
+				</div>
+				<div class="hmi-value-box">
+					<div class="hmi-box-label">Humidity</div>
+					<div class="hmi-box-data"><span class="hmi-humidity">45</span><span class="hmi-box-unit">%</span></div>
+				</div>
+				<div class="hmi-value-box">
+					<div class="hmi-box-label">Load</div>
+					<div class="hmi-box-data"><span class="hmi-usage">350</span><span class="hmi-box-unit">W</span></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Target Domoticz Switch (IDX 1 - e.g., Living Room Main Light) -->
+		<div id="idx-1" class="hmi-pack-card" data-type="switch">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Pump P-1101</div>
+				<div class="hmi-badge hmi-clickable-badge">OFF</div>
+			</div>
+			<div class="hmi-value-grid">
+				<div class="hmi-value-box">
+					<div class="hmi-box-label">Status</div>
+					<div class="hmi-box-data"><span class="hmi-value">OFF</span></div>
+				</div>
+			</div>
+		</div>
+
+
+        <!-- ROW 2 (Pushes remaining cards down and balances the line) -->
+		<!-- Target Domoticz Thermostat (IDX 2 - e.g., Living Room Setpoint) -->
+		<div id="idx-2" class="hmi-pack-card" data-type="thermostat">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Thermostat</div>
+				<div class="hmi-badge">HEATING</div>
+			</div>
+			<div class="hmi-value-grid">
+				<div class="hmi-value-box">
+					<div class="hmi-box-label">Target Setpoint</div>
+					<div class="hmi-box-data">
+						<button class="hmi-temp-btn btn-down">-</button>
+						<span class="hmi-value hmi-setpoint">21.0</span><span class="hmi-box-unit">°C</span>
+						<button class="hmi-temp-btn btn-up">+</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Target Domoticz Dimmer (IDX 3 - e.g., Living Room Ceiling Light) -->
+		<div id="idx-3" class="hmi-pack-card" data-type="dimmer">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Ceiling Light</div>
+				<div class="hmi-badge hmi-clickable-badge">OFF</div>
+			</div>
+			<div class="hmi-value-grid">
+				<div class="hmi-value-box">
+					<div class="hmi-box-label">Brightness</div>
+					<div class="layout-slider">
+						<input type="range" min="0" max="100" value="0" class="hmi-slider">
+						<span class="hmi-value hmi-dimmer-text">0</span><span class="hmi-box-unit">%</span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+        <!-- FIXED PLACEHOLDER 1: Fills column 3 in row 2 -->
+        <div class="hmi-pack-card hmi-card-placeholder">
+            <div class="hmi-card-header">
+                <div class="hmi-pack-label">[ SPARE BAY 07 ]</div>
+            </div>
+        </div>
+
+        <!-- FIXED PLACEHOLDER 2: Fills column 4 in row 2 -->
+        <div class="hmi-pack-card hmi-card-placeholder">
+            <div class="hmi-card-header">
+                <div class="hmi-pack-label">[ SPARE BAY 08 ]</div>
+            </div>
+        </div>
+
+    </main>
+
+</body>
+</html>
