@@ -263,6 +263,7 @@ function setupControlListeners() {
             const isCurrentlyOn = (currentStatus === "ON" || currentStatus === "RUNNING" || currentStatus === "OPEN" || (parseInt(currentStatus, 10) > 0));
             const targetCommand = isCurrentlyOn ? "Turn Off" : "Turn On";
 
+			console.log("DEBUG CARD ELEMENT:", card);
             console.log(`SCADA Execution -> IDX ${idx}: Sending -> ${targetCommand}`);
             await sendDomoticzSwitchCommand(idx, targetCommand);
             return; 

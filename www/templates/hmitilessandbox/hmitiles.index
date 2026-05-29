@@ -44,7 +44,7 @@
 
 
 <!-- ==================== 3. MULTI-VARIABLE SENSOR: TEMP + HUMIDITY ==================== -->
-<div class="hmi-pack-card" data-type="temp_hum" data-device-idx="21">
+<div class="hmi-pack-card" data-type="temp_hum" data-device-idx="14">
     <div class="hmi-card-header">
         <div class="hmi-pack-label">Climate Monitor</div>
         <div class="hmi-badge">NORMAL</div>
@@ -64,7 +64,7 @@
 
 
 <!-- ==================== 4. MULTI-VARIABLE SENSOR: TEMP + HUMIDITY + BARO ==================== -->
-<div class="hmi-pack-card" data-type="temp_hum_baro" data-device-idx="22">
+<div class="hmi-pack-card" data-type="temp_hum_baro" data-device-idx="15">
     <div class="hmi-card-header">
         <div class="hmi-pack-label">Weather Station</div>
         <div class="hmi-badge">NORMAL</div>
@@ -88,7 +88,7 @@
 
 
 <!-- ==================== 5. STANDALONE BAROMETER / PRESSURE CARD ==================== -->
-<div class="hmi-pack-card hmi-clickable-card" data-device-idx="23" data-alarm="normal">
+<div class="hmi-pack-card hmi-clickable-card" data-device-idx="16" data-alarm="normal">
     <div class="hmi-card-header">
         <div class="hmi-pack-label">Barometer</div>
         <div class="hmi-badge">NORMAL</div>
@@ -104,7 +104,7 @@
 
 
 <!-- ==================== 6. INTERACTIVE ON/OFF TOGGLE SWITCH ==================== -->
-<div class="hmi-pack-card" data-type="switch" data-device-idx="6">
+<div class="hmi-pack-card" data-type="switch" data-device-idx="17">
     <div class="hmi-card-header">
         <div class="hmi-pack-label">Control Switch</div>
         <div class="hmi-badge hmi-clickable-badge">OFF</div>
@@ -120,7 +120,7 @@
 
 
 <!-- ==================== 7. PUMP / VALVE SYSTEM STATUS SWITCH ==================== -->
-<div class="hmi-pack-card" data-type="pump" data-device-idx="14">
+<div class="hmi-pack-card" data-type="pump" data-device-idx="18">
     <div class="hmi-card-header">
         <div class="hmi-pack-label">Circulation Pump</div>
         <div class="hmi-badge hmi-clickable-badge">STOPPED</div>
@@ -136,7 +136,7 @@
 
 
 <!-- ==================== 8. THERMOSTAT / SETPOINT CARD ==================== -->
-<div class="hmi-pack-card" data-type="thermostat" data-device-idx="15">
+<div class="hmi-pack-card" data-type="thermostat" data-device-idx="2">
     <div class="hmi-card-header">
         <div class="hmi-pack-label">Zone Thermostat</div>
         <div class="hmi-badge">HEATING</div>
@@ -154,7 +154,7 @@
 
 
 <!-- ==================== 9. DIMMER SLIDER HARDWARE CARD ==================== -->
-<div class="hmi-pack-card" data-type="dimmer" data-device-idx="16">
+<div class="hmi-pack-card" data-type="dimmer" data-device-idx="3">
     <div class="hmi-card-header">
         <div class="hmi-pack-label">Speed Dimmer</div>
         <div class="hmi-badge">OFF</div>

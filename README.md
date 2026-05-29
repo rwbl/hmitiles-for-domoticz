@@ -64,19 +64,20 @@ Want to see this project in action immediately? Follow this quick-start loop to 
 
 ```text
 Domoticz-HMITiles/
-├── LICENSE                 			# MIT License file
-├── README.md               			# The comprehensive setup guide
-├── backend/
-│   ├── node-red-flow.json  			# Exported Node-RED Modbus flow snippet
-│   └── SolarInfoDashboard.dzvents		# Backup of your dzVents parsing script
+├── LICENSE                    # MIT License file
 └── www/
     └── templates/
-        ├── SolarInfoDashboard.html     # Custom Domoticz tab page
+        ├── hmitiles.css       # Global layout stylesheet file
+        ├── hmitiles.js        # Global chart linking script engine
+        ├── SolarInfoDashboard.html   # Custom Domoticz tab page
+        ├── MyNextCustomTemplate.html # Future custom tab page
         └── solarinfodashboard/
-            ├── index.html              # Main layout dashboard file
-            ├── trends.html             # Native SVG sparkline trend dashboard file
-            ├── hmitiles.css            # Layout stylesheet file
-            └── hmitiles.js             # Chart linking script engine
+            ├── index.html     # Solar layout dashboard file
+            ├── trends.html    # Solar native SVG trend file
+            └── README.md      # Solar installation documentation file
+        └── mynextcustomtemplate/
+            ├── index.html     # Solar layout dashboard file
+            └── README.md      # Solar installation documentation file
 ```
 
 --- 
