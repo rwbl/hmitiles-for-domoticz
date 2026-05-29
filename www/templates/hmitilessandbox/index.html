@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+	File: index
+	Project: Domoticz-HMITiles Library Generator
+	Brief: Dynamically extracts, displays, and live-polls all master tile templates.
+	Date: 2026-05-29
+	Author: Robert W.B. Linn (c) 2026 MIT
+-->
+<head>
+    <meta charset="UTF-8">
+    <title>HMITiles Component Library</title>
+    <!-- 1. Link back to your common shared style assets up one level -->
+    <link rel="stylesheet" href="../hmitiles.css">
+    
+    <!-- 2. Link back to your common shared generic engine script up one level -->
+    <!-- Note: Added defer to ensure the template injects before the polling loop kicks off -->
+    <script src="../hmitiles.js" defer></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                // 3. Fetch your master template index library file natively
+                const response = await fetch("hmitiles.index");
+                if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+                const text = await response.text();
+                
+                // 4. Parse the raw string text data into HTML document elements
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, "text/html");
+                
+                // 5. Select EVERY tile card component stored inside the library file
+                const allTemplateCards = doc.querySelectorAll('.hmi-pack-card');
+                const targetGrid = document.getElementById("hmi-library-grid");
+                
+                // 6. Loop through each component, clone it, and drop it into the grid matrix
+                allTemplateCards.forEach(card => {
+                    const clonedCard = card.cloneNode(true);
+                    targetGrid.appendChild(clonedCard);
+                });
+
+                console.log(`Successfully generated dynamic library with ${allTemplateCards.length} tiles.`);
+                
+                // 7. FORCE ENGINE KICKSTART: Tell your generic script loop to immediately scan 
+                // the newly injected elements and begin fetching their matching virtual device values.
+                if (typeof fetchDomoticzData === "function") {
+                    fetchDomoticzData();
+                }
+
+            } catch (err) {
+                console.error("Failed to compile local components master library view:", err);
+                document.getElementById("hmi-library-grid").innerHTML = 
+                    `<div style="color:red; padding:20px;">Library Load Error: Ensure index.html and hmitiles.index are in the same folder!</div>`;
+            }
+        });
+    </script>
+</head>
+<body>
+
+    <header class="hmi-header-container">
+        <h1>HMITiles Master Component Library Reference</h1>
+    </header>
+
+    <!-- The common industrial matrix panel grid layout -->
+    <main id="hmi-library-grid" class="hmi-panel">
+        <!-- All live card components from hmitiles.index will cleanly render right here -->
+    </main>
+
+</body>
+</html>
