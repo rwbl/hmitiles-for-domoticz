@@ -1,0 +1,80 @@
+--[[
+Event: SyncServoBLE
+Brief: Listens to Slider IDX 20 and executes the Python PentaProtocol BLE bridge.
+Date: 2026-05-29
+Author: Robert W.B. Linn
+Description:
+    Zero Crash Risk: By routing via curl ... > /dev/null 2>&1, Domoticz just taps the web address to trigger your B4R logic and doesn't care what the microcontroller responds with [INDEX].
+    No Microcontroller Overhead: You don't have to bloat your lightweight B4R application firmware code trying to forge complex text compliance packets.
+    Instant Speed: It triggers instantly in the background without locking or pausing your main solar metric dashboard updates.
+]]--
+
+local IDX_SERVO_SLIDER = 20
+local IDX_SERVO_SWITCH = 21
+
+local URL_SERVER = 'http://192.168.1.68:51042/'
+local CMD_OPEN = 'open'
+local CMD_CLOSE = 'close'
+local SHELL_RESPONSE = 'OnESP32ServoControlResponse'
+
+local function sendCommand(domoticz, cmd)
+    local cmdString = URL_SERVER .. cmd
+    
+    domoticz.log('Dispatching Wi-Fi action link -> ' .. cmdString, domoticz.LOG_INFO)
+    
+    -- Use curl -s (silent) and fire it in a safe background thread.
+    local networkCommand = "curl -s -m 2 " .. cmdString
+
+    domoticz.executeShellCommand({
+        command = networkCommand,
+        callback = SHELL_RESPONSE
+    })
+end
+
+return {
+    active = true,
+    logging = {
+        level = domoticz.LOG_INFO,
+        marker = '[ESP32ServoControl]'
+    },
+    on = {
+        devices = {
+            IDX_SERVO_SLIDER, IDX_SERVO_SWITCH
+        },
+        -- Listen for the completion of the background shell utility
+        shellCommandResponses = {
+            SHELL_RESPONSE
+        },
+    },
+
+    execute = function(domoticz, item)
+
+        -- 1. Check if the background execution finished safely
+        if (item.isShellCommandResponse) then
+            if (item.statusCode == 0) then
+                domoticz.log('Wi-Fi command successfully delivered to B4R server.', domoticz.LOG_INFO)
+            else
+                domoticz.log('Wi-Fi delivery issue! Linux Status Code: ' .. tostring(item.statusCode), domoticz.LOG_WARNING)
+            end
+            return 
+        end
+
+        -- 2. Handle your switch click events cleanly
+        if (item.isDevice) then
+            domoticz.log('Device idx: ' .. item.idx .. ' state: ' .. item.state, domoticz.LOG_INFO)
+            if item.idx == IDX_SERVO_SWITCH then
+                if (item.state == 'On') then
+                    sendCommand(domoticz, CMD_OPEN)
+                else
+                    sendCommand(domoticz, CMD_CLOSE)
+                end
+            end                
+            if item.idx == IDX_SERVO_SLIDER then
+                domoticz.log('Device idx: ' .. item.idx .. ' state: ' .. item.state .. ' level: ' .. item.level, domoticz.LOG_INFO)
+                local level = item.level
+                if item.state == 'Off' then level = 0 end
+                sendCommand(domoticz, level)
+            end                
+        end
+    end
+}

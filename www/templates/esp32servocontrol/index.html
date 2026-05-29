@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+	File: index
+	Project: ESP32ServoControl Dashboard
+	Brief: Industry-standard HMI tiles to control an ESP32 Servo via Wi-Fi.
+	Date: 2026-05-29
+	Author: Robert W.B. Linn (c) 2026 MIT
+-->
+<head>
+    <meta charset="UTF-8">
+    <title>ESP32 Servo Control Panel</title>
+    <!-- Link backward one folder level to reuse your shared global common styles -->
+    <link rel="stylesheet" href="../hmitiles.css">
+    <script src="../hmitiles.js" defer></script>
+</head>
+<body>
+
+    <header class="hmi-header-container">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
+            <h1>ESP32 Servo Control Station</h1>
+        </div>
+    </header>
+
+    <!-- Master panel holding your crisp industrial grid matrix rows -->
+    <main class="hmi-panel">
+        
+        <!-- ==================== COLUMN 1: TOGGLE CONTROL ==================== -->
+        <!-- IDX 21: Links directly to your optimized ServoToggle switch script -->
+        <div class="hmi-pack-card" data-type="switch" data-device-idx="21">
+            <div class="hmi-card-header">
+                <div class="hmi-pack-label">Servo Gate Toggle</div>
+                <div class="hmi-badge hmi-clickable-badge">OFF</div>
+            </div>
+            <div class="hmi-value-grid">
+                <div class="hmi-value-box" style="display: flex; align-items: center; justify-content: center; min-height: 40px;">
+                    <div class="hmi-box-data">
+                        <span class="hmi-value">OFF</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== COLUMN 2: POSITION SLIDER ==================== -->
+        <!-- IDX 20: Links directly to your responsive ServoPosition dimmer slider script -->
+        <div class="hmi-pack-card" data-type="dimmer" data-device-idx="20">
+            <div class="hmi-card-header">
+                <div class="hmi-pack-label">Precision Positioner</div>
+                <div class="hmi-badge">OFF</div>
+            </div>
+            <div class="hmi-value-grid">
+                <div class="hmi-value-box" style="display: flex; align-items: center; justify-content: center; min-height: 40px; padding: 0 8px;">
+                    <div class="layout-slider" style="display: flex; align-items: center; gap: 8px; width: 100%;">
+                        <input type="range" min="0" max="100" value="0" class="hmi-slider" style="flex: 1;">
+                        <div><span class="hmi-dimmer-text">0</span>%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+</body>
+</html>
