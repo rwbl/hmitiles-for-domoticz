@@ -38,9 +38,9 @@ Want to see this project in action immediately? Follow this quick-start loop to 
 
 ## Screenshots
 
-![Solar Info Dashboard](images/domoticz_hmitiles-solar_info_dashboard-1.png "Solar Info Dashboard") 
+![Solar Info Dashboard](images/domoticz-hmitiles-solarinfodashboard-1.png "Solar Info Dashboard") 
 
-![Solar Info Dashboard Trends](images/domoticz_hmitiles-solar_info_dashboard-2.png "Solar Info Dashboard Trends") 
+![Solar Info Dashboard Trends](images/domoticz-hmitiles-solarinfodashboard-2.png "Solar Info Dashboard Trends") 
 
 ---
 
