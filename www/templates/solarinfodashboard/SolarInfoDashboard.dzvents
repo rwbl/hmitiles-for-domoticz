@@ -1,7 +1,7 @@
 --[[
-Event:      SolarInfoDashboard
+Event:      solar_info_dashboard
 Brief:      Periodically polls the local solar endpoint to extract and update device metrics.
-Date:       2026-05-29
+Date:       2026-05-30
 Description:
             - Automates solar data updates via an HTTP GET request to a Home Assistant Node-RED flow endpoint.
             - Parses a 9-value CSV text string into individual numbers using an efficient Lua string iterator.
@@ -26,8 +26,7 @@ local IDX_SOLAR_TIMESTAMP = 13          -- Text
 
 local URL_SERVER = 'http://homeassistant.local:1880/endpoint/solarinfo?data=all'
 local TIMER_INTERVAL = 'every 5 minutes'
-local HTTP_RESPONSE = 'OnHTTPResponse'
-
+local HTTP_RESPONSE = 'OnSolarInfoDashboardResponse'
 
 return {
     active = true,

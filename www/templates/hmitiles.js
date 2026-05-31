@@ -84,22 +84,65 @@ function processDevices(devices) {
         if (device.SetPoint !== undefined) {
             displayStatus = parseFloat(device.SetPoint).toFixed(1);
         }
+
         else if (device.SwitchType === "Dimmer" || device.SwitchTypeVal === 7) {
             const slider = tileElement.querySelector('.hmi-slider');
             const dimmerText = tileElement.querySelector('.hmi-dimmer-text');
+
+            // --- GENERIC TEXT TRANSLATION ENGINE ---
+            const customOnText = tileElement.getAttribute('data-on-text');
+            const customOffText = tileElement.getAttribute('data-off-text');
+
+			// 1. EXTRACT CORE STATUS INFORMATION
+            const rawStatus = String(device.Status || device.Data || "").toUpperCase();
+            const isDeviceOff = (rawStatus === "OFF");
             
-            if (slider && document.activeElement !== slider) slider.value = device.Level;
-            if (dimmerText) dimmerText.textContent = device.Level;
-            displayStatus = device.Level; 
+            // 2. FORCE LEVEL CORRECTION (If Domoticz says OFF, level is 0)
+            let currentLevel = parseInt(device.Level, 10) || 0;
+            if (isDeviceOff) {
+                currentLevel = 0;
+            }
+
+            // 3. UPDATE SLIDER INTERFACE (Only if user isn't actively clicking/dragging)
+            if (slider && document.activeElement !== slider) {
+                slider.value = currentLevel;
+            }
+            if (dimmerText) {
+                dimmerText.textContent = currentLevel;
+            }
+
+            // 4. MAP FALLBACK TEXT DISPLAY FOR THE CORE RENDERER
+            displayStatus = rawStatus;
+            if (rawStatus !== "ON" && rawStatus !== "OFF") {
+                displayStatus = "ON";
+            }
+            if (dimmerText) dimmerText.textContent = currentLevel;	// device.Level;
+
+            // If level is greater than 0, the servo is open/active
+            if (currentLevel > 0) {
+                displayStatus = customOnText ? customOnText : (device.Status || device.Data || "OPEN");
+            } else {
+                displayStatus = customOffText ? customOffText : (device.Status || device.Data || "CLOSED");
+            }
         }
+
         else if (device.Type === "Light/Switch" || cardType === "switch" || cardType === "pump" || cardType === "valve") {
             const rawStatus = String(device.Status || device.Data || "").toUpperCase();
             const isRawOn = (rawStatus === "ON" || rawStatus === "TRUE");
 
-            if (cardType === "pump") displayStatus = isRawOn ? "RUNNING" : "STOPPED";
-            else if (cardType === "valve") displayStatus = isRawOn ? "OPEN" : "CLOSED";
-            else displayStatus = isRawOn ? "ON" : "OFF";
+            // --- GENERIC TEXT TRANSLATION ENGINE ---
+            const customOnText = tileElement.getAttribute('data-on-text');
+            const customOffText = tileElement.getAttribute('data-off-text');
+
+            if (isRawOn) {
+                // Use custom HTML text, otherwise fall back to native Domoticz text
+                displayStatus = customOnText ? customOnText : (device.Status || device.Data || "ON");
+            } else {
+                // Use custom HTML text, otherwise fall back to native Domoticz text
+                displayStatus = customOffText ? customOffText : (device.Status || device.Data || "OFF");
+            }
         }
+
         else {
             displayStatus = device.Status || device.Data || "";
         }
@@ -113,93 +156,6 @@ function processDevices(devices) {
         });
     });
 }
-
-/* OLD
-function processDevices(devices) {
-    updateCommunicationsStatus(true);
-
-    devices.forEach(device => {
-        // Search natively by the custom HTML5 data-attribute instead of standard IDs
-        const tileElement = document.querySelector(`[data-device-idx="${device.idx}"]`);
-        if (!tileElement) return; // Safely skips any devices not built into your HTML layout
-
-        const rawValue = parseFloat(device.Data) || parseFloat(device.Status) || 0; 
-        let displayStatus = "";
-
-        // Read the custom data-type attribute from your HTML file if it exists
-        const cardType = tileElement.getAttribute('data-type') || "standard";
-
-        // --- TYPE 1: THERMOSTAT / SETPOINT ---
-        if (device.SetPoint !== undefined) {
-            displayStatus = parseFloat(device.SetPoint).toFixed(1);
-        }
-        
-        // --- TYPE 2: DIMMER SWITCHES (STRICTLY SEPARATED) ---
-        else if (device.SwitchType === "Dimmer" || device.SwitchTypeVal === 7) {
-            const slider = tileElement.querySelector('.hmi-slider');
-            const dimmerText = tileElement.querySelector('.hmi-dimmer-text');
-            
-            // Sync the physical slider knob position
-            if (slider && document.activeElement !== slider) {
-                slider.value = device.Level;
-            }
-            // Sync the text field level percentage number
-            if (dimmerText) {
-                dimmerText.textContent = device.Level;
-            }
-            
-            // For dimmers, we pass the raw level number to the final display container
-            displayStatus = device.Level; 
-        }
-        
-        // --- TYPE 3: STANDARD ON/OFF TOGGLE SWITCHES (STRICTLY SEPARATED) ---
-        else if (device.Type === "Light/Switch" || cardType === "switch" || cardType === "pump" || cardType === "valve") {
-            const rawStatus = String(device.Status || device.Data || "").toUpperCase();
-            const isRawOn = (rawStatus === "ON" || rawStatus === "TRUE");
-
-            // Map the text values purely on the custom attribute wording rules
-            if (cardType === "pump") {
-                displayStatus = isRawOn ? "RUNNING" : "STOPPED";
-            } else if (cardType === "valve") {
-                displayStatus = isRawOn ? "OPEN" : "CLOSED";
-            } else {
-                displayStatus = isRawOn ? "ON" : "OFF"; // Perfect fallback for old On/Off switches
-            }
-        }
-
-		// --- TYPE 4: SENSOR SUB-PARSING COMPATIBILITY LOGIC ---
-		else if (cardType === "temp_hum" || cardType === "temp_hum_baro") {
-			// Domoticz combo sensors pass specific individual float values alongside the raw data string
-			if (device.Temp !== undefined) {
-				const tempEl = tileElement.querySelector('.hmi-value-temp');
-				if (tempEl) tempEl.textContent = `${parseFloat(device.Temp).toFixed(1)} °C`;
-			}
-			if (device.Humidity !== undefined) {
-				const humEl = tileElement.querySelector('.hmi-value-hum');
-				if (humEl) humEl.textContent = `${device.Humidity} %`;
-			}
-			if (device.Barometer !== undefined && cardType === "temp_hum_baro") {
-				const baroEl = tileElement.querySelector('.hmi-value-baro');
-				if (baroEl) baroEl.textContent = `${device.Barometer} hPa`;
-			}
-		}
-        
-        // --- TYPE 5: ANALOG PROCESS VALUE SENSORS (Tanks, Gauges, Pressure) ---
-        else {
-            displayStatus = device.Status || device.Data || "";
-        }
-
-        // --- SEND CLEAN DATA TO UI RE-RENDER ---
-        updateHMIAnalogTile(tileElement, {
-            name: device.Name,
-            value: rawValue,
-            unit: device.Data ? device.Data.replace(/[0-9.,\s]/g, '') : '', 
-            status: displayStatus,
-            lastUpdate: device.LastUpdate
-        });
-    });
-}
-*/
 
 /**
  * Updates text elements and gauge bars within a specified panel card.

@@ -1,0 +1,99 @@
+--[[
+Event: servo_control
+Brief: Listens to switch on/off or slider to set the angle of a servo connected to a Raspberry Pi Pico.
+Date: 2026-05-30
+Author: Robert W.B. Linn
+Description: Optimized to handle Domoticz 100% slider states and link widgets.
+]]--
+
+local IDX_SERVO_SLIDER = 20
+local IDX_SERVO_SWITCH = 21
+
+-- Raspberry Pi Pico IP address (no port required as 80 is used)
+local URL_SERVER = 'http://192.168.1.115/'
+-- Default positions open or close. In addition number 0-100% possible.
+local CMD_OPEN = 'open'
+local CMD_CLOSE = 'close'
+local SHELL_RESPONSE = 'OnServoControlResponse'
+
+local function sendCommand(domoticz, cmd)
+    local cmdString = URL_SERVER .. cmd
+    
+    domoticz.log('Dispatching Wi-Fi action link -> ' .. cmdString, domoticz.LOG_INFO)
+    
+    -- Use curl -s (silent) and fire it in a safe background thread.
+    local networkCommand = "curl -s -m 2 " .. cmdString
+
+    domoticz.executeShellCommand({
+        command = networkCommand,
+        callback = SHELL_RESPONSE
+    })
+end
+
+return {
+    active = true,
+    logging = {
+        level = domoticz.LOG_INFO,
+        marker = '[ServoControl]'
+    },
+    on = {
+        devices = {
+            IDX_SERVO_SLIDER, IDX_SERVO_SWITCH
+        },
+        shellCommandResponses = {
+            SHELL_RESPONSE
+        },
+    },
+
+    execute = function(domoticz, item)
+
+        -- 1. Check if the background execution finished safely
+        if (item.isShellCommandResponse) then
+            if (item.statusCode == 0) then
+                domoticz.log('Wi-Fi command successfully delivered to the server.', domoticz.LOG_INFO)
+            else
+                domoticz.log('Wi-Fi delivery issue! Linux Status Code: ' .. tostring(item.statusCode), domoticz.LOG_WARNING)
+            end
+            return 
+        end
+
+        -- 2. Handle device changes cleanly
+        if (item.isDevice) then
+            domoticz.log('Device idx: ' .. item.idx .. ' state: ' .. item.state, domoticz.LOG_INFO)
+            
+            -- Handle On/Off Switch
+            if item.idx == IDX_SERVO_SWITCH then
+                if (item.state == 'On') then
+                    sendCommand(domoticz, CMD_OPEN)
+                    
+                    -- Update slider UI to match (Open = 100%) without retriggers
+                    -- Force the slider to 100% explicitly
+                    domoticz.devices(IDX_SERVO_SLIDER).dimTo(100).silent()
+                else
+                    sendCommand(domoticz, CMD_CLOSE)
+                    -- Setting level to 0 directly turns it off, 
+                    domoticz.devices(IDX_SERVO_SLIDER).dimTo(0).silent()
+                end
+            end                
+            
+            -- Handle Percentage Slider
+            if item.idx == IDX_SERVO_SLIDER then
+                -- Target level extraction guarding against 'Off' string state
+                local targetLevel = item.level
+                if item.state == 'Off' then 
+                    targetLevel = 0 
+                end
+                
+                domoticz.log('Slider level parsed: ' .. targetLevel, domoticz.LOG_INFO)
+                sendCommand(domoticz, targetLevel)
+                
+                -- Synchronize the On/Off switch widget UI based on slider position
+                if targetLevel > 0 then
+                    domoticz.devices(IDX_SERVO_SWITCH).switchOn().silent()
+                else
+                    domoticz.devices(IDX_SERVO_SWITCH).switchOff().silent()
+                end
+            end                
+        end
+    end
+}
