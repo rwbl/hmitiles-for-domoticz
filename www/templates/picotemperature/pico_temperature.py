@@ -1,24 +1,18 @@
 """
-File: servo_control.py
-Brief: Set the angle of a servo connected to Raspberry Pi Pico WH via WiFi.
+File: pico_temperature.py
+Brief: Request the Raspberry Pi Pico WH (Pico) internal chip temperature via HTTP GET request.
 Date: 2026-05-31
 Author: Robert W.B. Linn (c) 2026 MIT
-
 Description:
-This script runs a basic TCP socket server on port 80 to
-control a hobby servo motor via a web browser or client application.
-It maps HTTP paths and raw percentage paths to specific servo angles.
-The servo angles are listed below.
+This script runs a basic TCP socket server on port 80 to ...
 After successful network connection, the onboard LED lights.
 
-Examples setting servo angle:
-Pico WH IP address: 192.168.1.115
-- Open (90 degrees): http://pico-ip/open
-- Close (135 degrees): http://pico-ip/close
-- Position (0-100 which is converted to 135-90 degrees): http://pico-ip/0-100
-Note the position 0-100% is converted to an angle close to open.
+HTTP Requests with Pico IP address: 192.168.1.115
+Chip Temperature:
+- Request: http://pico-ip/temp
+- Response: 17.7
 
-Why using (/open, /close, /0-100)?
+Why using (/temp)?
 This is highly efficient, blazing-fast, and remarkably easy to debug by simply typing it directly into any browser address bar.
 
 Hardware:
@@ -26,11 +20,7 @@ Hardware:
 - Pico To Hat Board
 
 Wiring:
-  Servo  = Pico
-- VCC    = Pin 40 (VBUS / 5V)
-- GND    = Pin 38 (GND)
-- Signal = Pin 6  (GPIO4)
-
+- n/a
 - Onboard LED = 'LED'
 """
 
@@ -39,46 +29,31 @@ import machine
 import time
 import socket
 import network
+from machine import ADC
 
 # Defines various global constants
 import config
 
 # Process_Globals
-VERSION = "ServoControl_MicroPython_v20260531"
+VERSION = "PicoTemperature_MicroPython_v20260531"
 SERVER_PORT = 80
-
-# Servo configuration
-SERVO1_PIN_NR = 4
-ANGLE_BASE = 90
-ANGLE_OPEN = 90
-ANGLE_CLOSE = 135
-current_angle = ANGLE_BASE
 
 # Onboard LED - see config.py
 
 # Initialize GPIO
 onboard_led = machine.Pin(config.PIN_LED_ONBOARD, machine.Pin.OUT)
-servo_pin = machine.Pin(SERVO1_PIN_NR, machine.Pin.OUT)
 
-# Initialize Servo using PWM (50Hz is standard for servos)
-servo_pwm = machine.PWM(servo_pin, freq=50)
+# Temperature Sensor
+pico_temp_sensor = ADC(4)
 
-# --- Helper Functions ---
-def set_angle(angle):
-    """
-    Sets the servo angle using nanoseconds on the Pico W.
-    0 degrees   = 500,000 ns (0.5ms)
-    180 degrees = 2,500,000 ns (2.5ms)
-    """
-    global current_angle
-    current_angle = angle
-    
-    # Calculate nanoseconds: map 0-180 degrees to 500k-2500k ns
-    ns = int(500000 + (angle / 180.0) * 2000000)
-    
-    # Pico W native function for nanosecond control
-    servo_pwm.duty_ns(ns) 
+def get_pico_temperature():
+    """Reads the raw silicon internal voltage step and parses to Celsius."""
+    raw_reading = pico_temp_sensor.read_u16()
+    voltage = raw_reading * (3.3 / 65535.0)
+    celsius = 27.0 - ((voltage - 0.706) / 0.001721)
+    return round(celsius, 1)
 
+# WiFi
 def connect_wifi():
     """Connects to the local Wi-Fi network and manages the status LED."""
     wlan = network.WLAN(network.STA_IF)
@@ -110,11 +85,6 @@ def connect_wifi():
 # --- AppStart ---
 def app_start():
     print("[app_start]", VERSION)
-    
-    # Set base position
-    set_angle(ANGLE_BASE)
-    time.sleep_ms(50)
-    print("[app_start] Init servo angle=", current_angle)
     
     # Connect to WiFi
     if connect_wifi():
@@ -187,27 +157,16 @@ def handle_connections(server_socket):
                     if path == "/favicon.ico":
                         client_socket.close()
                         continue
-                    
-                    # --- Routing Logic ---
-                    if path == "/open":
-                        print("[handle_connections] Servo Action: Open")
-                        set_angle(ANGLE_OPEN)
-                        
-                    elif path == "/close":
-                        print("[handle_connections] Servo Action: Close")
-                        set_angle(ANGLE_CLOSE)
-                        
-                    else:
-                        num_str = path.replace("/", "")
-                        if num_str.isdigit():
-                            percentage = int(num_str)
-                            percentage = max(0, min(100, percentage))
-                            
-                            # Inverted math: 0% = Close (135), 100% = Open (90)
-                            target_angle = ANGLE_CLOSE + (percentage / 100.0) * (ANGLE_OPEN - ANGLE_CLOSE)
-                            
-                            print("[handle_connections] Servo Percent:", percentage, "% -> Target Angle:", target_angle)
-                            set_angle(target_angle)
+
+                     # --- NEW TELEMETRY DIAGNOSTIC ENDPOINT ---
+                    if path == "/temp":
+                        temp_string = str(get_pico_temperature())
+                        print("[handle_connections] temp=", temp_string)
+                        # Return plain text value directly
+                        response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\n{temp_string}"
+                        client_socket.send(response)
+                        client_socket.close()
+                        continue # Skip further servo evaluation loops
                 
                 # Send a clean HTTP response
                 response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nOK"
@@ -221,3 +180,5 @@ def handle_connections(server_socket):
 
 # Run the application
 app_start()
+
+

@@ -17,49 +17,47 @@
 	<script src="../hmitiles.js" defer></script>
 
     <script>
-        const DOMOTICZ_URL = window.parent && window.parent.$ ? window.parent.$.domoticzurl : window.location.origin;
+		document.addEventListener("DOMContentLoaded", () => {
+			const baseUrl = window.parent && window.parent.$ ? window.parent.$.domoticzurl : window.location.origin;
 
-			document.addEventListener("DOMContentLoaded", () => {
-				const baseUrl = window.parent && window.parent.$ ? window.parent.$.domoticzurl : window.location.origin;
+			document.querySelectorAll("[data-chart-idx]").forEach(container => {
+				const idx = container.getAttribute("data-chart-idx");
+				const sensorType = (idx === "12") ? "Percentage" : "counter";
+				const unit = (idx === "12") ? "%" : "W";
 
-				document.querySelectorAll("[data-chart-idx]").forEach(container => {
-					const idx = container.getAttribute("data-chart-idx");
-					const sensorType = (idx === "12") ? "Percentage" : "counter";
-					const unit = (idx === "12") ? "%" : "W";
-
-					if (idx) {
-						fetchTrendData(idx, sensorType, unit, container);
-					}
-				});
-
-				// --- NEW TIMESTAMP CAPTURE COUPLING ---
-				// Target your text clock holder cell natively
-				const timeCard = document.querySelector('[data-device-idx="13"]');
-				if (timeCard) {
-					fetchTextTimestamp(timeCard, baseUrl);
+				if (idx) {
+					fetchTrendData(idx, sensorType, unit, container);
 				}
 			});
 
-			/**
-			 * Fetches the raw string text history from your text device log channel.
-			 */
-			async function fetchTextTimestamp(element, baseUrl) {
-				try {
-					const response = await fetch(`${baseUrl}/json.htm?type=command&param=getdevices&rid=13`);
-					if (!response.ok) throw new Error();
-					const data = await response.json();
-
-					if (data.result && data.result[0]) {
-						const timeField = element.querySelector('.hmi-value');
-						// Grabs the exact, formatted text string updated by your dzVents engine script
-						if (timeField) {
-							timeField.textContent = data.result[0].Data || "--:--:--";
-						}
-					}
-				} catch (err) {
-					console.error("Failed to parse text stamp device info:", err);
-				}
+			// --- NEW TIMESTAMP CAPTURE COUPLING ---
+			// Target your text clock holder cell natively
+			const timeCard = document.querySelector('[data-device-idx="13"]');
+			if (timeCard) {
+				fetchTextTimestamp(timeCard, baseUrl);
 			}
+		});
+
+		/**
+		 * Fetches the raw string text history from your text device log channel.
+		 */
+		async function fetchTextTimestamp(element, baseUrl) {
+			try {
+				const response = await fetch(`${baseUrl}/json.htm?type=command&param=getdevices&rid=13`);
+				if (!response.ok) throw new Error();
+				const data = await response.json();
+
+				if (data.result && data.result[0]) {
+					const timeField = element.querySelector('.hmi-value');
+					// Grabs the exact, formatted text string updated by your dzVents engine script
+					if (timeField) {
+						timeField.textContent = data.result[0].Data || "--:--:--";
+					}
+				}
+			} catch (err) {
+				console.error("Failed to parse text stamp device info:", err);
+			}
+		}
 
         async function fetchTrendData(idx, sensor, unit, container) {
             try {

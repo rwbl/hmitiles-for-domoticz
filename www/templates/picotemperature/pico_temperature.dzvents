@@ -1,0 +1,62 @@
+--[[
+Event: PicoTemperatureTelemetry
+Brief: Polls the internal core silicon temperature of the Pico WH via HTTP GET.
+Date: 2026-05-31
+Author: Robert W.B. Linn
+Description: Asynchronously requests and parses plain-text telemetry from the Pico.
+]]--
+
+local IDX_SERVO_TEMP = 22
+local URL_DIAGNOSTIC = 'http://192.168.1.115/temp'
+local SHELL_RESPONSE  = 'OnPicoTemperatureResponse'
+
+return {
+    active = true,
+    logging = {
+        level = domoticz.LOG_INFO,
+        marker = '[PicoTemp]'
+    },
+    on = {
+        timer = {
+            -- 'every 5 minutes' -- Keeps network overhead light
+            'every minute' -- Keeps network overhead light
+        },
+        shellCommandResponses = {
+            SHELL_RESPONSE -- Listen specifically for the network callback response
+        }
+    },
+
+    execute = function(domoticz, item)
+        -- 1. TIMER TRIGGER: Send the non-blocking polling command
+        if (item.isTimer) then
+            domoticz.log('Dispatching background HTTP request to Pico core...', domoticz.LOG_INFO)
+            -- Use curl -s (silent) with a tight 2-second timeout (-m 2)
+            local networkCommand = "curl -s -m 2 " .. URL_DIAGNOSTIC
+
+            domoticz.executeShellCommand({
+                command = networkCommand,
+                callback = SHELL_RESPONSE
+            })
+            return
+        end
+
+        -- 2. HTTP RESPONSE TRIGGER: Parse and deliver data
+        if (item.isShellCommandResponse) then
+            if (item.statusCode == 0) then
+                -- FIX: Use Lua's native tonumber() instead of JavaScript's parseFloat()
+                local rawTemperature = tonumber(item.data)
+                
+                if (rawTemperature ~= nil) then
+                    domoticz.log('Pico Core Telemetry Received: ' .. tostring(rawTemperature) .. ' °C', domoticz.LOG_INFO)
+                    
+                    -- Update virtual sensor directly in Domoticz
+                    domoticz.devices(IDX_SERVO_TEMP).updateTemperature(rawTemperature)
+                else
+                    domoticz.log('Failed to parse a valid numerical structure from response: ' .. tostring(item.data), domoticz.LOG_WARNING)
+                end
+            else
+                domoticz.log('Network transaction failure! Pico webserver might be unreachable.', domoticz.LOG_ERROR)
+            end
+        end
+    end
+}

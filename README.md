@@ -68,7 +68,7 @@ Domoticz-HMITiles/
 └── www/
     └── templates/
         ├── hmitiles.css       # Global layout stylesheet file
-        ├── hmitiles.js        # Global chart linking script engine
+        ├── hmitiles.js        # Global script engine
         ├── SolarInfoDashboard.html   # Custom Domoticz tab page
         ├── MyNextCustomTemplate.html # Future custom tab page
         └── solarinfodashboard/
@@ -88,12 +88,12 @@ For a standard Domoticz installation, deploy the front-end files into your local
 
 ```text
 /home/pi/domoticz/www/templates/
+├── hmitiles.css
+└── hmitiles.js
 ├── SolarInfoDashboard.html
 └── solarinfodashboard/
     ├── index.html
     ├── trends.html
-    ├── hmitiles.css
-    └── hmitiles.js
 ```
 
 ### Custom Dashboard Tab Redirect

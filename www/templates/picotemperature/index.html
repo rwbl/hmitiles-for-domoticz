@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+	File: index
+	Project: PicoTemperature
+	Brief: Industry-standard HMI tiles to display the Pico onboard temperature via Wi-Fi.
+	Date: 2026-05-31
+	Author: Robert W.B. Linn (c) 2026 MIT
+	Hardware: Raspberry Pi Pico WH
+-->
+<head>
+    <meta charset="UTF-8">
+    <title>Pico Temperature Panel</title>
+    <!-- Link backward one folder level to reuse your shared global common styles -->
+    <link rel="stylesheet" href="../hmitiles.css">
+    <script src="../hmitiles.js" defer></script>
+
+    <script>
+		document.addEventListener("DOMContentLoaded", () => {
+			const baseUrl = window.parent && window.parent.$ ? window.parent.$.domoticzurl : window.location.origin;
+
+			// 1. Fetch Sparkline Trend Lines & Handle Auto-Telemetry Pushes
+			document.querySelectorAll("[data-chart-idx]").forEach(container => {
+				const idx = container.getAttribute("data-chart-idx");
+				const sensorType = "temp";
+				const unit = "°C";
+
+				if (idx) {
+					fetchTrendData(idx, sensorType, unit, container, baseUrl);
+				}
+			});
+		});
+
+		/**
+		 * Fetches trend data, extracts the last data point timestamp, 
+		 * pushes it to Text Device 23, and updates the UI.
+		 */
+		async function fetchTrendData(idx, sensor, unit, container, baseUrl) {
+			try {
+				const targetUrl = `${baseUrl}/json.htm?type=command&param=graph&sensor=${sensor}&idx=${idx}&range=day`;
+				
+				const response = await fetch(targetUrl);
+				if (!response.ok) throw new Error();
+				const data = await response.json();
+
+				if (data.result && data.result.length > 0) {
+					// Render the Sparkline
+					const points = data.result.map(item => parseFloat(item.te || item.svalue || 0));
+					renderSparkline(container, points, unit);
+
+					// --- EXTRACT LAST DATA POINT TIMESTAMP ---
+					const lastItem = data.result[data.result.length - 1];
+					const lastTimestamp = lastItem.d; // Expected format: "2026-05-31 10:25"
+					
+					if (lastTimestamp) {
+						// Extract just the time string component (HH:MM) from the timestamp string split
+						const timeOnly = lastTimestamp.split(' ')[1] || lastTimestamp;
+						
+						// Trigger the background chain: Push to device 23, then read it back
+						await pushTimestampToDevice23(timeOnly, baseUrl);
+					}
+				} else {
+					container.innerHTML = "<span style='color:#999; font-size:12px;'>No historical logs</span>";
+				}
+			} catch (err) {
+				console.error("Trend load error:", err);
+				container.innerHTML = "<span style='color:#ff0000; font-size:12px;'>API Error</span>";
+			}
+		}
+
+		/**
+		 * Pushes the extracted time string up into Domoticz Text Device IDX 23
+		 */
+		async function pushTimestampToDevice23(timeString, baseUrl) {
+			try {
+				// URL format to update a text sensor: /json.htm?type=command&param=udevice&idx=23&nvalue=0&svalue=TEXT
+				const updateUrl = `${baseUrl}/json.htm?type=command&param=udevice&idx=23&nvalue=0&svalue=${encodeURIComponent(timeString)}`;
+				
+				const response = await fetch(updateUrl);
+				if (response.ok) {
+					console.log(`[Text Sync] Pushed ${timeString} to Device 23.`);
+					
+					// Once verified inside the database, execute the read-back step to sync your UI card
+					const timeCard = document.querySelector('[data-device-idx="23"]'); // Pointing to 23
+					if (timeCard) {
+						fetchTextTimestamp(timeCard, baseUrl);
+					}
+				}
+			} catch (err) {
+				console.error("Failed to update Domoticz text device 23:", err);
+			}
+		}
+
+		/**
+		 * Fetches the text from your virtual text device (IDX 23) and renders it inside the card
+		 */
+		async function fetchTextTimestamp(element, baseUrl) {
+			try {
+				const response = await fetch(`${baseUrl}/json.htm?type=command&param=getdevices&rid=23`);
+				if (!response.ok) throw new Error();
+				const data = await response.json();
+
+				if (data && data.result && data.result[0]) {
+					const devicePayload = data.result[0];
+					const timeField = element.querySelector('.hmi-value');
+					
+					if (timeField) {
+						timeField.textContent = devicePayload.Data || devicePayload.Status || "--:--";
+					}
+				}
+			} catch (err) {
+				console.error("Failed to fetch timestamp from device 23:", err);
+			}
+		}
+
+		function renderSparkline(container, dataPoints, unit) {
+			const width = 300;
+			const height = 100;
+			const padding = 5;
+
+			// 1. Calculate the exact Min and Max values from the dataset
+			const min = Math.min(...dataPoints);
+			const max = Math.max(...dataPoints);
+			const range = max - min === 0 ? 1 : max - min;
+
+			const coords = dataPoints.map((val, index) => {
+				const x = padding + (index / (dataPoints.length - 1)) * (width - padding * 2);
+				const y = (height - padding) - ((val - min) / range) * (height - padding * 2);
+				return `${x},${y}`;
+			});
+
+			// 2. Generate the layout with the SVG line graph and the text stats row
+			container.innerHTML = `
+				<div class="hmi-sparkline-svg-wrapper">
+					<svg viewBox="0 0 ${width} ${height}" class="hmi-sparkline-svg" preserveAspectRatio="none">
+						<path class="hmi-trend-line" d="M ${coords.join(' L ')}" />
+					</svg>
+				</div>
+				<div class="hmi-trend-stats">
+					<div><span class="hmi-stat-label">MIN:</span> ${Math.round(min)}${unit}</div>
+					<div><span class="hmi-stat-label">MAX:</span> ${Math.round(max)}${unit}</div>
+				</div>
+			`;
+		}
+
+		function goToMainDashboard() {
+			window.location.href = "index.html";
+		}
+	</script>
+</head>
+<body>
+
+    <header class="hmi-header-container">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
+            <h1>Pico Temperature Panel</h1>
+        </div>
+    </header>
+
+    <!-- Master panel holding your crisp industrial grid matrix rows -->
+    <main class="hmi-panel">
+        
+		<!-- ==================== COLUMN 1: TEMPERATURE MONITOR ==================== -->
+        <!-- IDX 22: Links directly to your hmotiles script -->
+		<div class="hmi-pack-card" data-type="temperature" data-device-idx="22">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">MCU Core Temp</div>
+				<!-- This badge stays uncolored/neutral -->
+				<div class="hmi-badge">DIAG</div>
+			</div>
+			<div class="hmi-value-grid">
+				<div class="hmi-value-box" style="display: flex; align-items: center; justify-content: center; min-height: 40px;">
+					<!-- Your generic module hooks straight into this specific class name -->
+					<div class="hmi-value-temp" style="font-size: 20px; font-weight: bold; color: #333;">--.- °C</div>
+				</div>
+			</div>
+		</div>
+
+        <!-- ROW 1: TEMPERATURE -->
+        <div class="hmi-pack-card">
+            <div class="hmi-card-header"><div class="hmi-pack-label">Temperature (24h)</div></div>
+            <div class="hmi-value-grid"><div class="hmi-sparkline-container" data-chart-idx="22">Loading...</div></div>
+        </div>
+
+		<!-- SYSTEM TIME BAY: Populates the 4th column of Row 2 -->
+		<div class="hmi-pack-card" data-device-idx="23">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">System Time</div>
+				<div class="hmi-badge">SYNCED</div>
+			</div>
+			<div class="hmi-value-grid">
+				<div class="hmi-sparkline-container" style="justify-content: center;">
+					<div style="text-align: center; font-family: monospace;">
+						<div style="font-size: 11px; color: #888888; text-transform: uppercase; margin-bottom: 4px;">Last Data Point</div>
+						<!-- Your update script will write the dzVents formatted time string right here -->
+						<div class="hmi-value" style="font-size: 14px; font-weight: bold; color: #2c3e50;">--:--:--</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- ==================== FOOTER ==================== -->
+		<footer class="hmi-footer-version">
+			<span>Domoticz-HMITiles v1.0.0-Beta</span>
+		</footer>
+
+    </main>
+
+</body>
+</html>

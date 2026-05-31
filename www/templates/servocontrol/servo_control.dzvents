@@ -1,6 +1,6 @@
 --[[
 Event: servo_control
-Brief: Listens to switch on/off or slider to set the angle of a servo connected to a Raspberry Pi Pico.
+Brief: Listens to switch on/off or slider to set the angle of a servo connected to a Raspberry Pi Pico WH (Pico).
 Date: 2026-05-30
 Author: Robert W.B. Linn
 Description: Optimized to handle Domoticz 100% slider states and link widgets.
