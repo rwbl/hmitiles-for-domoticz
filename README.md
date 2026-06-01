@@ -1,220 +1,91 @@
 # Domoticz-HMITiles
 
-An open-source HMI (Human Machine Interface) tile layout framework for [Domoticz](http://www.domoticz.com), following widely accepted industrial HMI principles.
+An open-source HMI (Human Machine Interface) tile layout framework for [Domoticz](http://domoticz.com), following widely accepted industrial HMI principles.
 
-This project aims to bring structured, industry-inspired HMI design principles into the Domoticz ecosystem, bridging **Node-RED** (Modbus data fetching), an optimized **dzVents engine script** (safe data parsing), and a **lightweight HTML5/CSS3/JS user interface**.
+This repository provides a lightweight, modular web-ecosystem port of the original **B4X HMITiles Library**, unifying optimized **dzVents automation scripts**, **asynchronous shell pipelines**, and **decoupled HTML5/CSS3/JS custom pages**.
 
-> 💡 **Related Project:** This repository is the web-based Domoticz implementation of the original [B4X HMITiles Library](https://github.com), extending its core design philosophy into home automation web ecosystems.
+---
+
+## 📢 Project Status & Context
+
+* **Under Active Construction:** This project is under continuous development and will be expanded further. The tiles and custom dashboard solutions created so far represent specific use cases actively deployed by the author.
+* **Personal & Private Use Only:** This framework and its sub-modules are tailored for private application and individual home lab testing.
+* **Born From Curiosity:** This entire project was created purely out of curiosity to explore if it was technically viable to design robust, high-performance industrial HMI/SCADA-type Custom Pages within the native Domoticz environment.
+
+---
+
+## ✨ Key Features & Capabilities
+
+The following core features apply across the provided dashboard examples:
+
+* **Industry-Inspired Design:** Structured, clean tiles focus heavily on situational awareness and clear data hierarchy.
+* **Perfect 4x3 Grid Matrix:** Instant layout mapping across critical system infrastructure points.
+* **Interactive Logger Integration:** Clicking an active tile element instantly targets and opens the native Domoticz device chart log view.
+* **Asynchronous Manual Updates:** Trigger real-time, ad-hoc server data polls safely with a looping-protected manual refresh layout.
+* **Dynamic Industrial Alarms:** Live data-alarm attribute injection handles dynamic boundary colors (Warning/Critical) natively based on parsed metric thresholds.
 
 ---
 
 ## 🚀 The HMITiles Ecosystem & Solutions
 
-The **HMITiles** framework is a modular layout solution designed to visualize a wide array of smart home infrastructure. The **Solar Info Dashboard** included in this repository is the first complete, out-of-the-box reference implementation showing how the framework handles active power management and telemetry data. 
+The framework uses clean, low-fatigue layout matrices designed to visualize smart home infrastructure with high data density. 
+It features several complete, out-of-the-box custom sub-dashboards examples:
 
-**This is an evolving project. More industry-inspired automation solutions (e.g., HVAC management, Tank Monitoring, and Lighting Systems) will follow all along as future expansions.**
-
----
-
-## ⚡ Quick Start Guide (Get Going in 2 Minutes)
-
-Want to see this project in action immediately? Follow this quick-start loop to deploy a local mockup version:
-
-1. **Download the Repository:** Save the `www/` and `backend/` folders onto your local PC.
-2. **Launch a Local View:** Simply double-click the `www/templates/solarinfodashboard/index.html` file inside Windows 11. It will spin up your clean grid matrix right inside your web browser.
-3. **Change the Data Hooks:** Open `index.html` in any text editor. Locate the `data-device-idx="NNN"` attribute fields. Swap out those numbers to match any running virtual device numbers inside your active Domoticz system dashboard.
-4. **Connect the Engine:** Drop the `SyncSolarMetrics.lua` routine into your Domoticz events script panel, and your dashboard will immediately begin auto-refreshing with your live metrics!
+* **SolarInfoDashboard:** Active solar generation, battery charging cycles, and power grid net-metering metrics.
+* **ServoControl:** Interactive automation panel linking switches and percentage positioning sliders directly to hardware endpoints.
+* **PicoDiag:** Multi-variable controller telemetry tracking microcontroller chip temperatures alongside real-time Wi-Fi signal attenuation profiles (RSSI).
+* **HMITilesOverview:** A high-level overview management layer displaying multiple hardware nodes simultaneously.
 
 ---
 
-## Features
-* **Industry-Inspired Design:** Structured, clean tiles focus heavily on situational awareness and clear data hierarchy.
-* **Perfect 4x3 Grid Matrix:** Instant layout mapping across all critical solar infrastructure points.
-* **Interactive Logger Integration:** Clicking any active tile element instantly targets and opens the native Domoticz device chart log.
-* **Asynchronous Manual Updates:** Trigger real-time, ad-hoc server data polls safely with a looping-protected manual switch layout.
-* **Dynamic Industrial Alarms:** Live data-alarm attribute injection handles dynamic boundary colors (Warning/Critical) natively.
-
----
-
-## Screenshots
-
-![Solar Info Dashboard](images/domoticz-hmitiles-solarinfodashboard-1.png "Solar Info Dashboard") 
-
-![Solar Info Dashboard Trends](images/domoticz-hmitiles-solarinfodashboard-2.png "Solar Info Dashboard Trends") 
-
----
-
-## System Architecture Flow
-```text
-[Solar Unit Modbus] 
-       -> (Reads Raw Registers)
-   [Node-RED] --- (Serves CSV via HTTP Endpoint) ---┐
-                                                    │
-   ┌────────────────────────────────────────────────┘
-   ▼
-[Domoticz dzVents Script] --- (Parses CSV & Updates Virtual Devices IDX 5-13)
-   │
-   ▼ (Serves real-time JSON Data)
-[HMITiles Front-End Webpage] --- (Renders UI, Live Timestamps & Charts)
-```
-
----
-
-## Folder Structure
+## 📁 Repository Directory Structure
 
 ```text
 Domoticz-HMITiles/
-├── LICENSE                    # MIT License file
+├── LICENSE                     # MIT License
+├── QUICK_START.md              # 2-minute local deployment guide
 └── www/
     └── templates/
-        ├── hmitiles.css       # Global layout stylesheet file
-        ├── hmitiles.js        # Global script engine
-        ├── SolarInfoDashboard.html   # Custom Domoticz tab page
-        ├── MyNextCustomTemplate.html # Future custom tab page
-        └── solarinfodashboard/
-            ├── index.html     # Solar layout dashboard file
-            ├── trends.html    # Solar native SVG trend file
-            └── README.md      # Solar installation documentation file
-        └── mynextcustomtemplate/
-            ├── index.html     # Solar layout dashboard file
-            └── README.md      # Solar installation documentation file
-```
-
---- 
-
-## File Installation Paths
-
-For a standard Domoticz installation, deploy the front-end files into your local web templates directory:
-
-```text
-/home/pi/domoticz/www/templates/
-├── hmitiles.css
-└── hmitiles.js
-├── SolarInfoDashboard.html
-└── solarinfodashboard/
-    ├── index.html
-    ├── trends.html
-```
-
-### Custom Dashboard Tab Redirect
-
-The `SolarInfoDashboard.html` file acts as your main custom Domoticz tab page. It cleanly routes your session traffic straight into your subfolder assets using a native JavaScript page redirect:
-
-```html
-<!-- Inside SolarInfoDashboard.html -->
-<script>
-  window.location.href = "templates/solarinfodashboard/index.html";
-</script>
+        ├── hmitiles.css        # Global CSS shared style definitions
+        ├── hmitiles.js         # Global JS shared engine (handles DOMOTICZ_URL)
+        ├── SolarInfoDashboard.html   # Domoticz custom tab menu wrapper
+        ├── ServoControl.html         # Domoticz custom tab menu wrapper
+        ├── PicoDiag.html             # Domoticz custom tab menu wrapper
+        ├── HMITilesOverview.html     # Domoticz custom tab menu wrapper
+        ├── solarinfodashboard/       # Dedicated asset directory for Solar
+        │   ├── index.html            # Main solar interface layout
+        │   └── trends.html           # Historical SVG sparkline chart panel
+        ├── servocontrol/             # Dedicated asset directory for Servo Control
+        │   └── index.html            # Slider and toggle element matrices
+        └── picodiag/                 # Dedicated asset directory for Pico Telemetry
+            └── index.html            # Localized scoped alarm threshold diagnostic panel
 ```
 
 ---
 
-## Setup Instructions
+## 🛠️ Global Framework Rules
 
-### 1. Domoticz Device Configurations
-Create the following virtual devices using the **Dummy** hardware type in your Domoticz utility panel:
+To extend or build new custom pages within this framework, you must follow these architectural practices:
 
-
-
-| IDX | Device Name | Type / SubType | Target Metric Field |
-| :--- | :--- | :--- | :--- |
-| **5** | `PowerFlowSolar` | Usage, Electric | Solar Production (W) |
-| **6** | `SolarDataRequest` | Light/Switch (Push On) | Manual Override Button |
-| **7** | `PowerFromGrid` | Usage, Electric | Grid Import Power (W) |
-| **8** | `PowerToGrid` | Usage, Electric | Grid Export Power (W) |
-| **9** | `PowerToHouse` | Usage, Electric | House Consumption (W) |
-| **10** | `PowerToBattery` | Usage, Electric | Battery Charging (W) |
-| **11** | `PowerFromBattery` | Usage, Electric | Battery Discharging (W) |
-| **12** | `BatteryState` | Percentage | State of Charge (%) |
-| **13** | `SolarTimeStamp` | Text | Timestamp last poll / sync |
+1. **Keep Shared Assets Generic:** Never add hardcoded indices (`IDX`), page-specific selectors, or custom calculations to `hmitiles.js` or `hmitiles.css`. They manage global variables (`DOMOTICZ_URL`) and baseline component layout rules only.
+2. **Localize Custom Code Scope:** Encapsulate all page-specific features, data fetches, and threshold scripts inside a private `DOMContentLoaded` closure using block-scoped local variables (`const`). This prevents naming collisions or file overwrites.
+3. **Isolate Element Selectors:** Combine HTML5 attributes securely (e.g., `[data-device-idx="22"][data-type="temperature"]`) so data functions always modify the correct UI element when multiple elements share matching index numbers.
+4. **Follow High-Performance Design Standards:** Keep runtime graphics neutral (using desaturated grays). Reserve bright, saturated alert colors (amber and red) exclusively for active alarm states to optimize operator awareness and minimize visual clutter.
 
 ---
 
-### 2. dzVents Backend Setup
-1. In Domoticz, navigate to **Setup -> More Options -> Events**.
-2. Create a new **dzVents** script, name it `SolarInfoDashboard`, and paste the following optimized script:
+## 📝 Detailed Sub-Module Documentation
 
-```lua
---[[
-Event: SolarInfoDashboard
-Brief: Periodically polls the local solar endpoint to extract and update device metrics.
-Date: 2026-05-28
-]]--
+For specific setup guides, wiring diagrams, dzVents code files, and MicroPython firmware scripts, please refer to the dedicated documentation pages:
 
-local IDX_MANUAL_BUTTON = 6 
-local IDX_POWER_FROM_SOLAR = 5
-local IDX_POWER_FROM_GRID = 7
-local IDX_POWER_TO_GRID = 8
-local IDX_POWER_TO_HOUSE = 9
-local IDX_POWER_TO_BATTERY = 10
-local IDX_POWER_FROM_BATTERY = 11
-local IDX_BATTERY_CHARGE_STATE = 12
-local IDX_SOLAR_TIMESTAMP = 13
-
-local URL_SERVER = 'http://homeassistant.local'
-local TIMER_INTERVAL = 'every minute'
-local HTTP_RESPONSE = 'OnHTTPResponse'
-
-return {
-    active = true,
-    logging = { level = domoticz.LOG_INFO, marker = '[SolarInfoDashboard]' },
-    on = {
-        timer = { TIMER_INTERVAL },
-        devices = { IDX_MANUAL_BUTTON },
-        httpResponses = { HTTP_RESPONSE }
-    },
-    execute = function(domoticz, item)
-        if (item.isHTTPResponse) then
-            if (item.ok and item.statusCode == 200) then
-                local rawData = item.data  
-                if not rawData or rawData == "" then return end
-
-                local function parseData(data)
-                    local values = {}
-                    for token in string.gmatch(data, "[^,]+") do
-                        table.insert(values, tonumber(token) or 0)
-                    end
-                    return values
-                end
-                local result = parseData(rawData)
-
-                if #result >= 9 then
-                    domoticz.devices(IDX_POWER_FROM_SOLAR).updateEnergy(result)
-                    domoticz.devices(IDX_POWER_FROM_GRID).updateEnergy(result)
-                    domoticz.devices(IDX_POWER_TO_GRID).updateEnergy(result)
-                    domoticz.devices(IDX_POWER_TO_HOUSE).updateEnergy(result)
-                    domoticz.devices(IDX_POWER_TO_BATTERY).updateEnergy(result)
-                    domoticz.devices(IDX_POWER_FROM_BATTERY).updateEnergy(result)
-                    domoticz.devices(IDX_BATTERY_CHARGE_STATE).updatePercentage(result)
-                    
-                    -- Formats and updates your native text timestamp logger card cleanly
-                    local currentClock = os.date("%H:%M:%S")
-                    domoticz.devices(IDX_SOLAR_TIMESTAMP).updateText(currentClock)
-                end
-            end
-        else
-            if (item.isDevice and item.state == 'On') then
-                item.switchOff().afterSec(2).silent() -- Silent prevents infinite loops!
-            end
-            domoticz.openURL({ url = URL_SERVER, method = 'GET', callback = HTTP_RESPONSE })
-        end
-    end
-}
-```
+* 📖 **[QUICK_START.md](QUICK_START.md)** - Get up and running in under 2 minutes with local mockups.
+* ☀️ **[Solar Info Setup Guide](www/templates/solarinfodashboard/README.md)** - Modbus parameters, Node-RED CSV endpoints, and power tracking metrics.
+* ⚙️ **[Servo Control System Guide](www/templates/servocontrol/README.md)** - Virtual dimming slider logic and nanosecond MicroPython socket server details.
+* 🌡️ **[PicoDiag Diagnostics Guide](www/templates/picodiag/README.md)** - Silicon ADC temperature equations, background asynchronous curl loops, and JSON payload handling.
 
 ---
 
-### 3. Front-End Deploy
-1. Clone this repository to your web directory or host it inside your custom Domoticz directory.
-2. Open `hmitiles.js` and point the variable to your local running instance:
-```javascript
-const DOMOTICZ_URL = window.parent && window.parent.\( ? window.parent.\).domoticzurl : window.location.origin;
-```
-3. Load up your `index.html` file in any modern web browser to display your plant metrics.
-
----
-
-## License
+## 📄 License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 Developed by **Robert W.B. Linn** (c) 2026.

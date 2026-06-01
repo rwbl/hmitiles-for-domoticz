@@ -1,18 +1,20 @@
 """
-File: pico_temperature.py
-Brief: Request the Raspberry Pi Pico WH (Pico) internal chip temperature via HTTP GET request.
+File: pico_diag.py
+Brief: Request the Raspberry Pi Pico WH (Pico) internal chip temperature and RSSI via HTTP GET request.
 Date: 2026-05-31
 Author: Robert W.B. Linn (c) 2026 MIT
+
 Description:
-This script runs a basic TCP socket server on port 80 to ...
+This script runs a basic TCP socket server on port 80 and listens to client connections.
 After successful network connection, the onboard LED lights.
 
-HTTP Requests with Pico IP address: 192.168.1.115
+Client Request:
+Client HTTP Requests with Pico IP address: 192.168.1.115
 Chip Temperature:
-- Request: http://pico-ip/temp
-- Response: 17.7
+- Request: http://pico-ip/diag
+- Response: {"temp": 20.5, "rssi_dbm": -36}
 
-Why using (/temp)?
+Why using (/diag)?
 This is highly efficient, blazing-fast, and remarkably easy to debug by simply typing it directly into any browser address bar.
 
 Hardware:
@@ -20,7 +22,6 @@ Hardware:
 - Pico To Hat Board
 
 Wiring:
-- n/a
 - Onboard LED = 'LED'
 """
 
@@ -35,7 +36,7 @@ from machine import ADC
 import config
 
 # Process_Globals
-VERSION = "PicoTemperature_MicroPython_v20260531"
+VERSION = "PicoDiag_MicroPython_v20260601"
 SERVER_PORT = 80
 
 # Onboard LED - see config.py
@@ -90,8 +91,12 @@ def app_start():
     if connect_wifi():
         # Initialize TCP Server Socket
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # CRITICAL FIX 1: Allow the port to be immediately reused upon a soft reboot 
+        # or automated data refresh transaction
+        server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_socket.bind(('', SERVER_PORT))
-        server_socket.listen(1)
+        server_socket.listen(5)
+        server_socket.settimeout(1.0)
         print("[app_start] Done. Listening on port", SERVER_PORT)
         
         # Start listening loop (Equivalent to OnConnection / AsyncStream)
@@ -126,8 +131,11 @@ def handle_connections(server_socket):
                 
                 # Rebuild socket after successful reconnection
                 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                # CRITICAL FIX 1: Allow the port to be immediately reused upon a soft reboot 
+                # or automated data refresh transaction
+                server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
                 server_socket.bind(('', SERVER_PORT))
-                server_socket.listen(1)
+                server_socket.listen(5)
                 server_socket.settimeout(1.0)
                 print("[handle_connections] Server socket successfully restored.")
                 continue
@@ -158,19 +166,35 @@ def handle_connections(server_socket):
                         client_socket.close()
                         continue
 
-                     # --- NEW TELEMETRY DIAGNOSTIC ENDPOINT ---
-                    if path == "/temp":
-                        temp_string = str(get_pico_temperature())
-                        print("[handle_connections] temp=", temp_string)
-                        # Return plain text value directly
-                        response = f"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\n{temp_string}"
+                    # --- TELEMETRY JSON ENDPOINT ---
+                    if path == "/diag":
+                        live_temp = get_pico_temperature()
+                        
+                        # Fetch Wi-Fi status indicators safely
+                        try:
+                            live_rssi = wlan.status('rssi')
+                        except:
+                            live_rssi = -99  # Safe fallback if read hits a hardware hitch
+                        
+                        # FIX: Structured strict JSON format using explicit string mappings
+                        json_payload = f'{{"temp": {live_temp}, "rssi_dbm": {live_rssi}}}'
+                        print("[handle_connections] Dispatching payload:", json_payload)
+                        
+                        # Send application/json content-type layout packet
+                        response = (
+                            "HTTP/1.1 200 OK\r\n"
+                            "Content-Type: application/json\r\n"
+                            "Connection: close\r\n\r\n"
+                            f"{json_payload}"
+                        )
                         client_socket.send(response)
                         client_socket.close()
-                        continue # Skip further servo evaluation loops
+                        continue 
                 
                 # Send a clean HTTP response
                 response = "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nOK"
                 client_socket.send(response)
+                time.sleep_ms(20)
                 
             client_socket.close()
             
@@ -180,5 +204,4 @@ def handle_connections(server_socket):
 
 # Run the application
 app_start()
-
 

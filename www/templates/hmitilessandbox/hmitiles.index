@@ -184,8 +184,27 @@
     </div>
 </div>
 
+<!-- ==================== 11. TEXT MULTI-LINE DOCUMENTATION ==================== -->
+<div class="hmi-pack-card" data-type="info">
+	<div class="hmi-card-header">
+		<!-- Clean, descriptive header label -->
+		<div class="hmi-pack-label">System Information</div>
+		<div class="hmi-badge">INFO</div>
+	</div>
+	<div class="hmi-value-grid" style="padding: 12px; min-height: 100px;">
+		<!-- Multiline text field styled for crisp industrial readability -->
+		<div class="hmi-info-text-box" style="font-family: sans-serif; font-size: 12px; line-height: 1.6; color: #444444; text-align: left;">
+			<strong>Host:</strong> Raspberry Pi Pico WH<br>
+			<strong>Firmware:</strong> MicroPython v1.22+<br>
+			<strong>Network Link:</strong> Active via Port 80<br>
+			<span style="color: #777777; font-size: 11px; display: block; margin-top: 6px;">
+				Note: ...
+			</span>
+		</div>
+	</div>
+</div>
 
-<!-- ==================== 11. HOLLOW GRID MATRIX PLACEHOLDER ==================== -->
+<!-- ==================== 99. HOLLOW GRID MATRIX PLACEHOLDER ==================== -->
 <div class="hmi-pack-card hmi-card-placeholder">
     <div class="hmi-card-header">
         <div class="hmi-pack-label">[ SPARE BAY COMPONENT ]</div>
