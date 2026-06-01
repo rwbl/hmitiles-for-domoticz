@@ -230,6 +230,20 @@ body {
 }
 
 /* ==========================================================================
+   TEXT COMPONENTS (.hmi-info-text-box)
+   ========================================================================== */
+
+/* --- Crisp Industrial Text Display Block --- */
+.hmi-info-text-box {
+    font-family: var(--hmi-font-main, sans-serif);
+    font-size: 12px;
+    line-height: 1.6;
+    color: #444444;
+    text-align: left;
+    white-space: normal; /* Ensures long sentences wrap naturally onto new lines */
+}
+
+/* ==========================================================================
    TEMP COMPONENTS (.hmi-temp)
    ========================================================================== */
 

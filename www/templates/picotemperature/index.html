@@ -121,11 +121,13 @@
                             const timeOnly = lastTimestamp.split(' ')[1] || lastTimestamp;
                             
                             // Trigger the background chain: Push to device 23, then read it back
-                            await pushTimestampToDevice(TIMESTAMP_IDX, timeOnly, DOMOTICZ_URL);
+                            await pushTimestampToDevice(TIMESTAMP_IDX, timeOnly);
                         }
+						// console.log(`[fetchTrendData] done ${lastTimestamp}`);
                     } else {
                         container.innerHTML = "<span style='color:#999; font-size:12px;'>No historical logs</span>";
                     }
+
                 } catch (err) {
                     console.error("Trend load error:", err);
                     container.innerHTML = "<span style='color:#ff0000; font-size:12px;'>API Error</span>";
@@ -135,7 +137,7 @@
             /**
              * Pushes the extracted time string up into Domoticz Text Device IDX 23
              */
-            async function pushTimestampToDevice(idx, timeString, DOMOTICZ_URL) {
+            async function pushTimestampToDevice(idx, timeString) {
                 try {
                     const updateUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=udevice&idx=${idx}&nvalue=0&svalue=${encodeURIComponent(timeString)}`;
 					//console.log(`[pushTimestampToDevice] ${updateUrl}`);
@@ -146,7 +148,7 @@
                         
                         const timeCard = document.querySelector('[data-device-idx="${idx}"]');
                         if (timeCard) {
-                            fetchTextTimestamp(idx, timeCard, DOMOTICZ_URL);
+                            fetchTextTimestamp(idx, timeCard);
                         }
                     }
                 } catch (err) {
@@ -157,7 +159,7 @@
             /**
              * Fetches the text from virtual text device (IDX 23) and renders it inside the card
              */
-            async function fetchTextTimestamp(idx, element, DOMOTICZ_URL) {
+            async function fetchTextTimestamp(idx, element) {
                 try {
                     const response = await fetch(`${DOMOTICZ_URL}/json.htm?type=command&param=getdevices&rid=${idx}`);
 					// console.log(`[fetchTextTimestamp] ${response}`);
@@ -185,10 +187,22 @@
             const chartContainer = document.querySelector(`[data-chart-idx="${TEMP_IDX}"]`);
 			console.log(chartContainer);
             if (chartContainer) {
-                // Direct call with zero execution waste or array evaluation cycles
-                fetchTrendData(TEMP_IDX, "temp", "°C", chartContainer);
+			
+                const runUpdateCycle = () => {
+					// Create a real-time timestamp string format: "HH:MM:SS"
+                    const currentTime = new Date().toLocaleTimeString();
+                    console.log(`[HMI Polling] [${currentTime}] Requesting fresh diagnostic telemetry data...`);
+					
+					fetchTrendData(TEMP_IDX, "temp", "°C", chartContainer);
+                };
+
+                // 1. Direct call instantly upon initial page load
+                runUpdateCycle();
+
+                // 2. Automatically repeat the update cycle every 60 seconds (60000 ms)
+                setInterval(runUpdateCycle, 60000);
             } else {
-                console.warn(`[CHART] Dedicated chart container for IDX ${TEMP_IDX} missing from HTML.`);
+                console.warn(`[HMI Polling] Dedicated chart container for IDX ${TEMP_IDX} missing from HTML.`);
             }
 
         });
@@ -279,6 +293,26 @@
 				</div>
 			</div>
 		</div>
+
+        <!-- ==================== COLUMN 4: SYSTEM DOCUMENTATION ==================== -->
+        <div class="hmi-pack-card" data-type="info">
+            <div class="hmi-card-header">
+                <!-- Clean, descriptive header label -->
+                <div class="hmi-pack-label">System Information</div>
+                <div class="hmi-badge">INFO</div>
+            </div>
+            <div class="hmi-value-grid" style="padding: 12px; min-height: 100px;">
+                <!-- Multiline text field styled for crisp industrial readability -->
+                <div class="hmi-info-text-box" style="font-family: sans-serif; font-size: 12px; line-height: 1.6; color: #444444; text-align: left;">
+                    <strong>Host:</strong> Raspberry Pi Pico WH<br>
+                    <strong>Firmware:</strong> MicroPython v1.22+<br>
+                    <strong>Network Link:</strong> Active via Port 80<br>
+                    <span style="color: #777777; font-size: 11px; display: block; margin-top: 6px;">
+                        Note: Server runs a self-healing socket listener loop. If the network connection fails, the onboard LED turns off and auto-repair attempts deploy instantly.
+                    </span>
+                </div>
+            </div>
+        </div>
 
 		<!-- ==================== FOOTER ==================== -->
 		<footer class="hmi-footer-version">
