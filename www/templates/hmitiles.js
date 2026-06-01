@@ -2,6 +2,7 @@
  * @file hmitiles.js
  * @brief Core JavaScript monitoring engine for the Domoticz-HMITiles framework.
  * @project Domoticz-HMITiles
+ * @date 2026-06-01
  * @author Robert W.B. Linn (c) 2026 MIT
  * @version 1.0.0-Beta
  * @description Manages industrial-inspired tile updates, trend lines, 
@@ -53,7 +54,7 @@ function processDevices(devices) {
         const tileElement = document.querySelector(`[data-device-idx="${device.idx}"]`);
         if (!tileElement) return; 
 
-        // 1. GENERIC MULTI-VARIABLE COUPLING (Sniffs for sub-element classes inside the card)
+        // GENERIC MULTI-VARIABLE COUPLING (Sniffs for sub-element classes inside the card)
         const tempEl = tileElement.querySelector('.hmi-value-temp');
         const humEl = tileElement.querySelector('.hmi-value-hum');
         const baroEl = tileElement.querySelector('.hmi-value-baro');
@@ -66,7 +67,7 @@ function processDevices(devices) {
             return; // Move to the next device immediately
         }
 
-        // 2. GENERIC PROGRESS BAR & LEVEL GAUGE SYNC
+        // GENERIC PROGRESS BAR & LEVEL GAUGE SYNC
         const barFill = tileElement.querySelector('.hmi-bar-fill');
         const barText = tileElement.querySelector('.hmi-bar-text');
         if (barFill && barText) {
@@ -76,34 +77,36 @@ function processDevices(devices) {
             barText.textContent = `${Math.round(percentage)}%`;
         }
 
-        // 3. GENERIC HARDWARE STATE ENGINE (Switches, Thermostats, Dimmers, and Standard Values)
+        // GENERIC HARDWARE STATE ENGINE (Switches, Thermostats, Dimmers, and Standard Values)
         const rawValue = parseFloat(device.Data) || parseFloat(device.Status) || 0; 
         let displayStatus = "";
         const cardType = tileElement.getAttribute('data-type') || "standard";
 
+		// SETPOINT
         if (device.SetPoint !== undefined) {
             displayStatus = parseFloat(device.SetPoint).toFixed(1);
         }
 
+		// DIMMER SWITCH
         else if (device.SwitchType === "Dimmer" || device.SwitchTypeVal === 7) {
             const slider = tileElement.querySelector('.hmi-slider');
             const dimmerText = tileElement.querySelector('.hmi-dimmer-text');
 
-            // --- GENERIC TEXT TRANSLATION ENGINE ---
+            // GENERIC TEXT TRANSLATION ENGINE
             const customOnText = tileElement.getAttribute('data-on-text');
             const customOffText = tileElement.getAttribute('data-off-text');
 
-			// 1. EXTRACT CORE STATUS INFORMATION
+			// EXTRACT CORE STATUS INFORMATION
             const rawStatus = String(device.Status || device.Data || "").toUpperCase();
             const isDeviceOff = (rawStatus === "OFF");
             
-            // 2. FORCE LEVEL CORRECTION (If Domoticz says OFF, level is 0)
+            // FORCE LEVEL CORRECTION (If Domoticz says OFF, level is 0)
             let currentLevel = parseInt(device.Level, 10) || 0;
             if (isDeviceOff) {
                 currentLevel = 0;
             }
 
-            // 3. UPDATE SLIDER INTERFACE (Only if user isn't actively clicking/dragging)
+            // UPDATE SLIDER INTERFACE (Only if user isn't actively clicking/dragging)
             if (slider && document.activeElement !== slider) {
                 slider.value = currentLevel;
             }
@@ -111,14 +114,14 @@ function processDevices(devices) {
                 dimmerText.textContent = currentLevel;
             }
 
-            // 4. MAP FALLBACK TEXT DISPLAY FOR THE CORE RENDERER
+            // MAP FALLBACK TEXT DISPLAY FOR THE CORE RENDERER
             displayStatus = rawStatus;
             if (rawStatus !== "ON" && rawStatus !== "OFF") {
                 displayStatus = "ON";
             }
             if (dimmerText) dimmerText.textContent = currentLevel;	// device.Level;
 
-            // If level is greater than 0, the servo is open/active
+            // SET LEVEL TEXT IF LEVEL GREATER 0 to OPEN/CLOSED
             if (currentLevel > 0) {
                 displayStatus = customOnText ? customOnText : (device.Status || device.Data || "OPEN");
             } else {
@@ -126,11 +129,12 @@ function processDevices(devices) {
             }
         }
 
+		// LIGHT/SWITCH, SWITCH, PUMP, VALVE
         else if (device.Type === "Light/Switch" || cardType === "switch" || cardType === "pump" || cardType === "valve") {
             const rawStatus = String(device.Status || device.Data || "").toUpperCase();
             const isRawOn = (rawStatus === "ON" || rawStatus === "TRUE");
 
-            // --- GENERIC TEXT TRANSLATION ENGINE ---
+            // GENERIC TEXT TRANSLATION ENGINE
             const customOnText = tileElement.getAttribute('data-on-text');
             const customOffText = tileElement.getAttribute('data-off-text');
 
@@ -143,6 +147,7 @@ function processDevices(devices) {
             }
         }
 
+		// ANYOTHER DEVICE
         else {
             displayStatus = device.Status || device.Data || "";
         }
@@ -205,7 +210,7 @@ function updateCommunicationsStatus(isOnline) {
  */
 function setupControlListeners() {
     
-    // 1. CLICK ACTIONS (Switches, Badges, Up/Down Thermostat buttons, and Graphs)
+    // CLICK ACTIONS (Switches, Badges, Up/Down Thermostat buttons, and Graphs)
     document.body.addEventListener('click', async function(event) {
         
         // HANDLE BADGE CLICK ACTIONS (Switches, Pumps, Valves)
@@ -247,19 +252,19 @@ function setupControlListeners() {
             return;
         }
 
-        // HANDLE CLICKING THE CARD TO OPEN CHARTS ---
+        // HANDLE CLICKING THE CARD TO OPEN CHARTS
         const clickableCard = event.target.closest('.hmi-clickable-card');
         if (clickableCard) {
             const idx = clickableCard.getAttribute('data-device-idx');
             if (idx) {
-                // Call your existing graph opening function
+                // Call domoticz existing graph opening function
                 openDomoticzChart(idx);
                 return;
             }
         }
     });
 
-    // 2. SLIDER MOVING ACTION (Real-time numbers while dragging)
+    // SLIDER MOVING ACTION (Real-time numbers while dragging)
     document.body.addEventListener('input', function(event) {
         const slider = event.target.closest('.hmi-slider');
         if (!slider) return;
@@ -274,7 +279,7 @@ function setupControlListeners() {
         }
     });
 	
-    // 3. SLIDER RELEASED ACTION (Fires command link to network)
+    // SLIDER RELEASED ACTION (Fires command link to network)
     document.body.addEventListener('change', async function(event) {
         const slider = event.target.closest('.hmi-slider');
         if (!slider) return;
@@ -328,7 +333,6 @@ async function sendDomoticzSwitchCommand(idx, command) {
     }
 }
 
-
 /**
  * Dispatches an asynchronous temperature setpoint modification command to the Domoticz server.
  * @async
@@ -360,7 +364,7 @@ async function sendDomoticzSetpointCommand(idx, targetTemperature) {
  */
 function openDomoticzChart(idx) {
     const logUrl = `${DOMOTICZ_URL}/#/Devices/${idx}/Log`;
-    window.open(logUrl, '_blank'); // Opens your chart in a new browser tab
+    window.open(logUrl, '_blank'); // Opens chart in a new browser tab
 }
 
 /**
@@ -370,7 +374,7 @@ function openDomoticzChart(idx) {
  */
 function updateDashboardTimestamp() {
     const now = new Date();
-    const timeString = now.toLocaleTimeString(); // Formats nicely as HH:MM:SS
+    const timeString = now.toLocaleTimeString(); // Format HH:MM:SS
     document.getElementById("hmi-last-update").innerText = timeString;
 }
 

@@ -1,25 +1,31 @@
 --[[
-Event: PicoTemperatureTelemetry
-Brief: Polls the internal core silicon temperature of the Pico WH via HTTP GET.
-Date: 2026-05-31
+Event: pico_temperature
+Brief: Polls the internal core silicon temperature of the Pico WH (Pico) via HTTP GET.
+Date: 2026-06-01
 Author: Robert W.B. Linn
 Description: Asynchronously requests and parses plain-text telemetry from the Pico.
+HTTP Get Request:
+http://pico-ip/temp
+HTTP Response:
+2026-05-31 14:27:00.613  Status: EventSystem: Script event triggered: dzVents/pico_temperature
+2026-05-31 14:27:00.775  dzVents: Handling shellcommandResponse-events for: "OnPicoTemperatureResponse"
+2026-05-31 14:27:00.775  dzVents: [PicoTemperature]: Pico Core Telemetry Received: 19.6 °C
 ]]--
 
-local IDX_SERVO_TEMP = 22
+local IDX_PICO_TEMP = 22
 local URL_DIAGNOSTIC = 'http://192.168.1.115/temp'
-local SHELL_RESPONSE  = 'OnPicoTemperatureResponse'
+local SHELL_RESPONSE  = 'OnPicoTemperatureResponse'     -- Must be unique across all dzvents scripts
 
 return {
     active = true,
     logging = {
         level = domoticz.LOG_INFO,
-        marker = '[PicoTemp]'
+        marker = '[PicoTemperature]'
     },
     on = {
         timer = {
-            -- 'every 5 minutes' -- Keeps network overhead light
-            'every minute' -- Keeps network overhead light
+            'every 5 minutes' -- Keeps network overhead light
+            -- 'every minute' -- Keeps network overhead light
         },
         shellCommandResponses = {
             SHELL_RESPONSE -- Listen specifically for the network callback response
@@ -50,7 +56,7 @@ return {
                     domoticz.log('Pico Core Telemetry Received: ' .. tostring(rawTemperature) .. ' °C', domoticz.LOG_INFO)
                     
                     -- Update virtual sensor directly in Domoticz
-                    domoticz.devices(IDX_SERVO_TEMP).updateTemperature(rawTemperature)
+                    domoticz.devices(IDX_PICO_TEMP).updateTemperature(rawTemperature)
                 else
                     domoticz.log('Failed to parse a valid numerical structure from response: ' .. tostring(item.data), domoticz.LOG_WARNING)
                 end

@@ -80,6 +80,23 @@ body {
     gap: 8px;
 }
 
+/* Card desaturated Alarm States */
+.hmi-pack-card[data-alarm="warning"] {
+    border-color: #d1a119 !important; /* Muted Amber */
+}
+.hmi-pack-card[data-alarm="warning"] .hmi-badge {
+    background-color: #d1a119 !important;
+    color: #ffffff;
+}
+
+.hmi-pack-card[data-alarm="critical"] {
+    border-color: #b33c3c !important; /* Desaturated Red */
+}
+.hmi-pack-card[data-alarm="critical"] .hmi-badge {
+    background-color: #b33c3c !important;
+    color: #ffffff;
+}
+
 /* Top row inside a card (Label + Progress Bar + Status Badge) */
 .hmi-card-header {
     display: flex;
@@ -101,6 +118,7 @@ body {
     font-weight: bold;
     font-size: 14px;
 }
+
 
 /* ==========================================================================
    BAR COMPONENTS (.hmi-bar)
