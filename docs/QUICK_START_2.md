@@ -39,7 +39,7 @@ Create a new file named `index.html` inside your `mycustompage/` subfolder, open
 **Notes**
 * In the head section there are links backward (`../`) to reuse the shared asset engine files, and use a private `DOMContentLoaded` closure block to protect against global naming collisions across external files.
 * Inside header set the title enclosed in `<h1>Title</h1>` or any other header level.
-* In the Tile 1,2,3 set the device idx according devices list.
+* In Tiles 1,2,3 set the device idx according devices list.
 
 **Content** `index.html`
 ```
