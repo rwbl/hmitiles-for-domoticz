@@ -79,7 +79,7 @@ It covers:
 ```
 Domoticz-HMITiles/
 ├── LICENSE                      # MIT license
-├── QUICK_START.md               # Minimal setup guide to build first custom page
+├── docs                         # Tutorials to create own tiles and custom pages
 └── www/
     └── templates/
         ├── hmitiles.css         # Global styling for all tiles and layouts

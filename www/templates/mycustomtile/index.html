@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Custom Tile</title>
+
+    <!-- Link backward one folder level to reuse shared global common styles -->
+    <link rel="stylesheet" href="../hmitiles.css">
+	
+	<!-- Link backward to the HMI tile engine -->
+    <script src="../hmitiles.js" defer></script>
+
+    <script>
+		// Target device tracking maps
+		const POWER_FROM_SOLAR_IDX = 5;
+
+		/**
+		 * Hook function called directly by hmitiles.js whenever a tile is processed
+		 */
+		window.onHMITileProcess = function(tileElement, device, rawValue, displayStatus) {
+			// Only run this custom code if we are processing our specific Solar tile
+			if (parseInt(device.idx, 10) !== POWER_FROM_SOLAR_IDX) {
+				return false; // Let hmitiles.js handle all other tiles normally
+			}
+
+			// 1. Map our thresholds
+			const normal = 2000;
+			const warning = 1000;
+			const alarm = 500;
+
+			// 2. Parse out our current power value
+			const dataValue = parseInt(device.Data, 10) || 0;
+
+			// 3. Find our elements inside this specific tile card
+			const valueDisplay = tileElement.querySelector('.hmi-value-display');
+			const badge = tileElement.querySelector('.hmi-badge');
+			const iconImg = tileElement.querySelector('.hmi-icon-wrapper img');
+			
+			let alarmState = "normal";
+			let badgeText = "NORMAL";
+			let iconSrc = "/images/Light48_On.png"; // Use standard on-state icon if generating high power
+
+			// 4. Threshold Logic
+			if (dataValue >= normal) {
+				alarmState = "normal";
+				badgeText = "NORMAL";
+				iconSrc = "/images/Alarm48_0.png";	// Alert icon green
+			} else if (dataValue >= warning) {
+				alarmState = "warning";
+				badgeText = "WARNING";
+				iconSrc = "/images/Alert48_2.png";	// Alert icon yellow
+			} else {
+				alarmState = "alarm";
+				badgeText = "ALARM";
+				iconSrc = "/images/Alert48_4.png";	// Alert icon red
+			}
+
+			// 5. Update UI Safely
+			if (valueDisplay) {
+				valueDisplay.textContent = `${dataValue} W`;
+			}
+
+			if (badge) {
+				badge.textContent = badgeText;
+				badge.className = `hmi-badge status-${alarmState}`;
+			}
+
+			if (iconImg) {
+				iconImg.src = iconSrc;
+				iconImg.alt = badgeText;
+			}
+
+			// Apply a dynamic data attribute to the card for styling flexibility
+			tileElement.setAttribute("data-alarm", alarmState);
+
+			return true; // Tells hmitiles.js: "I handled this device, do not overwrite it!"
+		};
+
+		function goToDomoticzDashboard() {
+			window.location.href = "../index.html"; 
+		}
+	</script>
+
+</head>
+<body>
+
+	<!-- Inside the header block of index.html -->
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
+				<h2>My Custom Tile</h2>
+			</div>
+		</div>
+	</header>
+
+    <!-- Master outer panel containing your grid -->
+    <main class="hmi-panel">
+        
+        <!-- 
+			TILE 1 ROW 1 COL 1: CUSTOM TILE
+			Set the device idx according devices list
+			IDX 5
+		-->
+		<div class="hmi-pack-card" data-type="icon-tile" data-device-idx="5">
+			<!-- Header block holding title and status token -->
+			<div class="hmi-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+				<div class="hmi-pack-label">Solar Production</div>
+				<div class="hmi-badge">NORMAL</div>
+			</div>
+
+			<!-- System Status Icon Row -->
+			<div class="hmi-icon-wrapper" style="display: flex; justify-content: flex-end; padding: 4px 12px 0 0;">
+				<img src="/images/Alert48_0.png" alt="Status" width="48" height="48">
+			</div>
+						
+			<!-- Metric Data Value Area -->
+			<div class="hmi-value-grid" style="display: flex; justify-content: flex-end; padding: 4px 12px 12px 0;">				
+				<div class="hmi-value-box" style="text-align: right;">
+					<div class="hmi-value-display" style="font-size: 20px; font-weight: bold; color: #333333;">--</div>
+				</div>
+			</div>
+		</div>
+
+		<footer class="hmi-footer-version">
+			<span>Domoticz-HMITiles v1.0.0-Beta</span>
+		</footer>
+    </main>
+</body>
+</html>

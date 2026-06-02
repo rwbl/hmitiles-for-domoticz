@@ -2,7 +2,7 @@
  * @file hmitiles.js
  * @brief Core JavaScript monitoring engine for the Domoticz-HMITiles framework.
  * @project Domoticz-HMITiles
- * @date 2026-06-01
+ * @date 2026-06-02
  * @author Robert W.B. Linn (c) 2026 MIT
  * @version 1.0.0-Beta
  * @description Manages industrial-inspired tile updates, trend lines, 
@@ -11,7 +11,8 @@
 
 // Configuration Setup
 const DOMOTICZ_URL = window.parent && window.parent.$ ? window.parent.$.domoticzurl : window.location.origin;
-const REFRESH_RATE = 5000; 
+// Set refresh rate to 1 minute (60000) minimum
+const REFRESH_RATE = 60000;
 
 /**
  * Periodically polls the Domoticz JSON API to fetch real-time device registries.
@@ -150,6 +151,14 @@ function processDevices(devices) {
 		// ANYOTHER DEVICE
         else {
             displayStatus = device.Status || device.Data || "";
+        }
+
+		// ECOSYSTEM HOOK LINE
+        // Allow custom pages to intercept the device payload before standard rendering takes place
+        if (typeof window.onHMITileProcess === 'function') {
+            const interceptResult = window.onHMITileProcess(tileElement, device, rawValue, displayStatus);
+            // If the custom script returns true, skip standard generic processing for this tile entirely!
+            if (interceptResult === true) return; 
         }
 
         // Send out to core display text box renderer
