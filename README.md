@@ -11,9 +11,13 @@ It is shared mainly as inspiration for others building their own UI solutions.
 
 **SolarInfo Dashboard example**  
 ![Solar dashboard](images/domoticz-hmitiles-solarinfodashboard-1.png)
+![Solar dashboard](images/domoticz-hmitiles-solarinfodashboard-2.png)
 
 **Workbench (development / testing area)**  
 ![Workbench](images/domoticz-hmitiles-workbench-1.png)
+
+**Raspberry Pi Pico WH Telemetry**  
+![Workbench](images/domoticz-hmitiles-picotelemetry-1.png)
 
 ---
 
@@ -24,7 +28,6 @@ Domoticz-HMITiles is a set of reusable HMI-style tiles for Domoticz custom pages
 These tiles can be combined to build structured, tile-based dashboards for visualizing device data.
 
 The project started as a personal experiment based on earlier work with a B4X HMITiles concept.
-
 
 ---
 
