@@ -4,8 +4,8 @@ A high-performance, resilient end-to-end IoT platform that displays real-time co
 
 ---
 
-## 🏗️ Core Architecture Overview
-
+## Core Architecture Overview
+```
                   HTTP JSON
  +------------------------+     (Port 80 GET)     +------------------------+
 
@@ -23,10 +23,11 @@ A high-performance, resilient end-to-end IoT platform that displays real-time co
  | - Onboard Core Temp    |                       | - 24-Hour Sparklines   |
  | - CYW43439 Wi-Fi RSSI  |                       | - Dynamic Alert Badges |
  +------------------------+                       +------------------------+
+```
 
 ---
 
-## 🛠️ Layer Implementation Details
+## Layer Implementation Details
 
 ### 1. Embedded Layer (MicroPython Firmware)
 * Hardware Target: Raspberry Pi Pico WH.
@@ -51,7 +52,7 @@ A high-performance, resilient end-to-end IoT platform that displays real-time co
 
 ---
 
-## 📊 Configured Monitoring Parameters
+## Configured Monitoring Parameters
 
 * Silicon Processor Temp (IDX 22)
   - Rules: Normal / Low Warning (>= 22°C) / Critical (>= 23°C)
@@ -66,8 +67,3 @@ A high-performance, resilient end-to-end IoT platform that displays real-time co
   - Elements: Multiline Information Box
 
 ---
-
-## 🚀 Key Takeaways & Best Practices
-* Zero Global Namespace Pollution: Using scoped arrow functions ensures your custom logic is protected from external file conflicts.
-* Explicit HTML5 Selectors: Combining properties like [data-device-idx][data-type] avoids execution glitches when elements share matching IDs.
-* Buffer Delay Safeguard: Adding a time.sleep_ms(20) delay right before closing sockets ensures that payloads are fully transmitted without browser lockups.
