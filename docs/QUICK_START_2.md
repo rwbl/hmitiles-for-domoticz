@@ -1,6 +1,6 @@
 # Quick Start Solar Production with Trend
 
-This quick start outlines how to create 3 HMITiles displaying Solar Production value (W) with 24-hour trend and last data point timestamp.
+This quick start outlines how to create 3 HMITiles displaying Solar Production value (W) with 24-hour trend and last update timestamp.
 
 ## Screenshots
 
