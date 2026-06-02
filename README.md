@@ -1,140 +1,115 @@
 # Domoticz-HMITiles
 
-An open-source HMI (Human Machine Interface) tile layout framework for Domoticz (http://domoticz.com), inspired by industrial HMI/SCADA design principles.
+Tile-based custom pages for Domoticz using HTML/CSS/JS.
 
-This project provides a lightweight web-based dashboard system combining:
-- dzVents automation scripts
-- optional Node-RED / Python data sources
-- HTML5/CSS3/JavaScript custom dashboard pages
-
-It is a practical home automation visualization layer rather than a production-grade SCADA system.
+An open-source project for experimenting with structured, tile-based dashboards inside Domoticz custom pages. 
+It is shared mainly as inspiration for others building their own UI solutions.
 
 ---
 
-## Project Status
+## Screenshots
 
-This project is under active development and will continue to evolve.
+**SolarInfo Dashboard example**  
+![Solar dashboard](images/domoticz-hmitiles-solarinfo-1.png)
 
-The current implementation reflects working prototypes and personal use cases. Some components are experimental and may change or be refactored over time.
-
-This is not a finished or fully hardened product.
-
----
-
-## Features
-
-- Tile-based dashboard layout for Domoticz devices
-- Responsive grid-based UI structure (e.g. 4×3 layouts)
-- Modular separation of UI, logic, and data sources
-- Clickable tiles linking to Domoticz device detail/log views
-- Manual refresh support for live data updates
-- Basic alarm coloring based on threshold values (warning / critical states)
-- Support for multiple dashboards and independent modules
+**Workbench (development / testing area)**  
+![Workbench](images/domoticz-hmitiles-workbench-1.png)
 
 ---
 
-## HMITiles Ecosystem
+## Overview
 
-The repository includes example dashboards demonstrating different use cases:
+Domoticz-HMITiles is a set of reusable HMI-style tiles for Domoticz custom pages.
 
-- SolarInfoDashboard – Solar production, battery status, and grid power visualization
-- ServoControl – Simple actuator control using sliders and switches
-- PicoTelemetry – Microcontroller telemetry (temperature, RSSI, system status)
-- HMITilesOverview – Multi-node overview dashboard
+These tiles can be combined to build structured, tile-based dashboards for visualizing device data.
 
-These examples are intended as reference implementations and starting points.
+The project started as a personal experiment based on earlier work with a B4X HMITiles concept.
+
+
+---
+
+## Key ideas
+
+- Tile-based layout for device visualization
+- Simple HMI (Human Machine Interface) style design approach
+- Separation between UI logic and Domoticz data handling
+- Binding elements via `data-device-idx`
+- Minimal visual design with optional alarm highlighting
+- Independent custom pages per use case
+
+---
+
+## Example custom pages
+
+- HMITiles workbench for developing and testing tiles
+- Solar energy overview (production / house / grid / battery)
+- Raspberry Pi Pico servo control (WiFi-based)
+- Raspberry Pi Pico telemetry view (WiFi-based)
 
 ---
 
 ## HMITiles Workbench
 
-The `workbench/` directory is an isolated development and testing environment.
+The `workbench/` folder is used for experimenting and developing new tile layouts.
 
-It is used for:
-- Experimenting with new tile types
-- Testing layout behavior
-- Developing UI components before integrating them into dashboards
-
-### Workbench Preview
-
-![HMITiles Workbench](images/domoticz-hmitiles-workbench-1.png)
+It allows:
+- testing UI layouts
+- prototyping new tile components
+- validating data binding approaches
 
 ---
 
 ## QUICK_START
 
-The `QUICK_START.md` guide explains how to build a basic dashboard layout from scratch using the Domoticz-HMITiles framework.
+The `QUICK_START.md` guide explains how to build a basic custom page using this structure.
 
-It focuses on:
-- Folder structure
-- Basic tile integration
-- Connecting Domoticz device data
-- Minimal working dashboard setup
+It covers:
+- folder structure
+- basic tile setup
+- connecting Domoticz device data
+- minimal working example
 
 ---
 
-## Repository Structure
+## Repository structure
 
-```text
+```
 Domoticz-HMITiles/
-├── LICENSE
-├── QUICK_START.md
+├── LICENSE                      # MIT license
+├── QUICK_START.md               # Minimal setup guide to build first custom page
 └── www/
     └── templates/
-        ├── hmitiles.css
-        ├── hmitiles.js
-        ├── SolarInfoDashboard.html
-        ├── ServoControl.html
-        ├── PicoTelemetry.html
-        ├── HMITilesOverview.html
-        ├── solarinfodashboard/
-        │   ├── index.html
-        │   └── trends.html
-        ├── servocontrol/
-        │   └── index.html
-        └── PicoTelemetry/
-            └── index.html
+        ├── hmitiles.css         # Global styling for all tiles and layouts
+        ├── hmitiles.js          # Shared UI logic (device binding, DOM helpers)
+        ├── SolarInfoDashboard.html  # Domoticz custom page wrapper (solar example)
+        ├── ServoControl.html        # Domoticz custom page wrapper (servo control)
+        ├── PicoTelemetry.html       # Domoticz custom page wrapper (ESP/Pico data)
+        ├── HMITilesWorkbench.html   # Entry page for tile development workbench
+
+        ├── hmitilesworkbench/   # Isolated tile development environment
+        │   ├── index.html       # Workbench main test layout
+        │   └── hmitiles.index   # Local test configuration / data stub
+
+        ├── solarinfodashboard/  # Solar energy dashboard module
+        │   ├── index.html       # Main solar UI layout
+        │   └── trends.html      # Historical trend visualization view
+
+        ├── servocontrol/        # Servo control dashboard module
+        │   └── index.html       # Slider/button control interface
+
+        └── picotelemetry/       # Microcontroller telemetry dashboard
+            └── index.html       # Live sensor and system status view```
 ```
 ---
 
-## Architecture Guidelines
+## Notes
 
-When extending or building new dashboards:
+This is an experimental hobby project and may evolve over time. It is not a finished product.
 
-1. Keep shared assets generic  
-   `hmitiles.js` and `hmitiles.css` must not contain page-specific logic or device IDs.
-
-2. Scope all page logic locally  
-   Use `DOMContentLoaded` and block-scoped variables (`const`, `let`) for all dashboard-specific code.
-
-3. Avoid selector collisions  
-   Prefer structured attributes like `data-device-idx` combined with type-specific attributes.
-
-4. Keep UI visually minimal  
-   Use neutral tones for baseline UI and reserve strong colors for active warnings or alarms.
-
----
-
-## Documentation
-
-Additional documentation is available per module:
-
-- QUICK_START.md – basic setup and first dashboard
-- SolarInfoDashboard – solar and energy monitoring setup
-- ServoControl – actuator and slider control logic
-- PicoTelemetry – microcontroller telemetry integration
-
-(These module READMEs are located inside their respective folders.)
+Feedback, ideas, and suggestions are welcome.
 
 ---
 
 ## License
 
 MIT License
-
----
-
-## Notes
-
-This project is experimental and intended for personal/home automation use. Interfaces and internal structure may change without notice.
-
