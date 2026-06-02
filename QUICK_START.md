@@ -1,4 +1,4 @@
-# ⚡ Quick Start: Creating a Custom HMITiles Template
+# Quick Start: Creating a Custom HMITiles Template
 
 This guide walks you through building a brand-new, custom dashboard layout from scratch using the **Domoticz-HMITiles** framework. 
 
@@ -8,7 +8,7 @@ In this example, we will build a simple **2-Tile Grid** that links directly to y
 
 ---
 
-## 🛠️ Step 1: Create Your Domoticz Virtual Devices
+## Step 1: Create Your Domoticz Virtual Devices
 
 Before writing the HTML layout, ensure you have created two virtual dummy devices inside your Domoticz utility hardware panel. Note down their unique **IDX numbers** from your device list:
 
@@ -17,7 +17,7 @@ Before writing the HTML layout, ensure you have created two virtual dummy device
 
 ---
 
-## 📁 Step 2: Set Up Your Project Folder
+## Step 2: Set Up Your Project Folder
 
 To keep your files modular and organized, deploy your new custom template inside your standard Domoticz templates path alongside the shared common styles and engine files:
 
@@ -31,7 +31,7 @@ To keep your files modular and organized, deploy your new custom template inside
 
 ---
 
-## 💻 Step 3: Write the HTML Structure (`index.html`)
+## Step 3: Write the HTML Structure (`index.html`)
 
 Create a new file named `index.html` inside your `my_custom_dashboard/` subfolder, open it in any text editor, and paste the following clean structure. 
 
@@ -154,7 +154,7 @@ Notice how we link backward (`../`) to reuse the shared asset engine files, and 
 
 ---
 
-## 🔥 Step 4: Run and Test Your Dashboard
+## Step 4: Run and Test Your Dashboard
 
 1. Save the file.
 2. Load your new dashboard page directly through your running Domoticz instance web portal:
@@ -165,7 +165,8 @@ Notice how we link backward (`../`) to reuse the shared asset engine files, and 
 
 ---
 
-## 💡 Key Design Best Practices
+## Key Design Best Practices
 * **Never Poll Globally:** Keep page-specific thresholds and custom text evaluations out of `hmitiles.js`. Nest them locally using private arrow function expressions.
 * **Isolate Selection Queries:** Always combine your selection hooks (`[data-device-idx="40"][data-type="temperature"]`) so your data routines never misidentify chart wrappers or layout modules that share index parameters.
 * **Leverage Native Attributes:** Use `data-on-text` and `data-off-text` parameters straight in your HTML block tags to let the core framework translate state expressions dynamically.
+
