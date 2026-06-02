@@ -4,7 +4,7 @@ This quick start outlines how to create 3 HMITiles displaying Solar Production v
 
 ## Screenshots
 
-![My Cusom Page](images/domoticz-hmitiles-mycustompage-2.png)
+![My Custom Page](../images/domoticz-hmitiles-mycustompage-2.png)
 
 ---
 
