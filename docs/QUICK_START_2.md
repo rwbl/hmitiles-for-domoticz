@@ -2,6 +2,12 @@
 
 This quick start outlines how to create 3 HMITiles displaying Solar Production value (W) with 24-hour trend and last data point timestamp.
 
+## Screenshots
+
+![My Cusom Page](images/domoticz-hmitiles-mycustompage-2.png)
+
+---
+
 ## Step 1: Create Your Domoticz Virtual Devices
 
 Before writing the HTML layout, ensure you have created a virtual dummy device inside your Domoticz utility hardware panel. Note down their unique **IDX numbers** from your device list:

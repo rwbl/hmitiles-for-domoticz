@@ -2,6 +2,12 @@
 
 This quick start outlines how to create a single HMITile displaying Solar Production value (W).
 
+## Screenshots
+
+![My Cusom Page](images/domoticz-hmitiles-mycustompage-1.png)
+
+---
+
 ## Step 1: Create Your Domoticz Virtual Devices
 
 Before writing the HTML layout, ensure you have created a virtual dummy device inside your Domoticz utility hardware panel. Note down their unique **IDX numbers** from your device list:
