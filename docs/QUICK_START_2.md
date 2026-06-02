@@ -39,7 +39,7 @@ Create a new file named `index.html` inside your `mycustompage/` subfolder, open
 **Notes**
 * In the head section there are links backward (`../`) to reuse the shared asset engine files, and use a private `DOMContentLoaded` closure block to protect against global naming collisions across external files.
 * Inside header set the title enclosed in `<h1>Title</h1>` or any other header level.
-* In Tile 1 set the device idx according devices list
+* In the Tile 1,2,3 set the device idx according devices list.
 
 **Content** `index.html`
 ```
@@ -190,7 +190,7 @@ Create a new file named `index.html` inside your `mycustompage/` subfolder, open
         </div>
 
         <!-- 
-			TILE 1 ROW 1 COL 2: POWER PRODUCTION TREND 
+			TILE 2 ROW 1 COL 2: POWER PRODUCTION TREND 
 			Set the device idx according devices list
 			IDX 5
 		-->
@@ -200,7 +200,7 @@ Create a new file named `index.html` inside your `mycustompage/` subfolder, open
         </div>
 
         <!-- 
-			TILE 1 ROW 1 COL 3: DATA POINT TIMESTAMP
+			TILE 3 ROW 1 COL 3: DATA POINT TIMESTAMP
 			Set the device idx according devices list
 			IDX 13
 		-->
