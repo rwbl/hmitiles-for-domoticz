@@ -1,36 +1,31 @@
 --[[
-Event: pico_diag
-Brief: Polls the internal core silicon temperature and RSSI level of the Pico WH (Pico) via HTTP GET.
-Date: 2026-06-01
+Event: pico_telemetry
+Brief: Polls Raspberry Pi Pico WH (Pico) telemetry data internal core silicon temperature and RSSI level via HTTP GET.
+Date: 2026-06-02
 Author: Robert W.B. Linn
 Description: Asynchronously requests and parses JSON telemetry from the Pico.
 Polling set to 5 minutes as Domoticz charts are updated every 5 min (default).
 HTTP Get Request:
-http://pico-ip/diag
+http://pico-ip/telemetry
 HTTP Response:
+[PicoTelemetry]: Raw JSON string returned from Pico: {"temp": 21.0, "rssi_dbm": -40}
 ]]--
 
---[[
-Event: PicoTelemetryPolling
-Brief: Polls multi-variable JSON telemetry from the Pico WH via asynchronous curl.
-Date: 2026-06-01
-Author: Robert W.B. Linn
-]]--
-
-local IDX_PICO_TEMP = 22
-local IDX_PICO_TIME = 23
-local IDX_PICO_RSSI = 24
+-- Domoticz Devices
+local IDX_PICO_TEMP = 22    -- Temperature
+local IDX_PICO_TIME = 23    -- Text
+local IDX_PICO_RSSI = 24    -- Text
 
 -- Pico IP address and parameter submitted using curl
-local URL_DIAGNOSTIC = 'http://192.168.1.115/diag'
+local URL_DIAGNOSTIC = 'http://192.168.1.115/telemetry'
 -- HTTP response unique name
-local SHELL_RESPONSE = 'OnPicoDiagResponse'
+local SHELL_COMMAND_RESPONSE = 'OnPicoTelemetryResponse'
 
 return {
     active = true,
     logging = {
         level = domoticz.LOG_INFO,
-        marker = '[PicoDiag]'
+        marker = '[PicoTelemetry]'
     },
     on = {
         timer = {
@@ -38,7 +33,7 @@ return {
             'every minute'              -- Tests
         },
         shellCommandResponses = {
-            SHELL_RESPONSE
+            SHELL_COMMAND_RESPONSE
         }
     },
 
@@ -48,7 +43,7 @@ return {
             local networkCommand = "curl -s -m 2 " .. URL_DIAGNOSTIC
             domoticz.executeShellCommand({
                 command = networkCommand,
-                callback = SHELL_RESPONSE
+                callback = SHELL_COMMAND_RESPONSE
             })
             return
         end
@@ -66,31 +61,30 @@ return {
                     
                     -- Extract parsed numerical types natively
                     local numericTemp = tonumber(telemetry.temp)
-                    local rawRssi = tonumber(telemetry.rssi_dbm)
+                    local numericRssi = tonumber(telemetry.rssi_dbm)
                     
-                    -- A. Update the Core Temperature Sensor (IDX 22)
+                    -- Update Temperature sensor device
                     domoticz.devices(IDX_PICO_TEMP).updateTemperature(numericTemp)
                     
-                    -- B. Translate raw dBm signal parameters into clean ISA-101 descriptors
-                    local networkText = "CRITICAL LINK"
-                    if (rawRssi >= -60) then
-                        networkText = "EXCELLENT LINK"
-                    elseif (rawRssi >= -70) then
-                        networkText = "GOOD LINK"
-                    elseif (rawRssi >= -80) then
-                        networkText = "WEAK LINK"
+                    -- Update RSSI text device - translate raw dBm signal parameters into descriptor
+                    local stringRssiLink = "CRITICAL LINK"
+                    if (numericRssi >= -60) then
+                        stringRssiLink = "EXCELLENT LINK"
+                    elseif (numericRssi >= -70) then
+                        stringRssiLink = "GOOD LINK"
+                    elseif (numericRssi >= -80) then
+                        stringRssiLink = "WEAK LINK"
                     end
-                    
                     -- Format string payload with exact raw measurements
-                    -- Example text output: "Active: Excellent Link (-54 dBm)"
-                    local finalStatusString = "Active: " .. networkText .. " (" .. tostring(rawRssi) .. " dBm)"
+                    -- "Active: Excellent Link (-54 dBm)"
+                    local textRssi = "Active: " .. stringRssiLink .. " (" .. tostring(numericRssi) .. " dBm)"
                     
                     -- Update the Network Status Text Sensor (IDX 24)
-                    domoticz.devices(IDX_PICO_RSSI).updateText(finalStatusString)
+                    domoticz.devices(IDX_PICO_RSSI).updateText(textRssi)
                     
-                    domoticz.log('Data synced. Temp: ' .. tostring(numericTemp) .. ' C, Network: ' .. finalStatusString, domoticz.LOG_INFO)
+                    domoticz.log('Devices updated: temp=' .. tostring(numericTemp) .. ' rssi_dbm=' .. textRssi, domoticz.LOG_INFO)
                 else
-                    domoticz.log('JSON conversion failed or parameters are missing from output: ' .. tostring(item.output), domoticz.LOG_WARNING)
+                    domoticz.log('JSON conversion failed or parameters are missing from data: ' .. tostring(item.data), domoticz.LOG_WARNING)
                 end
             else
                 domoticz.log('Network transaction failure! Code: ' .. tostring(item.statusCode), domoticz.LOG_ERROR)

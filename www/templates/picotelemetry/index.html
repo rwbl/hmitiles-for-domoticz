@@ -2,18 +2,18 @@
 <html lang="en">
 <!--
 	File: index.html
-	Project: PicoTemperature
+	Project: PicoTelemetry
 	Brief: Industry-standard HMI tiles to display the Pico onboard temperature via Wi-Fi.
-	Date: 2026-06-01
+	Date: 2026-06-02
 	Author: Robert W.B. Linn (c) 2026 MIT
 	Hardware: Raspberry Pi Pico WH
 	Domoticz Devices:
-	- Temperature IDX 22
-	- Text IDX 23
+	- Pico Onboard Temperature: Temperature IDX 22
+	- RSSI dbm: Text IDX 23
 	Description:
 	This custom HMI page visualizes the real-time processor core temperature of a 
-	Raspberry Pi Pico WH in full compliance with ISA-101 High-Performance interface 
-	design concepts. It directly queries historical telemetry arrays from Domoticz to 
+	Raspberry Pi Pico WH in High-Performance interface design concepts. 
+	It directly queries historical telemetry arrays from Domoticz to 
 	generate data-driven diagnostic objects including an inline Sparkline trend graph. 
 	To maintain zero global namespace pollution and prevent file conflicts within the 
 	shared ecosystem, all operational routines—including the high-temperature warning 
@@ -22,7 +22,7 @@
 -->
 <head>
     <meta charset="UTF-8">
-    <title>Pico Controller Diagnostics</title>
+    <title>Raspberry Pi Pico WH Telemetry</title>
 
     <!-- Link backward one folder level to reuse shared global common styles -->
     <link rel="stylesheet" href="../hmitiles.css">
@@ -302,7 +302,7 @@
     <!-- Header with width: 100% and box-sizing so the container stretches across the header zone -->
     <header class="hmi-header-container" style="display: flex; align-items: center; gap: 15px; width: 100%; box-sizing: border-box; padding: 10px 15px;">
         <button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
-        <h1 style="margin: 0; padding: 0; line-height: 1;">Pico Controller Diagnostics</h1>
+        <h1 style="margin: 0; padding: 0; line-height: 1;">Raspberry Pi Pico WH Telemetry</h1>
         
         <!-- Reusable CSS Class Utility Link -->
         <button id="hmi-manual-reload-btn" class="hmi-refresh-btn">

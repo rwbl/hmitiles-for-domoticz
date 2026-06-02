@@ -527,5 +527,35 @@ body {
 }
 
 /* ==========================================================================
+   GENERIC REFRESH BUTTON
+   ========================================================================== */
+
+/* --- Generic High-Performance Refresh Button --- */
+.hmi-refresh-btn {
+    background-color: #e0e0e0;
+    border: 1px solid #aeaeae;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #333333;
+    cursor: pointer;
+	margin-left: auto; 	/* Automatically consumes empty spacing on the left to push to the far right */
+    display: inline-flex;
+    align-items: center;
+    transition: background-color 0.15s ease;
+}
+
+/* Subtle feedback when an operator hovers their cursor over it */
+.hmi-refresh-btn:hover {
+    background-color: #d6d6d6;
+}
+
+/* Clear mechanical feedback when clicked/tapped */
+.hmi-refresh-btn:active {
+    background-color: #c8c8c8;
+}
+
+/* ==========================================================================
    END
    ========================================================================== */
