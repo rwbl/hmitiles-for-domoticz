@@ -64,13 +64,13 @@ It allows:
 
 ## QUICK_START
 
-The `QUICK_START.md` guide explains how to build a basic custom page using this structure.
+The folder `docs`contains severs `QUICK_START.md` guides explains how to build basic custom pages using this structure.
 
 It covers:
 - folder structure
-- basic tile setup
+- basic tile(s) setup
 - connecting Domoticz device data
-- minimal working example
+- getting trend data
 
 ---
 
@@ -78,12 +78,12 @@ It covers:
 
 ```
 Domoticz-HMITiles/
-├── LICENSE                      # MIT license
-├── QUICK_START.md               # Minimal setup guide to build first custom page
+├── LICENSE                          # MIT license
+├── docs               			     # Quick start guides to build first custom page
 └── www/
     └── templates/
-        ├── hmitiles.css         # Global styling for all tiles and layouts
-        ├── hmitiles.js          # Shared UI logic (device binding, DOM helpers)
+        ├── hmitiles.css             # Global styling for all tiles and layouts
+        ├── hmitiles.js              # Shared UI logic (device binding, DOM helpers)
         ├── SolarInfoDashboard.html  # Domoticz custom page wrapper (solar example)
         ├── ServoControl.html        # Domoticz custom page wrapper (servo control)
         ├── PicoTelemetry.html       # Domoticz custom page wrapper (ESP/Pico data)

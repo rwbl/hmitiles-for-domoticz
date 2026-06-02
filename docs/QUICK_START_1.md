@@ -14,7 +14,7 @@ Before writing the HTML layout, ensure you have created a virtual dummy device i
 
 To keep your files modular and organized, deploy your new custom template inside your standard Domoticz templates path alongside the shared common styles and engine files:
 
-```text
+```
 ...domoticz/www/templates/
 ├── hmitiles.css               	# Shared common styling library file
 ├── hmitiles.js                	# Shared common javascript core engine
@@ -30,11 +30,13 @@ To keep your files modular and organized, deploy your new custom template inside
 Create a new file named `index.html` inside your `mycustompage/` subfolder, open it in any text editor, and paste the following clean structure. 
 
 **Notes**
+
 * In the head section there are links backward (`../`) to reuse the shared asset engine files, and use a private `DOMContentLoaded` closure block to protect against global naming collisions across external files.
 * Inside header set the title enclosed in <h1>Title</h1> or any other header level.
 * In Tile 1 set the device idx according devices list
 
-```text
+**Content** `index.html`
+```
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -93,7 +95,8 @@ Create a new file named `index.html` inside your `mycustompage/` subfolder, open
 Inside the folder `www/templates` create file `MyCustomPage.html` which calls the `index.html` located in the Folder
 `www/templates/mycustompage`.
 
-Content `MyCustomPage.html`
+**Content** `MyCustomPage.html`
+
 ```
 <script>
   window.location.href = "templates/mycustompage/index.html";
@@ -106,7 +109,7 @@ Content `MyCustomPage.html`
 2. Refresh the Domoticz Web UI.
 3. Goto Tab Custom and select `MyCustomPage'
 3. **Watch it Live:** 
-   * The tile will automatically start parsing the live telemetry numbers from your server every 60 seconds.
+   * The tile will automatically start parsing the live data from your server every 60 seconds.
    * Clicking on the tile will show device logging data in a new browser tab.
    * Note: For my tests the Solar Info data is obtained every 5 minutes via a dzVents Automation Script.
 4. It is also possible to direct load your new custom page directly through your running Domoticz instance web portal:
