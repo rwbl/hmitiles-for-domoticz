@@ -10,7 +10,7 @@ It is shared mainly as inspiration for others building their own UI solutions.
 ## Screenshots
 
 **SolarInfo Dashboard example**  
-![Solar dashboard](images/domoticz-hmitiles-solarinfo-1.png)
+![Solar dashboard](images/domoticz-hmitiles-solarinfodashboard-1.png)
 
 **Workbench (development / testing area)**  
 ![Workbench](images/domoticz-hmitiles-workbench-1.png)
