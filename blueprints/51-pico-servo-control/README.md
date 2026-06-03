@@ -5,7 +5,7 @@ This quick start outlines how to control a servo connected to a Raspberry Pi Pic
 
 ## Screenshots
 
-![Pico Servo Control](pico-servo-control.png)
+![Pico Servo Control](blueprints/51-pico-servo-control/pico-servo-control.png)
 
 ---
 
