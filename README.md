@@ -115,11 +115,12 @@ Follow these steps to deploy and run the `SingleTilePage` blueprint example dire
 ### Final Domoticz Directory Structure
 Your Domoticz `/www/templates/` server folder path must reflect this exact layout:
 ```
-hmitiles.css
-hmitiles.js
-singletilepage
-	index.html
-SingleTilePage.html	
+domoticz/www/templates/
+├── hmitiles.css            # Framework shared styles
+├── hmitiles.js             # Core polling and hook loop engine
+├── SingleTilePage.html     # Domoticz tab navigation wrapper file
+├── singletilepage/         # Dedicated application folder assets
+└──── index.html          	# Main HTML structure and page hook scripts
 ```
 
 --
