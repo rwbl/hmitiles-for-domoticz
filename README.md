@@ -10,14 +10,14 @@ It is shared mainly as inspiration for others building their own UI solutions.
 ## Screenshots
 
 **SolarInfo Dashboard example**  
-![Solar dashboard](images/domoticz-hmitiles-solarinfodashboard-1.png)
-![Solar dashboard](images/domoticz-hmitiles-solarinfodashboard-2.png)
+![Solar dashboard](blueprints/50-solar-info-dashboard/solarinfodashboard-livedata.png)
+![Solar dashboard](blueprints/50-solar-info-dashboard/solarinfodashboard-trend.png)
 
 **Workbench (development / testing area)**  
-![Workbench](images/domoticz-hmitiles-workbench-1.png)
+![Workbench](blueprints/10-hmitiles-workbench/hmitiles-workbench.png)
 
 **Raspberry Pi Pico WH Telemetry**  
-![Workbench](images/domoticz-hmitiles-picotelemetry-1.png)
+![Workbench](blueprints/52-pico-telemetry-view/pico-telemetry-view.png)
 
 ---
 
