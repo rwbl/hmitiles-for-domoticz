@@ -59,7 +59,8 @@
 			// -----------------------------------------------------------------
 			if (currentIdx === TEMP_IDX) {
 				// Find independent trend layout graph anywhere on the page
-				const trendContainer = document.querySelector('[data-chart-idx="22"]');
+				// FIXED: Dynamically injects the TEMP_IDX configuration variable
+				const trendContainer = document.querySelector(`[data-chart-idx="${TEMP_IDX}"]`);
 				if (trendContainer) {
 					// Executes your raw untouched async analytics tracker pipeline!
 					fetchTrendData(TEMP_IDX, "temp", "°C", trendContainer);

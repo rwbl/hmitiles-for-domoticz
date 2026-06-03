@@ -4,7 +4,7 @@ This quick start outlines how to create a single HMITile displaying Solar Produc
 
 ## Screenshots
 
-![SingleTilePage](singletilepage.png)
+![SingleTilePage](single-tile-page.png)
 
 ---
 

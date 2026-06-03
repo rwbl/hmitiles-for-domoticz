@@ -10,76 +10,139 @@
 	<!-- Link backward to the HMI tile engine -->
     <script src="../hmitiles.js" defer></script>
 
-    <script>
-		document.addEventListener("DOMContentLoaded", () => {
-			const baseUrl = window.parent && window.parent.$ ? window.parent.$.domoticzurl : window.location.origin;
+	<script>
+		// =========================================================================
+		// LOCAL SCRIPT CONFIGURATION
+		// =========================================================================
+		// Device idx
+		const POWER_FROM_SOLAR_IDX = 5;
+		const TIMESTAMP_IDX = 23;
 
-			// Go over all chart container and feth the trend data
-			document.querySelectorAll("[data-chart-idx]").forEach(container => {
-				const idx = container.getAttribute("data-chart-idx");
-				const sensorType = "counter";
-				const unit = "W";
+		// Gateway lock variable to prevent infinite loop refresh collisions
+		let lastPushedTime = "";
 
-				if (idx) {
-					fetchTrendData(idx, sensorType, unit, container);
+		// =========================================================================
+		// CENTRAL ECOSYSTEM HOOK (Intercepts global hmitiles.js loop at top level)
+		// =========================================================================
+		window.onHMITileProcess = function(ignoredTileParam, device, rawValue, displayStatus) {
+			// Get the idx given by the global loop as going over all domoticz devices
+			const currentIdx = parseInt(device.idx, 10);
+			// console.log("onHMITileProcess idx=", currentIdx);
+
+			// -----------------------------------------------------------------
+			// CASE 1: PROCESSING THE POWER_FROM_SOLAR DATA ARRAY (IDX 5)
+			// -----------------------------------------------------------------
+			if (currentIdx === POWER_FROM_SOLAR_IDX) {
+				// Find independent trend layout graph anywhere on the page
+				// FIXED: Dynamically injects the POWER_FROM_SOLAR_IDX configuration variable
+				const trendContainer = document.querySelector(`[data-chart-idx="${POWER_FROM_SOLAR_IDX}"]`);
+				if (trendContainer) {
+					// Executes your raw untouched async analytics tracker pipeline!
+					fetchTrendData(POWER_FROM_SOLAR_IDX, "counter", "W", trendContainer);
 				}
-			});
-
-			// --- NEW TIMESTAMP CAPTURE COUPLING ---
-			// Target your text clock holder cell natively
-			const timeCard = document.querySelector('[data-device-idx="13"]');
-			if (timeCard) {
-				fetchTextTimestamp(timeCard, baseUrl);
+				return false; // Returns false so hmitiles.js can populate text metrics standard values
 			}
-		});
 
-		/**
-		 * Fetches the raw string text history from your text device log channel.
-		 */
-		async function fetchTextTimestamp(element, baseUrl) {
+			// -----------------------------------------------------------------
+			// CASE 2: PROCESSING VIRTUAL TEXT TIMESTAMP (IDX 23)
+			// -----------------------------------------------------------------
+			if (currentIdx === TIMESTAMP_IDX) {
+				const timeCard = document.querySelector(`[data-device-idx="${TIMESTAMP_IDX}"]`);
+				if (timeCard) {
+					const timeField = timeCard.querySelector('.hmi-value-timestamp');
+					if (timeField) {
+						timeField.textContent = device.Data || device.Status || "--:--";
+					}
+				}
+				return false; // Changed to false: lets hmitiles.js finish generic card layout rendering
+			}
+
+			return false; 
+		};
+
+		// =========================================================================
+		// NESTED ASYNC FUNCTIONS (Completely Untouched - Only Loop Locked)
+		// =========================================================================
+		async function fetchTrendData(idx, sensor, unit, container) {
 			try {
-				const response = await fetch(`${baseUrl}/json.htm?type=command&param=getdevices&rid=13`);
+				const targetUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=graph&sensor=${sensor}&idx=${idx}&range=day`;
+				console.log(`[fetchTrendData] ${targetUrl}`);
+
+				const response = await fetch(targetUrl);
 				if (!response.ok) throw new Error();
 				const data = await response.json();
 
-				if (data.result && data.result[0]) {
-					const timeField = element.querySelector('.hmi-value');
-					// Grabs the exact, formatted text string updated by your dzVents engine script
-					if (timeField) {
-						timeField.textContent = data.result[0].Data || "--:--:--";
+				if (data.result && data.result.length > 0) {
+                    const points = data.result.map(item => parseFloat(item.v || item.v_1 || item.u || item.svalue || 0));
+					renderSparkline(container, points, unit);
+
+					const lastItem = data.result[data.result.length - 1];
+					const lastTimestamp = lastItem.d; 
+					
+					if (lastTimestamp) {
+						const timeOnly = lastTimestamp.split(' ')[1] || lastTimestamp;
+						
+						// Only send data if the value actually changed
+						if (timeOnly !== lastPushedTime) {
+							lastPushedTime = timeOnly;
+							await pushTimestampToDevice(TIMESTAMP_IDX, timeOnly);
+						}
 					}
+				} else {
+					container.innerHTML = "<span style='color:#999; font-size:12px;'>No historical logs</span>";
 				}
 			} catch (err) {
-				console.error("Failed to parse text stamp device info:", err);
+				console.error("Trend load error:", err);
+				container.innerHTML = "<span style='color:#ff0000; font-size:12px;'>API Error</span>";
 			}
 		}
 
-        async function fetchTrendData(idx, sensor, unit, container) {
-            try {
-                const targetUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=graph&sensor=${sensor}&idx=${idx}&range=day`;
-                
-                const response = await fetch(targetUrl);
-                if (!response.ok) throw new Error();
-                const data = await response.json();
+		async function pushTimestampToDevice(idx, timeString) {
+			try {
+				const updateUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=udevice&idx=${idx}&nvalue=0&svalue=${encodeURIComponent(timeString)}`;
+				// console.log(`[pushTimestampToDevice] ${updateUrl}`);
+				const response = await fetch(updateUrl);
+				
+				if (response.ok) {
+					// FORCE IMMEDIATE UI UPDATE: Find the timestamp card and inject the value on the fly
+					const timeCard = document.querySelector(`[data-device-idx="${idx}"]`);
+					if (timeCard) {
+						// fetchTextTimestamp(idx, timeCard);
+						const timeField = timeCard.querySelector('.hmi-value');
+						if (timeField) {
+							timeField.textContent = timeString; // Write immediately instead of waiting for next server pass
+						}
+					}
+				}
+			} catch (err) {
+				console.error(`Failed to update Domoticz text device ${idx}: `, err);
+			}
+		}
 
-                if (data.result && data.result.length > 0) {
-                    const points = data.result.map(item => parseFloat(item.v || item.v_1 || item.u || item.svalue || 0));
-                    renderSparkline(container, points, unit);
-                } else {
-                    container.innerHTML = "<span style='color:#999; font-size:12px;'>No historical logs</span>";
-                }
-            } catch (err) {
-                console.error("Trend load error:", err);
-                container.innerHTML = "<span style='color:#ff0000; font-size:12px;'>API Error</span>";
-            }
-        }
+		async function fetchTextTimestamp(idx, element) {
+			try {
+				const response = await fetch(`${DOMOTICZ_URL}/json.htm?type=command&param=getdevices&rid=${idx}`);
+				if (!response.ok) throw new Error();
+				const data = await response.json();
 
+				if (data && data.result && data.result[0]) {
+					const devicePayload = data.result[0];
+					const timeField = element.querySelector('.hmi-value');
+					if (timeField) {
+						timeField.textContent = devicePayload.Data || devicePayload.Status || "--:--";
+					}
+				}
+			} catch (err) {
+				console.error(`Failed to fetch timestamp from device ${idx}:`, err);
+			}
+		}
+
+        // Pure layout utility functions can remain outside since they don't contain risk variables
         function renderSparkline(container, dataPoints, unit) {
             const width = 300;
             const height = 100;
             const padding = 5;
 
-            // 1. Calculate the exact Min and Max values from the dataset
             const min = Math.min(...dataPoints);
             const max = Math.max(...dataPoints);
             const range = max - min === 0 ? 1 : max - min;
@@ -90,7 +153,6 @@
                 return `${x},${y}`;
             });
 
-            // 2. Generate the layout with the SVG line graph and the text stats row
             container.innerHTML = `
                 <div class="hmi-sparkline-svg-wrapper">
                     <svg viewBox="0 0 ${width} ${height}" class="hmi-sparkline-svg" preserveAspectRatio="none">
@@ -104,10 +166,11 @@
             `;
         }
 
-        function goToMainDashboard() {
-            window.location.href = "index.html";
+        function goToDomoticzDashboard() {
+            window.location.href = "../index.html";
         }
-    </script>
+
+	</script>
 
 </head>
 <body>

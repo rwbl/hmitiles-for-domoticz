@@ -11,7 +11,7 @@ It is shared mainly as inspiration for others building their own UI solutions.
 
 **SolarInfo Dashboard example**  
 ![Solar dashboard](blueprints/50-solar-info-dashboard/solarinfodashboard-livedata.png)
-![Solar dashboard](blueprints/50-solar-info-dashboard/solarinfodashboard-trend.png)
+![Solar dashboard](blueprints/50-solar-info-dashboard/solarinfodashboard-trends.png)
 
 **Workbench (development / testing area)**  
 ![Workbench](blueprints/10-hmitiles-workbench/hmitiles-workbench.png)
