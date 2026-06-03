@@ -42,67 +42,60 @@ The project started as a personal experiment based on earlier work with a [B4X H
 
 ---
 
-## Example custom pages
 
-- HMITiles workbench for developing and testing tiles
-- Solar energy overview (production / house / grid / battery)
-- Raspberry Pi Pico servo control (WiFi-based)
-- Raspberry Pi Pico telemetry view (WiFi-based)
+## Key Features & Design Principles
 
----
-
-## HMITiles Workbench
-
-The `workbench/` folder is used for experimenting and developing new tile layouts.
-
-It allows:
-- testing UI layouts
-- prototyping new tile components
-- validating data binding approaches
+* **High-Performance HMI Rules**: Following widely accepted industrial HMI principles. Elements maintain muted gray or dark charcoal baselines during normal runtime, allowing desaturated alert indicators to draw operator attention cleanly without eye strain.
+* **Decoupled Architecture**: Keeps visual presentation logic completely isolated from raw Domoticz polling cycles.
+* **Declarative DOM Injection**: Zero-config device mapping. Hardware metrics link natively to HTML tags using standard `data-device-idx` attributes.
+* **Ecosystem Extension Hooks**: Allows individual custom pages to safely intercept the main core dataset flow. This lets you build advanced multi-threshold alarms, virtual text timestamps, and historical trend charts without creating duplicate interval loops or over-polling your Domoticz backend.
+* **Independent Routing**: Designed to run as completely standalone custom pages engineered specifically for targeted automation use cases.
 
 ---
 
-## QUICK_START
+## Included Page Blueprints
 
-The `QUICK_START.md` guide explains how to build a basic custom page using this structure.
+* **`10-hmitiles-workbench`**: An interactive playground used for prototyping layouts, creating new visual tile components, and testing experimental structures.
+* **`50-solar-info-dashboard`**: A comprehensive system layout tracking live flows across solar production, house consumption, grid balance, and battery bank state-of-charge.
+* **`51-pico-servo-control`**: A WiFi-based micro-controller dashboard enabling remote multi-axis servo position adjustments.
+* **`52-pico-telemetry-view`**: Real-time diagnostic monitoring for remote nodes, featuring processor core temperatures, virtual data update timestamps, and antenna Wi-Fi RSSI attenuation tracks.
 
-It covers:
-- folder structure
-- basic tile setup
-- connecting Domoticz device data
-- minimal working example
+---
 
+## Directory Manual Mapping
+
+The `blueprints/` directory houses independent, self-contained documentation packages. 
+Opening any blueprint folder on GitHub will automatically render its local `README.md` containing full setup guides, code files, and visual element previews:
+
+* **[10] Framework Tile Workbench** -> `blueprints/10-hmitiles-workbench/`
+* **[20-49] Step-By-Step Tutorials** -> Guide blueprints for building your first custom tile and standalone pages.
+* **[50+] Ready-to-Run Applications** -> Full deployment examples featuring the centralized ecosystem hook architecture.
+
+**Note** This is work in-progress.
 ---
 
 ## Repository structure
 
 ```
-Domoticz-HMITiles/
-├── LICENSE                      # MIT license
-├── docs                         # Tutorials to create own tiles and custom pages
-└── www/
-    └── templates/
-        ├── hmitiles.css         # Global styling for all tiles and layouts
-        ├── hmitiles.js          # Shared UI logic (device binding, DOM helpers)
-        ├── SolarInfoDashboard.html  # Domoticz custom page wrapper (solar example)
-        ├── ServoControl.html        # Domoticz custom page wrapper (servo control)
-        ├── PicoTelemetry.html       # Domoticz custom page wrapper (ESP/Pico data)
-        ├── HMITilesWorkbench.html   # Entry page for tile development workbench
-
-        ├── hmitilesworkbench/   # Isolated tile development environment
-        │   ├── index.html       # Workbench main test layout
-        │   └── hmitiles.index   # Local test configuration / data stub
-
-        ├── solarinfodashboard/  # Solar energy dashboard module
-        │   ├── index.html       # Main solar UI layout
-        │   └── trends.html      # Historical trend visualization view
-
-        ├── servocontrol/        # Servo control dashboard module
-        │   └── index.html       # Slider/button control interface
-
-        └── picotelemetry/       # Microcontroller telemetry dashboard
-            └── index.html       # Live sensor and system status view```
+domoticz-hmitiles/
+├── core/                         	# Standard shared framework engines
+│   ├── hmitiles.css				# Global styling for all tiles and layouts
+│   └── hmitiles.js					# Shared UI logic (device binding, DOM helpers)
+├── blueprints/                   	# Custom page examples, tutorials
+│   ├── 10-hmitiles-workbench/		# Folder blueprint
+│   │   ├── hmitilesworkbench		# Folder main layout
+│   │   ├──── index.html            # Main UI layout
+│   │   ├── HMITilesWorkbench.html	# Domoticz custom page wrapper
+│   │   ├── README.md             	# Documenattion
+│   │   └── hmitiles-workbench.png	# Screenshot of Custom Page
+│   │
+│   ├── more blueprints
+│   ├── ...
+│   └── ...
+├── LICENSE						  # MIT license
+└── README.md                     # Documentation entry point
 ```
+
 ---
 
 ## Notes
