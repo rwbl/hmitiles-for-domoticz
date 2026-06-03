@@ -9,15 +9,15 @@ It is shared mainly as inspiration for others building their own UI solutions.
 
 ## Screenshots
 
-**SolarInfo Dashboard example**  
-![Solar dashboard](blueprints/50-solar-info-dashboard/solarinfodashboard-livedata.png)
-![Solar dashboard](blueprints/50-solar-info-dashboard/solarinfodashboard-trends.png)
+**Solar Info Dashboard example**  
+![Solar Info Dashboard Live Data](blueprints/50-solar-info-dashboard/solarinfodashboard-livedata.png)
+![Solar Info Dashboard Trends](blueprints/50-solar-info-dashboard/solarinfodashboard-trends.png)
 
 **Workbench (development / testing area)**  
 ![Workbench](blueprints/10-hmitiles-workbench/hmitiles-workbench.png)
 
-**Raspberry Pi Pico WH Telemetry**  
-![Workbench](blueprints/52-pico-telemetry-view/pico-telemetry-view.png)
+**Raspberry Pi Pico WH Telemetry View**  
+![Pico Telemetry View](blueprints/52-pico-telemetry-view/pico-telemetry-view.png)
 
 ---
 
