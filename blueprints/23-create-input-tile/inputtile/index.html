@@ -9,108 +9,6 @@
 	
 	<!-- Link backward to the HMI tile engine -->
     <script src="../hmitiles.js" defer></script>
-
-    <script>
-		// Target device tracking maps
-		const TEXT_INPUT_IDX = 23;
-
-		/**
-		 * Hook function called directly by hmitiles.js whenever a tile is processed
-		 */
-		window.onHMITileProcess = function(ignoredTileParam, device, rawValue, displayStatus) {
-			// Get the idx given by the gloabl loop as going over all domoticz devices
-			const currentIdx = parseInt(device.idx, 10);
-			// console.log("onHMITileProcess idx=", currentIdx);
-
-			// Inside your window.onHMITileProcess loop engine:
-			if (currentIdx === TEXT_INPUT_IDX) {
-				const textCard = document.querySelector(`[data-device-idx="${TEXT_INPUT_IDX}"][data-type="text-input"]`);
-				if (textCard) {
-					const inputField = textCard.querySelector('.hmi-text-field');
-					const badge = textCard.querySelector('.hmi-badge');
-					
-					// Only update from server if the user is NOT actively typing or focused inside the box
-					if (inputField && document.activeElement !== inputField) {
-						inputField.value = device.Data || "";
-						if (badge) {
-							badge.textContent = "SYNCED";
-							badge.style.background = "#eeeeee";
-							badge.style.color = "#555555";
-						}
-					}
-					
-					// Wire up event listeners only once to prevent duplicate callback binding jams
-					if (!textCard.hasAttribute('data-listeners-bound')) {
-						setupTextInputListeners(textCard, TEXT_INPUT_IDX);
-					}
-				}
-				return true; // Handled completely
-			}
-			
-		};
-
-		function setupTextInputListeners(cardElement, idx) {
-			cardElement.setAttribute('data-listeners-bound', 'true');
-			
-			const inputField = cardElement.querySelector('.hmi-text-field');
-			const btnOk = cardElement.querySelector('.hmi-btn-ok');
-			const btnCancel = cardElement.querySelector('.hmi-btn-cancel');
-			const badge = cardElement.querySelector('.hmi-badge');
-
-			// Trigger visual state changes when typing starts
-			inputField.addEventListener('input', () => {
-				if (badge) {
-					badge.textContent = "EDITING";
-					badge.style.background = "#fff3cd"; // Very muted, soft amber edit hue
-					badge.style.color = "#856404";
-				}
-			});
-
-			// CANCEL ACTION: Reverts text back to last synchronized server state
-			btnCancel.addEventListener('click', () => {
-				inputField.blur(); // Forces field focus drop
-				if (typeof fetchDomoticzData === 'function') {
-					fetchDomoticzData(); // Re-runs main loop to pull old value down
-				}
-			});
-
-			// OK ACTION: Pushes text value string back up to Domoticz web registry
-			btnOk.addEventListener('click', async () => {
-				const targetValue = inputField.value;
-				inputField.blur();
-				
-				if (badge) badge.textContent = "SAVING...";
-
-				try {
-					const updateUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=udevice&idx=${idx}&nvalue=0&svalue=${encodeURIComponent(targetValue)}`;
-					const response = await fetch(updateUrl);
-					
-					if (response.ok) {
-						// Confirm submission success instantly with timestamp
-						console.log(`[${new Date().toLocaleTimeString()}] Pushed text to IDX ${idx}: "${targetValue}"`);
-						
-						if (badge) {
-							badge.textContent = "SAVING...";
-						}
-						
-						// Re-fetch instantly to lock down UI sync state cleanly
-						if (typeof fetchDomoticzData === 'function') {
-							fetchDomoticzData();
-						}
-					}
-				} catch (err) {
-					console.error(`Failed to upload text payload to Domoticz register ${idx}:`, err);
-					if (badge) badge.textContent = "ERR";
-				}
-			});
-		}
-
-
-		function goToDomoticzDashboard() {
-			window.location.href = "../index.html"; 
-		}
-	</script>
-
 </head>
 <body>
 
@@ -134,25 +32,30 @@
 		-->
 		<div class="hmi-pack-card" data-device-idx="23" data-type="text-input">
 			<div class="hmi-card-header">
-				<div class="hmi-pack-label">Set Global Alert Message</div>
+				<div class="hmi-pack-label">System Banner Alert</div>
 				<div class="hmi-badge">SYNCED</div>
 			</div>
-			
-			<!-- MAIN CONTENT ROW -->
-			<div class="hmi-value-grid" style="display: flex; flex-direction: column; padding: 12px; gap: 12px;">
-				
-				<!-- INPUT FIELD (With full-width alignment) (Neutral dark charcoal text, simple borders) -->
-				<div style="width: 100%;">
-					<input type="text" class="hmi-text-field" placeholder="Enter status text..." 
-						   style="width: 100%; padding: 6px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; color: #333333; box-sizing: border-box;">
-				</div>
-				
-				<!-- ACTION ROW (Pushed lower with 4px top margin spacing padding, Aligned right, desaturated buttons) -->
+			<div class="hmi-value-grid">
+				<input type="text" class="hmi-text-field" placeholder="Enter status text...">
 				<div class="hmi-action-row" style="display: flex; justify-content: flex-end; width: 100%; gap: 8px; margin-top: 4px;">
-					<button class="hmi-btn-cancel" style="padding: 4px 10px; font-size: 12px; cursor: pointer; background: #eeeeee; border: 1px solid #cccccc; color: #555555; border-radius: 4px;">Cancel</button>
-					<button class="hmi-btn-ok" style="padding: 4px 12px; font-size: 12px; cursor: pointer; background: #e0e0e0; border: 1px solid #bbbbbb; color: #333333; font-weight: bold; border-radius: 4px;">OK</button>
+					<button class="hmi-btn-cancel">Cancel</button>
+					<button class="hmi-btn-ok">OK</button>
 				</div>
+			</div>
+		</div>
 
+		<!-- Input Tile 2: Weather overrides or any other text device -->
+		<div class="hmi-pack-card" data-device-idx="24" data-type="text-input">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Custom Weather Override Status</div>
+				<div class="hmi-badge">SYNCED</div>
+			</div>
+			<div class="hmi-value-grid" style="display: flex; flex-direction: column; padding: 12px; gap: 12px;">
+				<input type="text" class="hmi-text-field" placeholder="Enter custom weather string...">
+				<div class="hmi-action-row" style="display: flex; justify-content: flex-end; width: 100%; gap: 8px; margin-top: 4px;">
+					<button class="hmi-btn-cancel">Cancel</button>
+					<button class="hmi-btn-ok">OK</button>
+				</div>
 			</div>
 		</div>
 

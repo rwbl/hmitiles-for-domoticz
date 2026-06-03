@@ -165,18 +165,16 @@
 		<!-- SYSTEM TIME BAY: Populates the 4th column of Row 2 -->
 		<div class="hmi-pack-card" data-device-idx="13">
 			<div class="hmi-card-header">
-				<div class="hmi-pack-label">System Time</div>
+				<div class="hmi-pack-label">Last Update</div>
 				<div class="hmi-badge">SYNCED</div>
 			</div>
-			<div class="hmi-value-grid">
-				<div class="hmi-sparkline-container" style="justify-content: center;">
-					<div style="text-align: center; font-family: monospace;">
-						<div style="font-size: 11px; color: #888888; text-transform: uppercase; margin-bottom: 4px;">Last Data Point</div>
-						<!-- Your update script will write the dzVents formatted time string right here -->
-						<div class="hmi-value" style="font-size: 14px; font-weight: bold; color: #2c3e50;">--:--:--</div>
-					</div>
-				</div>
-			</div>
+            <div class="hmi-value-grid">
+                <div class="hmi-value-box">
+                    <div class="hmi-box-data">
+                        <span class="hmi-value">--</span>
+                    </div>
+                </div>
+            </div>
 		</div>
 
 		<!--

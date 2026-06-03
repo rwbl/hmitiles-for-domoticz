@@ -1,7 +1,7 @@
 /**
  * @file hmitiles.js
- * @brief Core JavaScript monitoring engine for the HMITiles-for-Domoticz framework.
- * @project HMITiles-for-Domoticz
+ * @brief Core JavaScript monitoring engine for the Domoticz-HMITiles framework.
+ * @project Domoticz-HMITiles
  * @date 2026-06-02
  * @author Robert W.B. Linn (c) 2026 MIT
  * @version 1.0.0-Beta
@@ -11,6 +11,7 @@
 
 // Configuration Setup
 const DOMOTICZ_URL = window.parent && window.parent.$ ? window.parent.$.domoticzurl : window.location.origin;
+
 // Set refresh rate to 1 minute (60000) minimum
 const REFRESH_RATE = 60000;
 
@@ -46,11 +47,13 @@ function processDevices(devices) {
 
     devices.forEach(device => {
 		
+		// Get the raw value from property data
 		const rawValue = parseFloat(device.Data) || parseFloat(device.Status) || 0; 
         let displayStatus = device.Status || device.Data || "";
 		
-		// --- FIXED: GLOBAL OVERRIDE HOOK MOVED TO THE VERY TOP OF THE LOOP ---
-        // This lets your dedicated pages process data arrays regardless of how elements are configured in HTML!
+		// GLOBAL OVERRIDE HOOK = MUST AT VERY TOP OF THE LOOP
+        // This lets dedicated pages process data arrays regardless of how elements are configured in HTML!
+        // Allow custom pages to intercept the device payload before standard rendering takes place
         if (typeof window.onHMITileProcess === 'function') {
             const interceptResult = window.onHMITileProcess(null, device, rawValue, displayStatus);
             // If the custom page function handles it and returns true, skip generic processing
@@ -61,6 +64,32 @@ function processDevices(devices) {
         const tileElement = document.querySelector(`[data-device-idx="${device.idx}"]`);
         if (!tileElement) return; 
 
+		// Read its custom card type configuration tag
+        const cardType = tileElement.getAttribute('data-type') || "standard";
+
+        // GENERIC GLOBAL TEXT INPUT LOGIC PIPELINE
+		if (cardType === "text-input") {
+			const inputField = tileElement.querySelector('.hmi-text-field');
+			const badge = tileElement.querySelector('.hmi-badge');
+			
+			if (inputField && document.activeElement !== inputField) {
+				inputField.value = device.Data || "";
+				
+				// Return to standard state text if not currently interacting
+				if (tileElement.getAttribute('data-alarm') !== "saved") {
+					tileElement.removeAttribute('data-alarm');
+					if (badge) badge.textContent = "SYNCED";
+				}
+			}
+			
+			if (!tileElement.hasAttribute('data-listeners-bound')) {
+				tileElement.setAttribute('data-listeners-bound', 'true');
+				setupGlobalTextInputListeners(tileElement, device.idx);
+			}
+
+			return; // FIXED: Safely exits the loop pass ONLY for text-input cards!
+		}
+		
         // GENERIC MULTI-VARIABLE COUPLING (Sniffs for sub-element classes inside the card)
         const tempEl = tileElement.querySelector('.hmi-value-temp');
         const humEl = tileElement.querySelector('.hmi-value-hum');
@@ -83,11 +112,6 @@ function processDevices(devices) {
             barFill.style.width = `${percentage}%`;
             barText.textContent = `${Math.round(percentage)}%`;
         }
-
-        // GENERIC HARDWARE STATE ENGINE (Switches, Thermostats, Dimmers, and Standard Values)
-        // const rawValue = parseFloat(device.Data) || parseFloat(device.Status) || 0; 
-        // let displayStatus = "";
-        const cardType = tileElement.getAttribute('data-type') || "standard";
 
 		// SETPOINT
         if (device.SetPoint !== undefined) {
@@ -159,14 +183,6 @@ function processDevices(devices) {
             displayStatus = device.Status || device.Data || "";
         }
 
-		// ECOSYSTEM HOOK LINE
-        // Allow custom pages to intercept the device payload before standard rendering takes place
-        if (typeof window.onHMITileProcess === 'function') {
-            const interceptResult = window.onHMITileProcess(tileElement, device, rawValue, displayStatus);
-            // If the custom script returns true, skip standard generic processing for this tile entirely!
-            if (interceptResult === true) return; 
-        }
-
         // Send out to core display text box renderer
         updateHMIAnalogTile(tileElement, {
             name: device.Name,
@@ -174,6 +190,12 @@ function processDevices(devices) {
             status: displayStatus,
             lastUpdate: device.LastUpdate
         });
+		
+        // AUTOMATIC ALARM THRESHOLD TRIGGER PIPELINE
+        // This fires automatically for EVERY device. If the card contains 
+        // data-warn or data-crit attributes, it evaluates them natively!
+        checkAlarmThresholds(device.idx, rawValue);
+		
     });
 }
 
@@ -394,42 +416,60 @@ function updateDashboardTimestamp() {
 }
 
 /**
- * Evaluates live metrics against defined boundary levels and injects matching data-alarm states natively.
+ * Evaluates live metrics against dynamic boundary levels declared via HTML attributes.
  * @function checkAlarmThresholds
  * @param {number} idx - The unique Domoticz database hardware index identifier code.
  * @param {number} currentValue - The raw numeric value calculation used to determine warning states.
  * @returns {void}
  */
 function checkAlarmThresholds(idx, currentValue) {
-    const card = document.getElementById(`idx-${idx}`);
+    const card = document.querySelector(`[data-device-idx="${idx}"]`) || document.getElementById(`idx-${idx}`);
     if (!card) return;
+
+    // 1. Extract data limits from HTML attributes natively
+    const critLow = card.getAttribute('data-crit-low');
+    const warnLow = card.getAttribute('data-warn-low');
+    const critHigh = card.getAttribute('data-crit-high');
+    const warnHigh = card.getAttribute('data-warn-high');
+    const alertZero = card.getAttribute('data-alert-zero');
+
+    // =========================================================================
+    // CRITICAL SHORT-CIRCUIT SAFETY BLOCK
+    // =========================================================================
+    // If this card is a simple switch or has NO alarms defined, QUIT IMMEDIATELY
+    // and do NOT touch the badge text!
+    if (critLow === null && warnLow === null && critHigh === null && warnHigh === null && alertZero === null) {
+        return; 
+    }
+    // =========================================================================
 
     const badge = card.querySelector('.hmi-badge');
     let state = "normal";
     let badgeText = "NORMAL";
 
-    // Example logic for Battery Level (IDX 12)
-    if (idx === 12) {
-        if (currentValue <= 10) {
-            state = "critical"; // Triggers CSS red background
-            badgeText = "CRITICAL";
-        } else if (currentValue <= 20) {
-            state = "warning";  // Triggers CSS amber background
-            badgeText = "LOW WARN";
-        }
+    // 2. Run generic boundary check matrix
+    if (alertZero === "true" && currentValue === 0) {
+        state = "warning";
+        badgeText = card.getAttribute('data-zero-text') || "NO PRODUCTION";
     }
-    
-    // Example logic for Solar Power Drops (IDX 5)
-    if (idx === 5) {
-        if (currentValue === 0) {
-            state = "warning";
-            badgeText = "NO PRODUCTION";
-        }
+    else if (critLow !== null && currentValue <= parseFloat(critLow)) {
+        state = "critical";
+        badgeText = "CRITICAL";
+    } else if (warnLow !== null && currentValue <= parseFloat(warnLow)) {
+        state = "warning";
+        badgeText = "LOW WARN";
+    }
+    else if (critHigh !== null && currentValue >= parseFloat(critHigh)) {
+        state = "critical";
+        badgeText = "CRITICAL";
+    } else if (warnHigh !== null && currentValue >= parseFloat(warnHigh)) {
+        state = "warning";
+        badgeText = "HIGH WARN";
     }
 
-    // Apply attribute modifications to let CSS change colors dynamically
+    // 3. Apply output modifications dynamically
     card.setAttribute("data-alarm", state);
-    if (badge) badge.innerText = badgeText;
+    if (badge) badge.textContent = badgeText;
 }
 
 /**
@@ -453,6 +493,62 @@ function toggleManualRequest() {
         btnBadge.innerText = "OFF";
         updateDashboardTimestamp(); // Refresh stamp on successful run completion
     }, 2000);
+}
+
+/**
+ * Global background worker that binds events to any text-input tile automatically
+ * @function setupGlobalTextInputListeners
+ * @param {object} cardElement - The card element.
+ * @param {number} idx - The unique Domoticz database hardware index identifier code.
+ * @returns {void}
+ */
+/**
+ * Global background worker that binds events to any text-input tile automatically
+ */
+function setupGlobalTextInputListeners(cardElement, idx) {
+    const inputField = cardElement.querySelector('.hmi-text-field');
+    const btnOk = cardElement.querySelector('.hmi-btn-ok');
+    const btnCancel = cardElement.querySelector('.hmi-btn-cancel');
+    const badge = cardElement.querySelector('.hmi-badge');
+
+    if (!inputField || !btnOk || !btnCancel) return;
+
+    // A. Editing State: Apply data-alarm="editing" to let CSS change colors
+    inputField.addEventListener('input', () => {
+        cardElement.setAttribute('data-alarm', 'editing');
+        if (badge) badge.textContent = "EDITING";
+    });
+
+    // B. Cancel Action (Clear attribute to revert to standard dark styling)
+    btnCancel.addEventListener('click', () => {
+        inputField.blur();
+        cardElement.removeAttribute('data-alarm');
+        if (badge) badge.textContent = "SYNCED";
+        if (typeof fetchDomoticzData === 'function') fetchDomoticzData();
+    });
+
+    // C. OK Action: Push payload up and flag state as saved
+    btnOk.addEventListener('click', async () => {
+        const targetValue = inputField.value;
+        inputField.blur();
+        
+        if (badge) badge.textContent = "SAVING...";
+
+        try {
+            const updateUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=udevice&idx=${idx}&nvalue=0&svalue=${encodeURIComponent(targetValue)}`;
+            const response = await fetch(updateUrl);
+            
+            if (response.ok) {
+                cardElement.setAttribute('data-alarm', 'saved');
+                if (badge) badge.textContent = "SAVED";
+                
+                if (typeof fetchDomoticzData === 'function') fetchDomoticzData();
+            }
+        } catch (err) {
+            console.error(err);
+            if (badge) badge.textContent = "ERR";
+        }
+    });
 }
 
 /**

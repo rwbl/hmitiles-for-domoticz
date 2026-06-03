@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alarm Tile</title>
+
+    <!-- Link backward one folder level to reuse shared global common styles -->
+    <link rel="stylesheet" href="../hmitiles.css">
+	
+	<!-- Link backward to the HMI tile engine -->
+    <script src="../hmitiles.js" defer></script>
+</head>
+<body>
+
+	<!-- Inside the header block of index.html -->
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
+				<h2>Alarm Tile</h2>
+			</div>
+		</div>
+	</header>
+
+    <!-- Master outer panel containing your grid -->
+    <main class="hmi-panel">
+        
+        <!-- 
+			TILE 1 ROW 1 COL 1: CUSTOM TILE
+			Set the device idx according devices list
+			IDX 5
+		-->
+		<!-- Battery Tile (Triggers alarm on LOW values) -->
+		<div class="hmi-pack-card" id="idx-12" data-device-idx="12" data-warn-low="20" data-crit-low="10">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">System Battery SOC</div>
+				<div class="hmi-badge">NORMAL</div>
+			</div>
+            <div class="hmi-value-grid">
+                <div class="hmi-value-box">
+                    <div class="hmi-box-data">
+                        <span class="hmi-value">--</span>
+                    </div>
+                </div>
+            </div>
+		</div>
+
+		<!-- Solar Tile (Triggers alarm on EXACT ZERO values) -->
+		<div class="hmi-pack-card" id="idx-5" data-device-idx="5" data-alert-zero="true" data-zero-text="NO PRODUCTION">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Solar Generation</div>
+				<div class="hmi-badge">NORMAL</div>
+			</div>
+            <div class="hmi-value-grid">
+                <div class="hmi-value-box">
+                    <div class="hmi-box-data">
+                        <span class="hmi-value">--</span>
+                    </div>
+                </div>
+            </div>
+		</div>
+
+		<footer class="hmi-footer-version">
+			<span>HMITiles for Domoticz v1.0.0-Beta</span>
+		</footer>
+
+    </main>
+</body>
+</html>
