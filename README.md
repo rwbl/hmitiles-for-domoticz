@@ -23,7 +23,7 @@ It is shared mainly as inspiration for others building their own UI solutions.
 
 ## Overview
 
-Domoticz-HMITiles is a set of reusable HMI-style tiles for Domoticz custom pages.
+**HMITiles for Domoticz** is a set of reusable HMI-style tiles for Domoticz custom pages.
 
 These tiles can be combined to build structured, tile-based dashboards for visualizing device data.
 
@@ -76,7 +76,7 @@ Opening any blueprint folder on GitHub will automatically render its local `READ
 ## Repository structure
 
 ```
-domoticz-hmitiles/
+hmitiles/
 ├── core/                         	# Standard shared framework engines
 │   ├── hmitiles.css				# Global styling for all tiles and layouts
 │   └── hmitiles.js					# Shared UI logic (device binding, DOM helpers)

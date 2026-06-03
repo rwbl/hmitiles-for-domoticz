@@ -5,7 +5,7 @@ This quick start outlines how to control a servo connected to a Raspberry Pi Pic
 
 ## Screenshots
 
-![Pico Servo Control](pico-servo-control.png)
+![Pico Servo Control](picoservocontrol.png)
 
 ---
 
@@ -130,7 +130,7 @@ Create a new file named `index.html` inside your `picoservocontrol/` subfolder, 
 
 		<!-- FOOTER -->
 		<footer class="hmi-footer-version">
-			<span>Domoticz-HMITiles v1.0.0-Beta</span>
+			<span>HMITiles-for-Domoticz v1.0.0-Beta</span>
 		</footer>
 
     </main>

@@ -2,7 +2,7 @@
 <html lang="en">
 <!--
 	File: trends.html
-	Project: Domoticz-HMITiles
+	Project: HMITiles-for-Domoticz
 	Brief: Display solar trend data graphs in industry standard tiles using dynamic data attributes.
 	Date: 2026-05-29
 	Author: Robert W.B. Linn (c) 2026 MIT
@@ -62,7 +62,7 @@
         async function fetchTrendData(idx, sensor, unit, container) {
             try {
                 const targetUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=graph&sensor=${sensor}&idx=${idx}&range=day`;
-                
+
                 const response = await fetch(targetUrl);
                 if (!response.ok) throw new Error();
                 const data = await response.json();
@@ -184,6 +184,10 @@
             <div class="hmi-card-header"><div class="hmi-pack-label">[ NEW BAY ]</div></div>
         </div>
 		-->
+
+		<footer class="hmi-footer-version">
+			<span>HMITiles for Domoticz v1.0.0-Beta</span>
+		</footer>
 
     </main>
 

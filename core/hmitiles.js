@@ -1,7 +1,7 @@
 /**
  * @file hmitiles.js
- * @brief Core JavaScript monitoring engine for the Domoticz-HMITiles framework.
- * @project Domoticz-HMITiles
+ * @brief Core JavaScript monitoring engine for the HMITiles-for-Domoticz framework.
+ * @project HMITiles-for-Domoticz
  * @date 2026-06-02
  * @author Robert W.B. Linn (c) 2026 MIT
  * @version 1.0.0-Beta

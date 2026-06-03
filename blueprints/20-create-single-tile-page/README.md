@@ -90,7 +90,7 @@ Create a new file named `index.html` inside your `singletilepage/` subfolder, op
         </div>
 
 		<footer class="hmi-footer-version">
-			<span>Domoticz-HMITiles v1.0.0-Beta</span>
+			<span>HMITiles-for-Domoticz v1.0.0-Beta</span>
 		</footer>
     </main>
 </body>
