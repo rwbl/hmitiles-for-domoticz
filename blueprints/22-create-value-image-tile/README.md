@@ -4,6 +4,13 @@ Follow this blueprint to build icon-based tiles using Domoticz images, while kee
 
 ---
 
+## Screenshots
+
+![Value Image Tile](value-image-tile.png)
+
+---
+
+
 ## HMI Rule for Icons
 * **Static Colors**: Do not use bright green, blue, or yellow icons. Icons must remain a neutral slate gray or dark charcoal during normal runtime states.
 * **Saturated Alert Colors**: Saturated tones (like amber or dark red) must only appear on borders and badges when an active warning threshold is breached. The icon shape stays neutral to prevent visual fatigue.
