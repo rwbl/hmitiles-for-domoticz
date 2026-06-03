@@ -1,4 +1,4 @@
-# Domoticz-HMITiles
+# HMITiles for Domoticz
 
 Tile-based custom pages for Domoticz using HTML/CSS/JS.
 
