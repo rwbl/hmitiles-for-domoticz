@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+	File: index.html
+	Project: PicoTelemetryView
+	Brief: Industry-standard HMI tiles to display the Pico onboard temperature via Wi-Fi.
+	Date: 2026-06-03
+	Author: Robert W.B. Linn (c) 2026 MIT
+	Hardware: Raspberry Pi Pico WH
+	Domoticz Devices:
+	- Pico Onboard Temperature: Temperature IDX 22
+	- RSSI dbm: Text IDX 23
+	Description:
+	This custom HMI page visualizes the real-time processor core temperature of a 
+	Raspberry Pi Pico WH in High-Performance interface design concepts. 
+	It directly queries historical telemetry arrays from Domoticz to 
+	generate data-driven diagnostic objects including an inline Sparkline trend graph. 
+	To maintain zero global namespace pollution and prevent file conflicts within the 
+	shared ecosystem, all operational routines—including the high-temperature warning 
+	threshold evaluation and dynamic text-device serialization—are encapsulated 
+	securely as block-scoped local expressions inside an asynchronous DOM listener.
+-->
+<head>
+    <meta charset="UTF-8">
+    <title>Raspberry Pi Pico WH Telemetry View</title>
+
+    <!-- Link backward one folder level to reuse shared global common styles -->
+    <link rel="stylesheet" href="../hmitiles.css">
+	
+	<!-- Link backward to the HMI tile engine -->
+    <script src="../hmitiles.js" defer></script>
+
+	<script>
+		// =========================================================================
+		// LOCAL SCRIPT CONFIGURATION
+		// =========================================================================
+		// Device idx
+		const TEMP_IDX = 22;
+		const TIMESTAMP_IDX = 23;
+		const RSSI_IDX = 24;
+
+		// Temperature thresholds
+		const TEMP_THRESHOLD_WARNING = 21.0;
+		const TEMP_THRESHOLD_CRITICAL = 22.0;
+
+		// Gateway lock variable to prevent infinite loop refresh collisions
+		let lastPushedTime = "";
+
+		// =========================================================================
+		// CENTRAL ECOSYSTEM HOOK (Intercepts global hmitiles.js loop at top level)
+		// =========================================================================
+		window.onHMITileProcess = function(ignoredTileParam, device, rawValue, displayStatus) {
+			// Get the idx given by the gloabl loop as going over all domoticz devices
+			const currentIdx = parseInt(device.idx, 10);
+			// console.log("onHMITileProcess idx=", currentIdx);
+
+			// -----------------------------------------------------------------
+			// CASE 1: PROCESSING THE TEMPERATURE DATA ARRAY (IDX 22)
+			// -----------------------------------------------------------------
+			if (currentIdx === TEMP_IDX) {
+				// Find independent trend layout graph anywhere on the page
+				const trendContainer = document.querySelector('[data-chart-idx="22"]');
+				if (trendContainer) {
+					// Executes your raw untouched async analytics tracker pipeline!
+					fetchTrendData(TEMP_IDX, "temp", "°C", trendContainer);
+				}
+
+				// Find any existing temperature metrics cards to set HMI alarm colors
+				const tempCard = document.querySelector(`[data-device-idx="${TEMP_IDX}"][data-type="temperature"]`);
+				if (tempCard) {
+					let alarmState = "normal";
+					let badgeText = "NORMAL";
+
+					if (rawValue >= TEMP_THRESHOLD_CRITICAL) {
+						alarmState = "critical";
+						badgeText = "CRITICAL";
+					} else if (rawValue >= TEMP_THRESHOLD_WARNING) {
+						alarmState = "warning";
+						badgeText = "WARNING";
+					}
+
+					tempCard.setAttribute("data-alarm", alarmState);
+					const badge = tempCard.querySelector('.hmi-badge');
+					if (badge) badge.textContent = badgeText;
+				}
+
+				return false; // Returns false so hmitiles.js can populate text metrics standard values
+			}
+
+			// -----------------------------------------------------------------
+			// CASE 2: PROCESSING VIRTUAL TEXT TIMESTAMP (IDX 23)
+			// -----------------------------------------------------------------
+			if (currentIdx === TIMESTAMP_IDX) {
+				const timeCard = document.querySelector(`[data-device-idx="${TIMESTAMP_IDX}"]`);
+				if (timeCard) {
+					const timeField = timeCard.querySelector('.hmi-value-timestamp');
+					if (timeField) {
+						timeField.textContent = device.Data || device.Status || "--:--";
+					}
+				}
+				return false; // Changed to false: lets hmitiles.js finish generic card layout rendering
+			}
+
+			// -----------------------------------------------------------------
+			// CASE 3: PROCESSING NETWORK RSSI SIGNAL (IDX 24)
+			// -----------------------------------------------------------------
+			if (currentIdx === RSSI_IDX) {
+				const rssiCard = document.querySelector(`[data-device-idx="${RSSI_IDX}"]`);
+				if (rssiCard) {
+					const rssiField = rssiCard.querySelector('.hmi-value-rssi');
+					if (rssiField) {
+						// Grabs the clean text compiled by dzVents e.g., "Active: EXCELLENT LINK (-54 dBm)"
+						rssiField.textContent = device.Data || device.Status || "Active";
+					}
+				}
+				return false; // Changed to false: lets hmitiles.js finish generic card layout rendering
+			}
+
+			return false; 
+		};
+
+		// =========================================================================
+		// LOCAL ARROW FUNCTION EXPRESSION (Completely Untouched)
+		// =========================================================================
+		const checkAlarmThreshold = (idx, currentValue) => {
+			const card = document.querySelector(`[data-device-idx="${idx}"][data-type="temperature"]`);
+			if (!card) {
+				console.log(`[checkAlarmThreshold] Temperature card for IDX ${idx} not found in DOM yet.`);
+				return;
+			}
+
+			const badge = card.querySelector('.hmi-badge');
+			let state = "normal";
+			let badgeText = "NORMAL";
+
+			if (currentValue >= TEMP_THRESHOLD_CRITICAL) {
+				state = "critical"; 
+				badgeText = "CRITICAL";
+			} else if (currentValue >= TEMP_THRESHOLD_WARNING) {
+				state = "warning";  
+				badgeText = "WARNING";
+			}
+
+			card.setAttribute("data-alarm", state);
+			if (badge) badge.innerText = badgeText;
+		};
+
+		// =========================================================================
+		// NESTED ASYNC FUNCTIONS (Completely Untouched - Only Loop Locked)
+		// =========================================================================
+		async function fetchTrendData(idx, sensor, unit, container) {
+			try {
+				const targetUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=graph&sensor=${sensor}&idx=${idx}&range=day`;
+				// console.log(`[fetchTrendData] ${targetUrl}`);
+
+				const response = await fetch(targetUrl);
+				if (!response.ok) throw new Error();
+				const data = await response.json();
+
+				if (data.result && data.result.length > 0) {
+					const points = data.result.map(item => parseFloat(item.te || item.svalue || 0));
+					renderSparkline(container, points, unit);
+
+					const latestValue = points[points.length - 1];
+					checkAlarmThreshold(parseInt(idx, 10), latestValue);
+
+					const lastItem = data.result[data.result.length - 1];
+					const lastTimestamp = lastItem.d; 
+					
+					if (lastTimestamp) {
+						const timeOnly = lastTimestamp.split(' ')[1] || lastTimestamp;
+						
+						// CRITICAL LOOP FIX: Only send data if the value actually changed
+						if (timeOnly !== lastPushedTime) {
+							lastPushedTime = timeOnly;
+							await pushTimestampToDevice(TIMESTAMP_IDX, timeOnly);
+						}
+					}
+				} else {
+					container.innerHTML = "<span style='color:#999; font-size:12px;'>No historical logs</span>";
+				}
+			} catch (err) {
+				console.error("Trend load error:", err);
+				container.innerHTML = "<span style='color:#ff0000; font-size:12px;'>API Error</span>";
+			}
+		}
+
+		async function pushTimestampToDevice(idx, timeString) {
+			try {
+				const updateUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=udevice&idx=${idx}&nvalue=0&svalue=${encodeURIComponent(timeString)}`;
+				// console.log(`[pushTimestampToDevice] ${updateUrl}`);
+				const response = await fetch(updateUrl);
+				
+				if (response.ok) {
+					// FORCE IMMEDIATE UI UPDATE: Find the timestamp card and inject the value on the fly
+					const timeCard = document.querySelector(`[data-device-idx="${idx}"]`);
+					if (timeCard) {
+						// fetchTextTimestamp(idx, timeCard);
+						const timeField = timeCard.querySelector('.hmi-value');
+						if (timeField) {
+							timeField.textContent = timeString; // Write immediately instead of waiting for next server pass
+						}
+					}
+				}
+			} catch (err) {
+				console.error(`Failed to update Domoticz text device ${idx}: `, err);
+			}
+		}
+
+		async function fetchTextTimestamp(idx, element) {
+			try {
+				const response = await fetch(`${DOMOTICZ_URL}/json.htm?type=command&param=getdevices&rid=${idx}`);
+				if (!response.ok) throw new Error();
+				const data = await response.json();
+
+				if (data && data.result && data.result[0]) {
+					const devicePayload = data.result[0];
+					const timeField = element.querySelector('.hmi-value');
+					if (timeField) {
+						timeField.textContent = devicePayload.Data || devicePayload.Status || "--:--";
+					}
+				}
+			} catch (err) {
+				console.error(`Failed to fetch timestamp from device ${idx}:`, err);
+			}
+		}
+
+        // Pure layout utility functions can remain outside since they don't contain risk variables
+        function renderSparkline(container, dataPoints, unit) {
+            const width = 300;
+            const height = 100;
+            const padding = 5;
+
+            const min = Math.min(...dataPoints);
+            const max = Math.max(...dataPoints);
+            const range = max - min === 0 ? 1 : max - min;
+
+            const coords = dataPoints.map((val, index) => {
+                const x = padding + (index / (dataPoints.length - 1)) * (width - padding * 2);
+                const y = (height - padding) - ((val - min) / range) * (height - padding * 2);
+                return `${x},${y}`;
+            });
+
+            container.innerHTML = `
+                <div class="hmi-sparkline-svg-wrapper">
+                    <svg viewBox="0 0 ${width} ${height}" class="hmi-sparkline-svg" preserveAspectRatio="none">
+                        <path class="hmi-trend-line" d="M ${coords.join(' L ')}" />
+                    </svg>
+                </div>
+                <div class="hmi-trend-stats">
+                    <div><span class="hmi-stat-label">MIN:</span> ${Math.round(min)}${unit}</div>
+                    <div><span class="hmi-stat-label">MAX:</span> ${Math.round(max)}${unit}</div>
+                </div>
+            `;
+        }
+
+        function goToDomoticzDashboard() {
+            window.location.href = "../index.html";
+        }
+
+	</script>
+
+</head>
+<body>
+
+    <!-- Header with width: 100% and box-sizing so the container stretches across the header zone -->
+    <header class="hmi-header-container" style="display: flex; align-items: center; gap: 15px; width: 100%; box-sizing: border-box; padding: 10px 15px;">
+        <button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
+        <h2 style="margin: 0; padding: 0; line-height: 1;">Raspberry Pi Pico WH Telemetry View</h2>
+        
+        <!-- Reusable CSS Class Utility Link -->
+        <button id="hmi-manual-reload-btn" class="hmi-refresh-btn">
+            🔄 REFRESH
+        </button>
+    </header>
+
+    <!-- Master panel holding industrial grid matrix rows -->
+    <main class="hmi-panel">
+        
+		<!-- ==================== COLUMN 1: TEMPERATURE MONITOR ==================== -->
+
+        <!-- ROW 1 COL 1: TEMPERATURE CARD (IDX 22) -->
+		<div class="hmi-pack-card" data-type="temperature" data-device-idx="22">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Internal Temperature</div>
+				<!-- This badge stays uncolored/neutral -->
+				<div class="hmi-badge">DIAG</div>
+			</div>
+			<div class="hmi-value-grid">
+				<div class="hmi-value-box" style="display: flex; align-items: center; justify-content: center; min-height: 40px;">
+					<!-- Generic module hooks straight into this specific class name -->
+					<div class="hmi-value-temp" style="font-size: 20px; font-weight: bold; color: #333;">--.- °C</div>
+				</div>
+			</div>
+		</div>
+
+        <!-- ROW 1 COL 2: TEMPERATURE CHART (IDX 22)-->
+        <div class="hmi-pack-card">
+            <div class="hmi-card-header"><div class="hmi-pack-label">24-Hour Trend</div></div>
+            <div class="hmi-value-grid"><div class="hmi-sparkline-container" data-chart-idx="22">Loading...</div></div>
+        </div>
+
+		<!-- ROW 1 COL 3: SYSTEM TIME BAY (IDX 23) -->
+		<div class="hmi-pack-card" data-device-idx="23">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Telemetry Status</div>
+				<div class="hmi-badge">SYNCED</div>
+			</div>
+			<div class="hmi-value-grid">
+				<div class="hmi-sparkline-container" style="justify-content: center;">
+					<div style="text-align: center; font-family: monospace;">
+						<div style="font-size: 11px; color: #888888; text-transform: uppercase; margin-bottom: 4px;">Last Update</div>
+						<!-- Update script will write the dzVents formatted time string right here -->
+						<div class="hmi-value-timestamp" style="font-size: 14px; font-weight: bold; color: #2c3e50;">--:--:--</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+        <!-- ROW 1 COL 4: SYSTEM DOCUMENTATION -->
+        <div class="hmi-pack-card" data-type="info" data-device-idx="24">
+            <div class="hmi-card-header">
+                <!-- Clean, descriptive header label -->
+                <div class="hmi-pack-label">System Information</div>
+                <div class="hmi-badge">INFO</div>
+            </div>
+            <div class="hmi-value-grid" style="padding: 12px; min-height: 100px;">
+                <!-- Multiline text field styled for crisp industrial readability -->
+                <div class="hmi-info-text-box" style="font-family: sans-serif; font-size: 12px; line-height: 1.6; color: #444444; text-align: left;">
+                    <strong>Host:</strong> Raspberry Pi Pico WH<br>
+                    <strong>Firmware:</strong> MicroPython v1.22+<br>
+                    <strong>Network Link:</strong> Active via Port 80<br>
+                    <strong>RSSI:</strong> <span class="hmi-value-rssi" style="font-weight: bold; color: #2c3e50;">Loading...</span><br>
+                    <span style="color: #777777; font-size: 11px; display: block; margin-top: 6px;">
+                        Note: Server runs a self-healing socket listener loop. If the network connection fails, the onboard LED turns off and auto-repair attempts deploy instantly.
+                    </span>
+                </div>
+            </div>
+        </div>
+
+		<!-- ==================== FOOTER ==================== -->
+		<footer class="hmi-footer-version">
+			<span>Domoticz-HMITiles v1.0.0-Beta</span>
+		</footer>
+
+    </main>
+
+</body>
+</html>

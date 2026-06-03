@@ -36,12 +36,6 @@ async function fetchDomoticzData() {
 }
 
 /**
- * Iterates through the device inventory and routes metrics to the UI.
- * @function processDevices
- * @param {Array<Object>} devices - Array of active hardware device properties from the server.
- * @returns {void}
- */
-/**
  * Iterates through the Domoticz device inventory list and routes matching data attributes natively to the UI.
  * @function processDevices
  * @param {Array<Object>} devices - The raw array payload list containing active hardware device properties from the server.
@@ -51,6 +45,18 @@ function processDevices(devices) {
     updateCommunicationsStatus(true);
 
     devices.forEach(device => {
+		
+		const rawValue = parseFloat(device.Data) || parseFloat(device.Status) || 0; 
+        let displayStatus = device.Status || device.Data || "";
+		
+		// --- FIXED: GLOBAL OVERRIDE HOOK MOVED TO THE VERY TOP OF THE LOOP ---
+        // This lets your dedicated pages process data arrays regardless of how elements are configured in HTML!
+        if (typeof window.onHMITileProcess === 'function') {
+            const interceptResult = window.onHMITileProcess(null, device, rawValue, displayStatus);
+            // If the custom page function handles it and returns true, skip generic processing
+            if (interceptResult === true) return; 
+        }
+		
         // Find the tile card matching this specific device index attribute
         const tileElement = document.querySelector(`[data-device-idx="${device.idx}"]`);
         if (!tileElement) return; 
@@ -79,8 +85,8 @@ function processDevices(devices) {
         }
 
         // GENERIC HARDWARE STATE ENGINE (Switches, Thermostats, Dimmers, and Standard Values)
-        const rawValue = parseFloat(device.Data) || parseFloat(device.Status) || 0; 
-        let displayStatus = "";
+        // const rawValue = parseFloat(device.Data) || parseFloat(device.Status) || 0; 
+        // let displayStatus = "";
         const cardType = tileElement.getAttribute('data-type') || "standard";
 
 		// SETPOINT

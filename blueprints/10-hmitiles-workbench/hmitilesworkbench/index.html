@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+File: index
+Project: Domoticz HMITiles Workbench
+Brief: Dynamically extracts, displays, and live-polls all tile templates as defined in hmitiles.index.
+Date: 2026-06-02
+Author: Robert W.B. Linn (c) 2026 MIT
+Description: All tiles have default Domoticz device idx set. Change accordingly to see live data.
+-->
+<head>
+    <meta charset="UTF-8">
+    <title>HMITiles Workbench</title>
+    <!-- 1. Link back to your common shared style assets up one level -->
+    <link rel="stylesheet" href="../hmitiles.css">
+    
+    <!-- 2. Link back to your common shared generic engine script up one level -->
+    <!-- Note: Added defer to ensure the template injects before the polling loop kicks off -->
+    <script src="../hmitiles.js" defer></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                // Fetch your master template index library file natively
+                const response = await fetch("hmitiles.index");
+                if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+                const text = await response.text();
+                
+                // Parse the raw string text data into HTML document elements
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, "text/html");
+                
+                // Select EVERY tile card component stored inside the library file
+                const allTemplateCards = doc.querySelectorAll('.hmi-pack-card');
+				// const allTemplateCards = doc.querySelectorAll('main > .hmi-pack-card, body > .hmi-pack-card, .hmi-panel > .hmi-pack-card');
+
+                const targetGrid = document.getElementById("hmi-library-grid");
+                
+                // Loop through each component, clone it, and drop it into the grid matrix
+                allTemplateCards.forEach(card => {
+                    const clonedCard = card.cloneNode(true);
+                    targetGrid.appendChild(clonedCard);
+                });
+
+                console.log(`Successfully generated dynamic library with ${allTemplateCards.length} tiles.`);
+                
+                // FORCE ENGINE KICKSTART: Tell your generic script loop to immediately scan 
+                // the newly injected elements and begin fetching their matching virtual device values.
+                if (typeof fetchDomoticzData === "function") {
+                    fetchDomoticzData();
+                }
+
+            } catch (err) {
+                console.error("Failed to compile local components master library view:", err);
+                document.getElementById("hmi-library-grid").innerHTML = 
+                    `<div style="color:red; padding:20px;">Library Load Error: Ensure index.html and hmitiles.index are in the same folder!</div>`;
+            }
+        });
+    </script>
+</head>
+
+<body>
+
+	<!-- Inside the header block of index.html -->
+    <header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
+				<h1>HMITiles Workbench</h1>
+			</div>
+		</div>
+    </header>
+
+    <!-- The common industrial matrix panel grid layout -->
+    <main id="hmi-library-grid" class="hmi-panel">
+        <!-- All live card components from hmitiles.index will cleanly render right here -->
+    </main>
+
+	<footer class="hmi-footer-version">
+		<span>Domoticz-HMITiles Workbench v1.0.0-Beta</span>
+	</footer>
+
+</body>
+
+</html>

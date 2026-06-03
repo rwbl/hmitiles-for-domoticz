@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blueprint Single Tile Page</title>
+
+    <!-- Link backward one folder level to reuse shared global common styles -->
+    <link rel="stylesheet" href="../hmitiles.css">
+	
+	<!-- Link backward one folder level to the HMI tile engine -->
+    <script src="../hmitiles.js" defer></script>
+</head>
+<body>
+
+	<!-- Inside the header block of index.html -->
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
+				<h2>Blueprint Single Tile Page</h2>
+			</div>
+		</div>
+	</header>
+
+    <!-- Master outer panel containing your grid -->
+    <main class="hmi-panel">
+        
+        <!-- 
+			TILE 1 ROW 1 COL 1: POWER PRODUCTION
+			Set the device idx according devices list
+			IDX 5
+		-->
+        <div class="hmi-pack-card hmi-clickable-card" data-device-idx="5" data-alarm="normal">
+            <div class="hmi-card-header">
+                <div class="hmi-pack-label">Solar Production</div>
+                <div class="hmi-badge">NORMAL</div>
+            </div>
+            <div class="hmi-value-grid">
+                <div class="hmi-value-box">
+                    <div class="hmi-box-data">
+                        <span class="hmi-value">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+		<footer class="hmi-footer-version">
+			<span>Domoticz-HMITiles v1.0.0-Beta</span>
+		</footer>
+    </main>
+</body>
+</html>
