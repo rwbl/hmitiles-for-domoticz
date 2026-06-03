@@ -71,7 +71,6 @@ Opening any blueprint folder on GitHub will automatically render its local `READ
 * **[20-49] Step-By-Step Tutorials** -> Guide blueprints for building your first custom tile and standalone pages.
 * **[50+] Ready-to-Run Applications** -> Full deployment examples featuring the centralized ecosystem hook architecture.
 
-**Note** This is work in-progress.
 ---
 
 ## Repository structure
@@ -100,7 +99,7 @@ domoticz-hmitiles/
 
 ## Notes
 
-This is an experimental hobby project and may evolve over time. It is not a finished product.
+This is an experimental hobby project and may evolve over time. **It is not a finished product.**
 
 Feedback, ideas, and suggestions are welcome.
 
