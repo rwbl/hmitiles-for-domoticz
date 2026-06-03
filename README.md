@@ -88,6 +88,11 @@ domoticz-hmitiles/
 │   │   ├── README.md             	# Documenattion
 │   │   └── hmitiles-workbench.png	# Screenshot of Custom Page
 │   │
+│   ├── 20-create-single-tile-page
+│   │   ├── SingleTilePage.html
+│   │   ├── singletilepage			# Folder main layout
+│   │   └──── index.html            # Main UI layout
+│   │
 │   ├── more blueprints
 │   ├── ...
 │   └── ...
@@ -96,6 +101,28 @@ domoticz-hmitiles/
 ```
 
 ---
+
+## Quick Start
+
+Follow these steps to deploy and run the `SingleTilePage` blueprint example directly inside your local Domoticz installation.
+
+1. **Deploy Core Framework**: Copy the files `hmitiles.css` and `hmitiles.js` from the `core/` repository folder into your Domoticz `/www/templates/` directory.
+2. **Select the Blueprint**: Navigate into the repository folder `blueprints/20-create-single-tile-page/`.
+3. **Deploy Custom Page Wrapper**: Copy the file `SingleTilePage.html` into your Domoticz `/www/templates/` directory.
+4. **Deploy Application Subfolder**: Copy the entire subfolder `singletilepage/` into your Domoticz `/www/templates/` directory.
+5. **Launch Interface**: Open your Domoticz Web UI -> select the **Custom** tab -> click **SingleTilePage**. The custom dashboard view `Blueprint Single Tile Page` will load immediately.
+
+### Final Domoticz Directory Structure
+Your Domoticz `/www/templates/` server folder path must reflect this exact layout:
+```
+hmitiles.css
+hmitiles.js
+singletilepage
+	index.html
+SingleTilePage.html	
+```
+
+--
 
 ## Notes
 
