@@ -1,11 +1,10 @@
 # Blueprint Pico-Servo-Control
 
 This quick start outlines how to control a servo connected to a Raspberry Pi Pico WH (Pico).
-.
 
 ## Screenshots
 
-![Pico Servo Control](picoservocontrol.png)
+![Pico Servo Control](pico-servo-control.png)
 
 ---
 

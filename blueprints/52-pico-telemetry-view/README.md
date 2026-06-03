@@ -1,8 +1,15 @@
-# Project Summary: PicoDiag Telemetry & Control Platform
+# Blueprint Pico Telemetry View
 
 A high-performance, resilient end-to-end IoT platform that displays real-time controller diagnostics using custom industrial-grade dashboards.
 
 ---
+
+## Screenshots
+
+![Pico Telemetry View](pico-telemetry-view.png)
+
+---
+
 
 ## Core Architecture Overview
 ```
