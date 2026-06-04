@@ -108,10 +108,8 @@ domoticz/www/templates/
 
 ## Project Status
 
-This is an experimental hobby framework shared as-is for home automation developers and will continue to evolve over time. 
+This is an experimental hobby framework shared as-is for smart home automation developers and will continue to evolve over time. 
 **It is not a commercial, ready-made consumer product.**
-
-Feedback, optimization forks, code suggestions, or interface feature requests are highly welcome!
 
 ---
 
@@ -119,8 +117,8 @@ Feedback, optimization forks, code suggestions, or interface feature requests ar
 
 This framework was made possible thanks to the foundational work of the open-source home automation community and collaborative engineering support:
 
-* **[Domoticz Home Automation](https://domoticz.com)** – For providing a robust, highly resilient, and open-source smart home server environment. Their flexible JSON API and custom web-server template directories serve as the engine core for these custom dashboards.
-* **AI Collaboration Support** – For real-time architectural engineering, code optimization, and assistance refactoring the ecosystem hook pattern to comply with strict high-performance HMI concepts.
+* **[Domoticz Home Automation](https://domoticz.com)** – For providing the open-source smart home server environment.
+* **AI Collaboration Support** – For real-time architectural engineering, code optimization, and assistance refactoring the ecosystem.
 
 ---
 
