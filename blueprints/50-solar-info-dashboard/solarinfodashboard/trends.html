@@ -4,7 +4,7 @@
 	File: trends.html
 	Project: HMITiles-for-Domoticz
 	Brief: Display solar trend data graphs in industry standard tiles using dynamic data attributes.
-	Date: 2026-05-29
+	Date: 2026-06-04
 	Author: Robert W.B. Linn (c) 2026 MIT
 -->
 
@@ -15,154 +15,161 @@
 	<!-- Includes located in the parent folder -->
 	<link rel="stylesheet" href="../hmitiles.css">
 	<script src="../hmitiles.js" defer></script>
-
-    <script>
-		document.addEventListener("DOMContentLoaded", () => {
-			const baseUrl = window.parent && window.parent.$ ? window.parent.$.domoticzurl : window.location.origin;
-
-			document.querySelectorAll("[data-chart-idx]").forEach(container => {
-				const idx = container.getAttribute("data-chart-idx");
-				const sensorType = (idx === "12") ? "Percentage" : "counter";
-				const unit = (idx === "12") ? "%" : "W";
-
-				if (idx) {
-					fetchTrendData(idx, sensorType, unit, container);
-				}
-			});
-
-			// --- NEW TIMESTAMP CAPTURE COUPLING ---
-			// Target your text clock holder cell natively
-			const timeCard = document.querySelector('[data-device-idx="13"]');
-			if (timeCard) {
-				fetchTextTimestamp(timeCard, baseUrl);
-			}
-		});
+	
+	<script>
+	
+		// =========================================================================
+		// LOCAL CONFIGURATION PARAMETERS
+		// =========================================================================
+		const SYSTEM_TIME_IDX = 13;
+		const BATTERY_LEVEL_IDX = 12;
 
 		/**
-		 * Fetches the raw string text history from your text device log channel.
+		 * Ecosystem hook called directly by hmitiles.js central loop engine
 		 */
-		async function fetchTextTimestamp(element, baseUrl) {
+		window.onHMITileProcess = function(ignoredTileParam, device, rawValue, displayStatus) {
+		
+			const currentIdx = parseInt(device.idx, 10);
+
+			// 1. DYNAMIC MATCH FOR CHART CONTAINERS
+			// Instead of a hardcoded loop, check if this device has a trend target box mounted on the page
+			const trendContainer = document.querySelector(`[data-chart-idx="${currentIdx}"]`);
+			if (trendContainer) {
+				// Dynamically determine type variables based on your device profile rules
+				const sensorType = (currentIdx === BATTERY_LEVEL_IDX) ? "Percentage" : "counter";
+				const unit = (currentIdx === BATTERY_LEVEL_IDX) ? "%" : "W";
+				
+				// Execute your pristine background logging data worker safely
+				fetchTrendData(currentIdx, sensorType, unit, trendContainer);
+			}
+
+			// 2. PROCESS SYSTEM TIME STATUS (IDX 13)
+			if (currentIdx === SYSTEM_TIME_IDX) {
+				const timeCard = document.querySelector(`[data-device-idx="${SYSTEM_TIME_IDX}"]`);
+				if (timeCard) {
+					const timeField = timeCard.querySelector('.hmi-value') || timeCard.querySelector('.hmi-value-display');
+					if (timeField) {
+						// Grabs the exact, formatted string text pushed from your system
+						timeField.textContent = device.Data || device.Status || "--:--:--";
+					}
+				}
+				return true; // Handled completely, skip standard processing
+			}
+
+			return false; // Let hmitiles.js process baseline decorations for all other trends normally
+		};
+
+		// =========================================================================
+		// BACKGROUND ASYNC LOGIC WORKERS (Your Original Functions Preserved)
+		// =========================================================================
+		async function fetchTrendData(idx, sensor, unit, container) {
 			try {
-				const response = await fetch(`${baseUrl}/json.htm?type=command&param=getdevices&rid=13`);
+				// FIXED: Restored to your original working endpoint syntax configuration parameters
+				const targetUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=graph&sensor=${sensor}&idx=${idx}&range=day`;
+
+				const response = await fetch(targetUrl);
 				if (!response.ok) throw new Error();
 				const data = await response.json();
 
-				if (data.result && data.result[0]) {
-					const timeField = element.querySelector('.hmi-value');
-					// Grabs the exact, formatted text string updated by your dzVents engine script
-					if (timeField) {
-						timeField.textContent = data.result[0].Data || "--:--:--";
-					}
+				if (data.result && data.result.length > 0) {
+					// Extracts metrics vectors safely from data point arrays
+					const points = data.result.map(item => parseFloat(item.v || item.v_1 || item.u || item.svalue || item.te || 0));
+					renderSparkline(container, points, unit);
+				} else {
+					container.innerHTML = "<span style='color:#999; font-size:12px;'>No historical logs</span>";
 				}
 			} catch (err) {
-				console.error("Failed to parse text stamp device info:", err);
+				console.error("Trend load error:", err);
+				container.innerHTML = "<span style='color:#ff0000; font-size:12px;'>API Error</span>";
 			}
 		}
 
-        async function fetchTrendData(idx, sensor, unit, container) {
-            try {
-                const targetUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=graph&sensor=${sensor}&idx=${idx}&range=day`;
+		function renderSparkline(container, dataPoints, unit) {
+			const width = 300;
+			const height = 100;
+			const padding = 5;
 
-                const response = await fetch(targetUrl);
-                if (!response.ok) throw new Error();
-                const data = await response.json();
+			const min = Math.min(...dataPoints);
+			const max = Math.max(...dataPoints);
+			const range = max - min === 0 ? 1 : max - min;
 
-                if (data.result && data.result.length > 0) {
-                    const points = data.result.map(item => parseFloat(item.v || item.v_1 || item.u || item.svalue || 0));
-                    renderSparkline(container, points, unit);
-                } else {
-                    container.innerHTML = "<span style='color:#999; font-size:12px;'>No historical logs</span>";
-                }
-            } catch (err) {
-                console.error("Trend load error:", err);
-                container.innerHTML = "<span style='color:#ff0000; font-size:12px;'>API Error</span>";
-            }
-        }
+			const coords = dataPoints.map((val, index) => {
+				const x = padding + (index / (dataPoints.length - 1)) * (width - padding * 2);
+				const y = (height - padding) - ((val - min) / range) * (height - padding * 2);
+				return `${x},${y}`;
+			});
 
-        function renderSparkline(container, dataPoints, unit) {
-            const width = 300;
-            const height = 100;
-            const padding = 5;
+			container.innerHTML = `
+				<div class="hmi-sparkline-svg-wrapper">
+					<svg viewBox="0 0 ${width} ${height}" class="hmi-sparkline-svg" preserveAspectRatio="none">
+						<path class="hmi-trend-line" d="M ${coords.join(' L ')}" />
+					</svg>
+				</div>
+				<div class="hmi-trend-stats">
+					<div><span class="hmi-stat-label">MIN:</span> ${Math.round(min)}${unit}</div>
+					<div><span class="hmi-stat-label">MAX:</span> ${Math.round(max)}${unit}</div>
+				</div>
+			`;
+		}
 
-            // 1. Calculate the exact Min and Max values from the dataset
-            const min = Math.min(...dataPoints);
-            const max = Math.max(...dataPoints);
-            const range = max - min === 0 ? 1 : max - min;
+		// Go back to the index page
+		function goToMainDashboard() {
+			window.location.href = "index.html";
+		}
 
-            const coords = dataPoints.map((val, index) => {
-                const x = padding + (index / (dataPoints.length - 1)) * (width - padding * 2);
-                const y = (height - padding) - ((val - min) / range) * (height - padding * 2);
-                return `${x},${y}`;
-            });
+	</script>
 
-            // 2. Generate the layout with the SVG line graph and the text stats row
-            container.innerHTML = `
-                <div class="hmi-sparkline-svg-wrapper">
-                    <svg viewBox="0 0 ${width} ${height}" class="hmi-sparkline-svg" preserveAspectRatio="none">
-                        <path class="hmi-trend-line" d="M ${coords.join(' L ')}" />
-                    </svg>
-                </div>
-                <div class="hmi-trend-stats">
-                    <div><span class="hmi-stat-label">MIN:</span> ${Math.round(min)}${unit}</div>
-                    <div><span class="hmi-stat-label">MAX:</span> ${Math.round(max)}${unit}</div>
-                </div>
-            `;
-        }
-
-        function goToMainDashboard() {
-            window.location.href = "index.html";
-        }
-    </script>
 </head>
 <body>
 
 	<header class="hmi-header-container">
 		<div style="display: flex; align-items: center; gap: 15px;">
 			<button class="hmi-exit-btn" onclick="goToMainDashboard()">◀ Live Values</button>
-			<h1>Solar Info Dashboard - Rolling 24-Hour Trends</h1>
+			<h2>Solar Info Dashboard - Rolling 24-Hour Trends</h2>
 		</div>
 	</header>
 
     <main class="hmi-panel">
         
         <!-- ROW 1: POWER PRODUCTION & CONSUMPTION -->
+		<!-- COL 1-4 -->
         <div class="hmi-pack-card">
-            <div class="hmi-card-header"><div class="hmi-pack-label">Solar Production (24h)</div></div>
+            <div class="hmi-card-header"><div class="hmi-pack-label">Production</div></div>
             <div class="hmi-value-grid"><div class="hmi-sparkline-container" data-chart-idx="5">Loading...</div></div>
         </div>
 
         <div class="hmi-pack-card">
-            <div class="hmi-card-header"><div class="hmi-pack-label">Grid Export (24h)</div></div>
+            <div class="hmi-card-header"><div class="hmi-pack-label">Export</div></div>
             <div class="hmi-value-grid"><div class="hmi-sparkline-container" data-chart-idx="8">Loading...</div></div>
         </div>
 
         <div class="hmi-pack-card">
-            <div class="hmi-card-header"><div class="hmi-pack-label">Grid Import (24h)</div></div>
+            <div class="hmi-card-header"><div class="hmi-pack-label">Import</div></div>
             <div class="hmi-value-grid"><div class="hmi-sparkline-container" data-chart-idx="7">Loading...</div></div>
         </div>
 
         <div class="hmi-pack-card">
-            <div class="hmi-card-header"><div class="hmi-pack-label">House Consumption (24h)</div></div>
+            <div class="hmi-card-header"><div class="hmi-pack-label">Consumption</div></div>
             <div class="hmi-value-grid"><div class="hmi-sparkline-container" data-chart-idx="9">Loading...</div></div>
         </div>
 
         <!-- ROW 2: BATTERY STORAGE MANAGEMENT -->
+		<!-- COL 1-4 -->
         <div class="hmi-pack-card">
-            <div class="hmi-card-header"><div class="hmi-pack-label">Battery Charging (24h)</div></div>
+            <div class="hmi-card-header"><div class="hmi-pack-label">BAT Charging</div></div>
             <div class="hmi-value-grid"><div class="hmi-sparkline-container" data-chart-idx="10">Loading...</div></div>
         </div>
 
         <div class="hmi-pack-card">
-            <div class="hmi-card-header"><div class="hmi-pack-label">Battery Discharging (24h)</div></div>
+            <div class="hmi-card-header"><div class="hmi-pack-label">BAT Discharging</div></div>
             <div class="hmi-value-grid"><div class="hmi-sparkline-container" data-chart-idx="11">Loading...</div></div>
         </div>
 
         <div class="hmi-pack-card">
-            <div class="hmi-card-header"><div class="hmi-pack-label">Battery Level (24h)</div></div>
+            <div class="hmi-card-header"><div class="hmi-pack-label">BAT State</div></div>
             <div class="hmi-value-grid"><div class="hmi-sparkline-container" data-chart-idx="12">Loading...</div></div>
         </div>
 
-		<!-- SYSTEM TIME BAY: Populates the 4th column of Row 2 -->
 		<div class="hmi-pack-card" data-device-idx="13">
 			<div class="hmi-card-header">
 				<div class="hmi-pack-label">Last Update</div>

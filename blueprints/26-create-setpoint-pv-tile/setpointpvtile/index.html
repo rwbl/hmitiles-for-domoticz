@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Setpoint PV Tile</title>
+
+    <!-- Link backward one folder level to reuse shared global common styles -->
+    <link rel="stylesheet" href="../hmitiles.css">
+	
+	<!-- Link backward to the HMI tile engine -->
+    <script src="../hmitiles.js" defer></script>
+
+	<script>
+		// =========================================================================
+		// LOCAL SCRIPT CONFIGURATION
+		// =========================================================================
+		// Device idx
+	    const BATTERY_SOC_IDX = 12;
+
+		// Gateway lock variable to prevent infinite loop refresh collisions
+		let lastPushedTime = "";
+
+		// =========================================================================
+		// CENTRAL ECOSYSTEM HOOK (Intercepts global hmitiles.js loop at top level)
+		// =========================================================================
+		window.onHMITileProcess = function(ignoredTileParam, device, rawValue, displayStatus) {
+			// Get the idx given by the gloabl loop as going over all domoticz devices
+			const currentIdx = parseInt(device.idx, 10);
+			// console.log("onHMITileProcess idx=", currentIdx);
+
+			// -----------------------------------------------------------------
+			// PROCESSING THE BATTER STATE OF CHARGE
+			// -----------------------------------------------------------------
+			if (currentIdx === BATTERY_SOC_IDX) {
+				const barCard = document.querySelector(`[data-device-idx="${BATTERY_SOC_IDX}"][data-type="progress-bar-tile"]`);
+				if (barCard) {
+					const barFill = barCard.querySelector('.hmi-bar-fill');
+					const valueField = barCard.querySelector('.hmi-value');
+					
+					// Extract percentage number natively from device payload string
+					const percentage = Math.min(Math.max(parseFloat(device.Data) || 0, 0), 100);
+					
+					if (barFill) barFill.style.width = `${percentage}%`;
+					if (valueField) valueField.textContent = `${Math.round(percentage)} %`;
+				}
+				return true; // Handled completely
+			}
+		}
+	</script>
+
+</head>
+<body>
+
+	<!-- Inside the header block of index.html -->
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
+				<h2>Setpoint PV Tile</h2>
+			</div>
+		</div>
+	</header>
+
+    <!-- Master outer panel containing your grid -->
+	<!-- Set the device idx according devices list -->
+    <main class="hmi-panel">
+        
+        <!-- 
+			TILE 1 ROW 1 COL 1: THERMOSTAT (SP) + TEMPERATURE (PV)
+			IDX 2 = Type Setpoint, SubType Setpoint
+			IDX 22 = Type Temperature, SubType LaCrosse
+		-->
+		<div class="hmi-pack-card" data-device-idx="2" data-type="setpoint-stepper-tile" data-pv-idx="22" data-unit="°C" data-step="0.5">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Climate Zone Alpha</div>
+				<div class="hmi-badge">HEATING</div>
+			</div>
+			
+			<div class="hmi-value-grid">
+				<!-- STEP 1 ROW: Interactive Target Setpoint Stepper (SP) -->
+				<div class="hmi-stepper-row">
+					<button class="hmi-btn-step hmi-btn-down">-</button>
+					<div class="hmi-sp-value hmi-value" style="font-size: 16px; width: 60px; text-align: center;">--</div>
+					<button class="hmi-btn-step hmi-btn-up">+</button>
+				</div>
+				
+				<!-- STEP 2 ROW: Read-Only Actual Feedback Tracker (PV) -->
+				<div class="hmi-pv-row">
+					<span class="hmi-column-label" style="margin-bottom: 0;">Actual (PV):</span>
+					<div class="hmi-value-box" style="width: auto; min-width: 80px;">
+						<div class="hmi-pv-value hmi-value" style="font-size: 16px;">--</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<footer class="hmi-footer-version">
+			<span>HMITiles for Domoticz v1.0.0-Beta</span>
+		</footer>
+
+    </main>
+</body>
+</html>

@@ -51,7 +51,9 @@ function processDevices(devices) {
 		const rawValue = parseFloat(device.Data) || parseFloat(device.Status) || 0; 
         let displayStatus = device.Status || device.Data || "";
 		
+        // =========================================================================
 		// GLOBAL OVERRIDE HOOK = MUST AT VERY TOP OF THE LOOP
+        // =========================================================================
         // This lets dedicated pages process data arrays regardless of how elements are configured in HTML!
         // Allow custom pages to intercept the device payload before standard rendering takes place
         if (typeof window.onHMITileProcess === 'function') {
@@ -67,7 +69,9 @@ function processDevices(devices) {
 		// Read its custom card type configuration tag
         const cardType = tileElement.getAttribute('data-type') || "standard";
 
+        // =========================================================================
         // GENERIC GLOBAL TEXT INPUT LOGIC PIPELINE
+        // =========================================================================
 		if (cardType === "text-input") {
 			const inputField = tileElement.querySelector('.hmi-text-field');
 			const badge = tileElement.querySelector('.hmi-badge');
@@ -90,7 +94,9 @@ function processDevices(devices) {
 			return; // FIXED: Safely exits the loop pass ONLY for text-input cards!
 		}
 		
+        // =========================================================================
         // GENERIC MULTI-VARIABLE COUPLING (Sniffs for sub-element classes inside the card)
+        // =========================================================================
         const tempEl = tileElement.querySelector('.hmi-value-temp');
         const humEl = tileElement.querySelector('.hmi-value-hum');
         const baroEl = tileElement.querySelector('.hmi-value-baro');
@@ -103,7 +109,9 @@ function processDevices(devices) {
             return; // Move to the next device immediately
         }
 
+        // =========================================================================
         // GENERIC PROGRESS BAR & LEVEL GAUGE SYNC
+        // =========================================================================
         const barFill = tileElement.querySelector('.hmi-bar-fill');
         const barText = tileElement.querySelector('.hmi-bar-text');
         if (barFill && barText) {
@@ -113,12 +121,80 @@ function processDevices(devices) {
             barText.textContent = `${Math.round(percentage)}%`;
         }
 
+        // =========================================================================
+        // GENERIC GLOBAL SETPOINT STEPPER & PV PIPELINE
+        // =========================================================================
+        if (cardType === "setpoint-stepper-tile") {
+            const spField = tileElement.querySelector('.hmi-sp-value');
+            const pvField = tileElement.querySelector('.hmi-pv-value');
+            
+            const targetPVIdx = tileElement.getAttribute('data-pv-idx');
+            const targetUnit = tileElement.getAttribute('data-unit') || "";
+            const stepValue = parseFloat(tileElement.getAttribute('data-step') || 0.5);
+
+            // A. Extract and update the target Setpoint value
+            const currentSP = parseFloat(device.SetPoint || device.Data || 0);
+            if (spField) spField.textContent = `${currentSP.toFixed(1)} ${targetUnit}`;
+
+            // B. Reach across the response array to parse out the live process value (PV)
+            if (targetPVIdx) {
+                const pvDevice = devices.find(d => String(d.idx) === String(targetPVIdx));
+                if (pvDevice && pvField) {
+                    const currentPV = parseFloat(pvDevice.Temp || pvDevice.Data || 0);
+                    pvField.textContent = `${currentPV.toFixed(1)} ${targetUnit}`;
+                }
+            }
+
+            // C. Bind interactive step button listeners once on page load initialization
+            if (!tileElement.hasAttribute('data-listeners-bound')) {
+                tileElement.setAttribute('data-listeners-bound', 'true');
+                
+                const btnUp = tileElement.querySelector('.hmi-btn-up');
+                const btnDown = tileElement.querySelector('.hmi-btn-down');
+                
+                // Track internal current state target modifications locally
+                let workingSP = currentSP;
+
+                const sendSetpointUpdate = async (newVal) => {
+                    if (spField) spField.textContent = `${newVal.toFixed(1)} ${targetUnit}`;
+                    try {
+                        // Standard Domoticz Setpoint Update Command API Endpoint
+                        const targetUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=setsetpoint&idx=${device.idx}&setpoint=${newVal.toFixed(1)}`;
+                        await fetch(targetUrl);
+                    } catch (err) {
+                        console.error("Setpoint transmission error:", err);
+                    }
+                };
+
+                if (btnUp) {
+                    btnUp.addEventListener('click', () => {
+                        workingSP += stepValue;
+                        sendSetpointUpdate(workingSP);
+                    });
+                }
+
+                if (btnDown) {
+                    btnDown.addEventListener('click', () => {
+                        workingSP -= stepValue;
+                        sendSetpointUpdate(workingSP);
+                    });
+                }
+            }
+
+            // checkAlarmThresholds(device.idx, rawValue);
+            return; // Handled completely
+        }
+
+        // =========================================================================
 		// SETPOINT
+        // =========================================================================
         if (device.SetPoint !== undefined) {
             displayStatus = parseFloat(device.SetPoint).toFixed(1);
         }
 
+        // =========================================================================
 		// DIMMER SWITCH
+        // =========================================================================
         else if (device.SwitchType === "Dimmer" || device.SwitchTypeVal === 7) {
             const slider = tileElement.querySelector('.hmi-slider');
             const dimmerText = tileElement.querySelector('.hmi-dimmer-text');
@@ -160,7 +236,9 @@ function processDevices(devices) {
             }
         }
 
+        // =========================================================================
 		// LIGHT/SWITCH, SWITCH, PUMP, VALVE
+        // =========================================================================
         else if (device.Type === "Light/Switch" || cardType === "switch" || cardType === "pump" || cardType === "valve") {
             const rawStatus = String(device.Status || device.Data || "").toUpperCase();
             const isRawOn = (rawStatus === "ON" || rawStatus === "TRUE");
@@ -178,7 +256,9 @@ function processDevices(devices) {
             }
         }
 
+        // =========================================================================
 		// ANYOTHER DEVICE
+        // =========================================================================
         else {
             displayStatus = device.Status || device.Data || "";
         }
@@ -191,7 +271,9 @@ function processDevices(devices) {
             lastUpdate: device.LastUpdate
         });
 		
+        // =========================================================================
         // AUTOMATIC ALARM THRESHOLD TRIGGER PIPELINE
+        // =========================================================================
         // This fires automatically for EVERY device. If the card contains 
         // data-warn or data-crit attributes, it evaluates them natively!
         checkAlarmThresholds(device.idx, rawValue);

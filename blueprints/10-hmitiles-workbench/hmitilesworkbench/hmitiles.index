@@ -1,31 +1,42 @@
 <!-- 
-File: hmitiles.index
-Project: HMITiles-for-Domoticz Workbench
-Brief: Master Template Library for Standard HMI Tile Component Layouts.
-Date: 2026-06-02
-Author: Robert W.B. Linn (c) 2026 MIT
-Description: Copy and paste these cards into your index.html grid layout.
-			 All tiles have default Domoticz device idx set. Change accordingly to see live data.
+	File: hmitiles.index
+	Project: HMITiles-for-Domoticz Workbench
+	Brief: Master Template Library for Standard HMI Tile Component Layouts.
+	Date: 2026-06-04
+	Author: Robert W.B. Linn (c) 2026 MIT
+	Description: 
+	Copy and paste these cards into your index.html grid layout.
+	All tiles have default Domoticz device idx set. Change to see live data.
+	Checkout blueprints for how to use.
 -->
 
-<!-- ==================== ANALOG VALUE (Type Usage / SubType Electric) ==================== -->
+<!-- 
+	=== ROW 1 ===
+-->
+
+<!-- 
+	ROW 1 COL 1
+	VALUE (Type any with value) 
+-->
 <div class="hmi-pack-card hmi-clickable-card" data-device-idx="5" data-alarm="normal">
     <div class="hmi-card-header">
         <div class="hmi-pack-label">Analog Value</div>
         <div class="hmi-badge">NORMAL</div>
     </div>
-    <div class="hmi-value-grid">
-        <!-- Uses FLEX STYLE: Centers values within the card window -->
-        <div class="hmi-value-box" style="display: flex; align-items: center; justify-content: center; min-height: 40px;">
-            <div class="hmi-box-data">
-                <span class="hmi-value">--</span>
-            </div>
-        </div>
-    </div>
+	<div class="hmi-value-grid">
+		<div class="hmi-value-box">
+			<div class="hmi-box-data">
+				<span class="hmi-value">--</span>
+			</div>
+		</div>
+	</div>
 </div>
 
 
-<!-- ==================== ANALOG BAR PERCENTAGE (Type General / SubType Percentage) ==================== -->
+<!-- 
+	ROW 1 COL 2
+	BAR PERCENTAGE (Type General / SubType Percentage) 
+-->
 <div class="hmi-pack-card hmi-clickable-card" data-device-idx="12" data-alarm="normal">
     <div class="hmi-card-header">
         <div class="hmi-pack-label">Bar Value %</div>
@@ -36,23 +47,26 @@ Description: Copy and paste these cards into your index.html grid layout.
         </div>
         <div class="hmi-badge">NORMAL</div>
     </div>
-    <div class="hmi-value-grid">
-        <div class="hmi-value-box" style="display: flex; align-items: center; justify-content: center; min-height: 40px;">
-            <div class="hmi-box-data">
-                <span class="hmi-value">--</span>
-            </div>
-        </div>
-    </div>
+	<div class="hmi-value-grid">
+		<div class="hmi-value-box">
+			<div class="hmi-box-data">
+				<span class="hmi-value">--</span>
+			</div>
+		</div>
+	</div>
 </div>
 
 
-<!-- ==================== MULTI-VARIABLE SENSOR (Type Temp+Humidity) ==================== -->
+<!-- 
+	ROW 1 COL 3
+	MULTI-VARIABLE SENSOR (Type Temp+Humidity) 
+-->
 <div class="hmi-pack-card" data-type="temp_hum" data-device-idx="14">
     <div class="hmi-card-header">
         <div class="hmi-pack-label">Temperature Humidity</div>
         <div class="hmi-badge">NORMAL</div>
     </div>
-    <!-- REORGANIZED BLOCK: Splits variables into stacked, cleanly spaced boxes -->
+    <!-- Splits variables into stacked, cleanly spaced boxes -->
     <div class="hmi-value-grid" style="display: flex; flex-direction: column; gap: 4px; padding: 4px;">
         <div class="hmi-value-box" style="display: flex; justify-content: space-between; padding: 4px 8px; background: #ffffff;">
             <span class="hmi-box-label" style="font-size: 11px; color: #888888;">Temperature</span>
@@ -66,13 +80,16 @@ Description: Copy and paste these cards into your index.html grid layout.
 </div>
 
 
-<!-- ==================== MULTI-VARIABLE SENSOR: (Type Temp+Humidity+Baro) ==================== -->
+<!-- 
+	ROW 1 COL 4
+	MULTI-VARIABLE SENSOR: (Type Temp+Humidity+Baro) 
+-->
 <div class="hmi-pack-card" data-type="temp_hum_baro" data-device-idx="15">
     <div class="hmi-card-header">
         <div class="hmi-pack-label">Temperature Humidity Barometer</div>
         <div class="hmi-badge">NORMAL</div>
     </div>
-    <!-- REORGANIZED BLOCK: Splits variables into stacked, cleanly spaced boxes -->
+    <!-- Splits variables into stacked, cleanly spaced boxes -->
     <div class="hmi-value-grid" style="display: flex; flex-direction: column; gap: 4px; padding: 4px;">
         <div class="hmi-value-box" style="display: flex; justify-content: space-between; padding: 4px 8px; background: #ffffff;">
             <span class="hmi-box-label" style="font-size: 11px; color: #888888;">Temperature</span>
@@ -90,54 +107,71 @@ Description: Copy and paste these cards into your index.html grid layout.
 </div>
 
 
-<!-- ==================== STANDALONE BAROMETER / PRESSURE (Type General / SubType Barometer) ==================== -->
+<!-- 
+	=== ROW 2 ===
+-->
+
+<!-- 
+	ROW 2 COL 1
+	STANDALONE BAROMETER / PRESSURE (Type General / SubType Barometer) 
+	Like Value Tile
+-->
 <div class="hmi-pack-card hmi-clickable-card" data-device-idx="16" data-alarm="normal">
     <div class="hmi-card-header">
         <div class="hmi-pack-label">Barometer</div>
         <div class="hmi-badge">NORMAL</div>
     </div>
-    <div class="hmi-value-grid">
-        <div class="hmi-value-box" style="display: flex; align-items: center; justify-content: center; min-height: 40px;">
-            <div class="hmi-box-data">
-                <span class="hmi-value">--</span>
-            </div>
-        </div>
-    </div>
+	<div class="hmi-value-grid">
+		<div class="hmi-value-box">
+			<div class="hmi-box-data">
+				<span class="hmi-value">--</span>
+			</div>
+		</div>
+	</div>
 </div>
 
 
-<!-- ==================== INTERACTIVE ON/OFF TOGGLE SWITCH (Type Light/Switch / SubType Switch / SwitchType OnOff) ==================== -->
+<!-- 
+	ROW 2 COL 2
+	INTERACTIVE ON/OFF TOGGLE SWITCH (Type Light/Switch / SubType Switch / SwitchType OnOff) 
+-->
 <div class="hmi-pack-card" data-type="switch" data-device-idx="17">
     <div class="hmi-card-header">
         <div class="hmi-pack-label">Switch On Off</div>
         <div class="hmi-badge hmi-clickable-badge">OFF</div>
     </div>
-    <div class="hmi-value-grid">
-        <div class="hmi-value-box" style="display: flex; align-items: center; justify-content: center; min-height: 40px;">
-            <div class="hmi-box-data">
-                <span class="hmi-value">OFF</span>
-            </div>
-        </div>
-    </div>
+	<div class="hmi-value-grid">
+		<div class="hmi-value-box">
+			<div class="hmi-box-data">
+				<span class="hmi-value">OFF</span>
+			</div>
+		</div>
+	</div>
 </div>
 
 
-<!-- ==================== PUMP / VALVE SYSTEM STATUS SWITCH (Type Light/Switch / SubType Switch / SwitchType OnOff) ==================== -->
+<!-- 
+	ROW 2 COL 3
+	PUMP / VALVE SYSTEM STATUS SWITCH (Type Light/Switch / SubType Switch / SwitchType OnOff) 
+-->
 <div class="hmi-pack-card" data-type="pump" data-device-idx="18">
     <div class="hmi-card-header">
         <div class="hmi-pack-label">Pump Running Stopped</div>
         <div class="hmi-badge hmi-clickable-badge">STOPPED</div>
     </div>
-    <div class="hmi-value-grid">
-        <div class="hmi-value-box" style="display: flex; align-items: center; justify-content: center; min-height: 40px;">
-            <div class="hmi-box-data">
-                <span class="hmi-value">STOPPED</span>
-            </div>
-        </div>
-    </div>
+	<div class="hmi-value-grid">
+		<div class="hmi-value-box">
+			<div class="hmi-box-data">
+				<span class="hmi-value">STOPPED</span>
+			</div>
+		</div>
+	</div>
 </div>
 
-<!-- ==================== DIMMER SLIDER HARDWARE (Type Light/Switch / SubType Switch / SwitchType Dimmer) ==================== -->
+<!-- 
+	ROW 2 COL 4
+	DIMMER SLIDER HARDWARE (Type Light/Switch / SubType Switch / SwitchType Dimmer) 
+-->
 <div class="hmi-pack-card" data-type="dimmer" data-device-idx="20">
     <div class="hmi-card-header">
         <div class="hmi-pack-label">Switch Dimmer</div>
@@ -153,7 +187,14 @@ Description: Copy and paste these cards into your index.html grid layout.
     </div>
 </div>
 
-<!-- ==================== THERMOSTAT / SETPOINT (Type Setpoint / SubType Setpoint) ==================== -->
+<!-- 
+	=== ROW 3 ===
+-->
+
+<!-- 
+	ROW 3 COL 1
+	THERMOSTAT / SETPOINT (Type Setpoint / SubType Setpoint) 
+-->
 <div class="hmi-pack-card" data-type="thermostat" data-device-idx="2">
     <div class="hmi-card-header">
         <div class="hmi-pack-label">Thermostat</div>
@@ -171,22 +212,143 @@ Description: Copy and paste these cards into your index.html grid layout.
 </div>
 
 
-<!-- ==================== TEXT / TIMING SYSTEM DISPLAY (Type General / SubType Text) ==================== -->
+<!-- 
+	ROW 3 COL 2
+	TEXT / TIMING SYSTEM DISPLAY (Type General / SubType Text) 
+-->
 <div class="hmi-pack-card" data-device-idx="13">
     <div class="hmi-card-header">
         <div class="hmi-pack-label">Timestamp</div>
     </div>
-    <div class="hmi-value-grid">
-        <div class="hmi-value-box" style="display: flex; align-items: center; justify-content: center; min-height: 40px;">
-            <div class="hmi-box-data">
+	<div class="hmi-value-grid">
+		<div class="hmi-value-box">
+			<div class="hmi-box-data">
                 <span class="hmi-value">--:--:--</span>
-            </div>
-        </div>
-    </div>
+			</div>
+		</div>
+	</div>
 </div>
 
 
-<!-- ==================== TEXT / SYSTEM DOCUMENTATION (Type General / SubType Text) ==================== -->
+<!-- 
+	ROW 3 COL 3
+	ALARM (Type General / SubType Percentage) 
+	Attributes: data-warn-low="20" data-crit-low="10"
+-->
+<div class="hmi-pack-card" id="idx-12" data-device-idx="12" data-warn-low="20" data-crit-low="10">
+	<div class="hmi-card-header">
+		<div class="hmi-pack-label">Alarm Warning/Critical</div>
+		<div class="hmi-badge">NORMAL</div>
+	</div>
+	<div class="hmi-value-grid">
+		<div class="hmi-value-box">
+			<div class="hmi-box-data">
+				<span class="hmi-value">--</span>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 
+	ROW 3 COL 4
+	ALARM (Type General / SubType Percentage) 
+	Triggers alarm on EXACT ZERO values
+	Attributes: data-alert-zero="true" data-zero-text="NO PRODUCTION"
+-->
+<!-- Solar Tile () -->
+<div class="hmi-pack-card" id="idx-5" data-device-idx="5" data-alert-zero="true" data-zero-text="NO PRODUCTION">
+	<div class="hmi-card-header">
+		<div class="hmi-pack-label">Alarm ZERO</div>
+		<div class="hmi-badge">NORMAL</div>
+	</div>
+	<div class="hmi-value-grid">
+		<div class="hmi-value-box">
+			<div class="hmi-box-data">
+				<span class="hmi-value">--</span>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 
+	=== ROW 3 ===
+-->
+
+<!-- 
+	ROW 4 COL 1
+	TEXT INPUT (Type General / SubType Text) 
+	Overrides text device content.
+-->
+<div class="hmi-pack-card" data-device-idx="24" data-type="text-input">
+	<div class="hmi-card-header">
+		<div class="hmi-pack-label">Text Input</div>
+		<div class="hmi-badge">SYNCED</div>
+	</div>
+	<div class="hmi-value-grid">
+		<input type="text" class="hmi-text-field" placeholder="Enter status text...">
+		<div class="hmi-action-row" style="display: flex; justify-content: flex-end; width: 100%; gap: 8px; margin-top: 4px;">
+			<button class="hmi-btn-cancel">Cancel</button>
+			<button class="hmi-btn-ok">OK</button>
+		</div>
+	</div>
+</div>
+
+<!-- 
+	ROW 4 COL 2
+	VALUE IMAGE (Type any with value) 
+	Overrides text device content.
+-->
+<div class="hmi-pack-card" data-type="icon-tile" data-device-idx="5">
+	<!-- Header block holding title and status token -->
+	<div class="hmi-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+		<div class="hmi-pack-label">Solar Production</div>
+		<div class="hmi-badge">NORMAL</div>
+	</div>
+
+	<!-- System Status Icon Row -->
+	<div class="hmi-icon-wrapper" style="display: flex; justify-content: flex-end; padding: 4px 12px 0 0;">
+		<img src="/images/Alert48_0.png" alt="Status" width="48" height="48">
+	</div>
+				
+	<!-- Metric Data Value Area -->
+	<div class="hmi-value-grid">
+		<div class="hmi-value-box">
+			<div class="hmi-box-data">
+				<span class="hmi-value">--</span>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- 
+	ROW 4 COL 3
+	HOLLOW GRID MATRIX PLACEHOLDER 
+-->
+<div class="hmi-pack-card hmi-card-placeholder">
+    <div class="hmi-card-header">
+        <div class="hmi-pack-label">[ SPARE BAY COMPONENT ]</div>
+    </div>
+</div>
+
+<!-- 
+	ROW 4 COL 4
+	HOLLOW GRID MATRIX PLACEHOLDER 
+-->
+<div class="hmi-pack-card hmi-card-placeholder">
+    <div class="hmi-card-header">
+        <div class="hmi-pack-label">[ SPARE BAY COMPONENT ]</div>
+    </div>
+</div>
+
+<!-- 
+	=== ROW 5 ===
+-->
+
+<!-- 
+	ROW 5 COL 1
+	TEXT / SYSTEM DOCUMENTATION (Type General / SubType Text) 
+-->
 <div class="hmi-pack-card" data-type="info" data-device-idx="24">
 	<div class="hmi-card-header">
 		<!-- Clean, descriptive header label -->
@@ -207,10 +369,23 @@ Description: Copy and paste these cards into your index.html grid layout.
 	</div>
 </div>
 
-
-<!-- ==================== HOLLOW GRID MATRIX PLACEHOLDER ==================== -->
-<div class="hmi-pack-card hmi-card-placeholder">
-    <div class="hmi-card-header">
-        <div class="hmi-pack-label">[ SPARE BAY COMPONENT ]</div>
-    </div>
+<!-- 
+	ROW 5 COL 2
+	TEXT / SYSTEM DOCUMENTATION (Type General / SubType Text) 
+-->
+<div class="hmi-pack-card" data-type="info" data-device-idx="24">
+	<div class="hmi-card-header">
+		<!-- Clean, descriptive header label -->
+		<div class="hmi-pack-label">Notes</div>
+		<div class="hmi-badge">INFO</div>
+	</div>
+	<div class="hmi-value-grid" style="padding: 12px; min-height: 100px;">
+		<!-- Multiline text field styled for crisp industrial readability -->
+		<div class="hmi-info-text-box" style="font-family: sans-serif; font-size: 12px; line-height: 1.6; color: #444444; text-align: left;">
+			<span style="color: #777777; font-size: 11px; display: block; margin-top: 6px;">
+				Checkout blueprints for HMITile usage with live data. 
+			</span>
+		</div>
+	</div>
 </div>
+
