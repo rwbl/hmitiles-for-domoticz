@@ -1,10 +1,10 @@
 # HMITiles-for-Domoticz
 
-Tile-based custom pages for Domoticz using HTML, CSS, and vanilla JavaScript.
+High-density, modular custom dashboard tiles for Domoticz using vanilla HTML, CSS, and JavaScript.
 
-An open-source framework for building structured, high-density, tile-based dashboards inside Domoticz custom page environments. It is shared primarily as an architectural blueprint and inspiration for others seeking to engineer custom smart home user interfaces.
+This open-source framework brings High-Performance Human Machine Interface (HMI) principles to the smart home environment. The core focus is clarity, consistency, and situational awareness—not visual special effects or decorative UI clutter.
 
-This framework brings High-Performance Human Machine Interface (HMI) design principles to the smart home environment, focusing on clean, consistent, and highly disciplined user interfaces. The core focus of this architecture is clarity, situational awareness, and operational efficiency—not visual special effects or decorative UI clutter.
+Designed as an extensible blueprint, it decouples user interface presentation from backend data fetching, allowing developers to create clean, high-performance layouts easily.
 
 ---
 
