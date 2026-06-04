@@ -2,9 +2,8 @@
 
 High-density, modular custom dashboard tiles for Domoticz using vanilla HTML, CSS, and JavaScript.
 
-This open-source framework brings High-Performance Human Machine Interface (HMI) principles to the smart home environment. The core focus is clarity, consistency, and situational awareness—not visual special effects or decorative UI clutter.
-
-Designed as an extensible blueprint, it decouples user interface presentation from backend data fetching, allowing developers to create clean, high-performance layouts easily.
+This open-source framework brings High-Performance Human Machine Interface (HMI) principles to the smart home environment.  
+The core focus is clarity, consistency, and situational awareness—not visual special effects or decorative UI clutter.
 
 ---
 
@@ -24,8 +23,7 @@ Designed as an extensible blueprint, it decouples user interface presentation fr
 
 ## Overview
 
-**HMITiles-for-Domoticz** provides a collection of reusable, industrial-inspired modular components for Domoticz custom layouts. 
-These tiles combine seamlessly into responsive grid matrices to monitor complex home telemetry data points. 
+**HMITiles-for-Domoticz** provides a collection of reusable, industrial-inspired modular components for Domoticz custom layouts. These tiles combine seamlessly into responsive grid matrices to monitor complex home telemetry data points. Designed as an extensible blueprint, it decouples user interface presentation from backend data fetching, allowing developers to create clean, high-performance layouts easily.
 
 The framework started as a personal open-source project, evolving from earlier layout prototypes developed under a [B4X HMITiles](http://www.b4x.com/android/forum/threads/hmitiles.169774/) design concept.
 
@@ -33,7 +31,7 @@ The framework started as a personal open-source project, evolving from earlier l
 
 ## Core Features & Design Principles
 
-* **High-Performance HMI Rules**: Following widely accepted industrial HMI principles. Elements maintain muted gray or dark charcoal baselines during steady-state runtime. Saturated, desaturated warning highlights are reserved strictly for active alarm thresholds (`data-warn-low`, `data-crit-high`) to reduce operator eye strain and draw attention efficiently.
+* **High-Performance HMI Rules**: Follows industrial HMI principles. Elements maintain muted gray or dark charcoal baselines during steady-state runtime. Saturated, desaturated warning highlights are reserved strictly for active alarm thresholds (`data-warn-low`, `data-crit-high`) to reduce operator eye strain and draw attention efficiently.
 * **Decoupled Architecture**: Keeps visual presentation layout properties completely isolated from backend server data fetches. 
 * **Declarative DOM Injection**: Zero-config device mapping. Domoticz hardware registers bind instantly to the user interface using clean HTML `data-device-idx` attributes.
 * **Ecosystem Extension Hooks**: Leverages a central `window.onHMITileProcess` callback executing at the top of the processing loop. Custom layouts can intercept, evaluate, and transform incoming data packets (e.g., streaming 24-hour canvas sparkline trend lines, managing text inputs, or running complex multi-variable conditions) without triggering separate polling loops or stalling the server.
