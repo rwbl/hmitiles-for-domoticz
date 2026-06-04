@@ -126,4 +126,4 @@ This framework was made possible thanks to the foundational work of the open-sou
 
 ## License
 
-*Developed by **Robert W.B. Linn** — Released under the terms of the [MIT License
+Developed by **Robert W.B. Linn** — Released under the terms of the [MIT License]
