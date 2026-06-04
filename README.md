@@ -56,6 +56,7 @@ The project started as a personal experiment based on earlier work with a [B4X H
 ## Included Page Blueprints
 
 * **`10-hmitiles-workbench`**: An interactive playground used for prototyping layouts, creating new visual tile components, and testing experimental structures.
+* **`20-create-single-tile-page` + more** -> Guide blueprints for building your first custom tile and standalone pages.
 * **`50-solar-info-dashboard`**: A comprehensive system layout tracking live flows across solar production, house consumption, grid balance, and battery bank state-of-charge.
 * **`51-pico-servo-control`**: A WiFi-based micro-controller dashboard enabling remote multi-axis servo position adjustments.
 * **`52-pico-telemetry-view`**: Real-time diagnostic monitoring for remote nodes, featuring processor core temperatures, virtual data update timestamps, and antenna Wi-Fi RSSI attenuation tracks.
