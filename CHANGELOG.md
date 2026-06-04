@@ -6,8 +6,8 @@ The project follows semantic versioning where possible.
 
 ---
 
-## [1.0.0] - 2026-MM-DD
-- NEW: Initial public release of HMITiles for Domoticz; Published on the [Domoticz forum](https://www.ADD)
+## [1.0.0] - 2026-06-04
+- NEW: Initial public release of HMITiles for Domoticz; Published on the [Domoticz forum](https://forum.domoticz.com/viewtopic.php?t=44682)
 
 ---
 
