@@ -123,7 +123,7 @@ domoticz/www/templates/
 └──── index.html          	# Main HTML structure and page hook scripts
 ```
 
---
+---
 
 ## Notes
 
@@ -133,6 +133,16 @@ Feedback, ideas, and suggestions are welcome.
 
 ---
 
+## Credits & Acknowledgments
+
+This framework was made possible thanks to the foundational work of the open-source home automation community and collaborative engineering support:
+
+* **[Domoticz Home Automation](https://domoticz.com)** – For providing a robust, highly resilient, and open-source smart home server environment. Their flexible JSON API and custom web-server template directories serve as the engine core for these custom dashboards.
+* **AI Collaboration Support** – For real-time architectural engineering, code optimization, and assistance refactoring the ecosystem hook pattern to comply with strict high-performance HMI concepts.
+* **B4X Community** – For the original layout inspiration and early UI prototype testing that laid the groundwork for this project's visual direction.
+
+---
+
 ## License
 
-MIT License
+*Developed by **Robert W.B. Linn** — Released under the MIT License.*
