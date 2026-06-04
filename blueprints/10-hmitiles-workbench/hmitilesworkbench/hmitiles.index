@@ -37,25 +37,22 @@
 	ROW 1 COL 2
 	BAR PERCENTAGE (Type General / SubType Percentage) 
 -->
-<div class="hmi-pack-card hmi-clickable-card" data-device-idx="12" data-alarm="normal">
-    <div class="hmi-card-header">
-        <div class="hmi-pack-label">Bar Value %</div>
-        <!-- Forces progress tracking bar to be thick and readable -->
-        <div class="hmi-bar-container" style="height: 18px; line-height: 18px; position: relative;">
-            <div class="hmi-bar-fill" style="width: 0%; height: 100%;"></div>
-            <div class="hmi-bar-text" style="position: absolute; width: 100%; text-align: center; font-size: 11px;">--%</div>
-        </div>
-        <div class="hmi-badge">NORMAL</div>
-    </div>
+<div class="hmi-pack-card" data-device-idx="12" data-type="progress-bar-tile">
+	<div class="hmi-card-header">
+		<div class="hmi-pack-label">Battery State of Charge</div>
+		<div class="hmi-badge">NORMAL</div>
+	</div>
+
+	<!-- Clean, semantic layout nodes using global framework definitions -->
 	<div class="hmi-value-grid">
+		<div class="hmi-bar-container">
+			<div class="hmi-bar-fill"></div>
+		</div>
 		<div class="hmi-value-box">
-			<div class="hmi-box-data">
-				<span class="hmi-value">--</span>
-			</div>
+			<div class="hmi-value">-- %</div>
 		</div>
 	</div>
 </div>
-
 
 <!-- 
 	ROW 1 COL 3
@@ -211,9 +208,36 @@
     </div>
 </div>
 
-
 <!-- 
 	ROW 3 COL 2
+	THERMOSTAT (SP) + TEMPERATURE (PV)
+-->
+<div class="hmi-pack-card" data-device-idx="2" data-type="setpoint-stepper-tile" data-pv-idx="22" data-unit="°C" data-step="0.5">
+	<div class="hmi-card-header">
+		<div class="hmi-pack-label">Setpoint + Process Value</div>
+		<div class="hmi-badge">HEATING</div>
+	</div>
+	
+	<div class="hmi-value-grid">
+		<!-- STEP 1 ROW: Interactive Target Setpoint Stepper (SP) -->
+		<div class="hmi-stepper-row">
+			<button class="hmi-btn-step hmi-btn-down">-</button>
+			<div class="hmi-sp-value hmi-value" style="font-size: 16px; width: 60px; text-align: center;">--</div>
+			<button class="hmi-btn-step hmi-btn-up">+</button>
+		</div>
+		
+		<!-- STEP 2 ROW: Read-Only Actual Feedback Tracker (PV) -->
+		<div class="hmi-pv-row">
+			<span class="hmi-column-label" style="margin-bottom: 0;">Actual (PV):</span>
+			<div class="hmi-value-box" style="width: auto; min-width: 80px;">
+				<div class="hmi-pv-value hmi-value" style="font-size: 16px;">--</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 
+	ROW 3 COL 3
 	TEXT / TIMING SYSTEM DISPLAY (Type General / SubType Text) 
 -->
 <div class="hmi-pack-card" data-device-idx="13">
@@ -229,9 +253,32 @@
 	</div>
 </div>
 
+<!-- 
+	ROW 4 COL 3
+	TEXT INPUT (Type General / SubType Text) 
+	Overrides text device content.
+-->
+<div class="hmi-pack-card" data-device-idx="24" data-type="text-input">
+	<div class="hmi-card-header">
+		<div class="hmi-pack-label">Text Input</div>
+		<div class="hmi-badge">SYNCED</div>
+	</div>
+	<div class="hmi-value-grid">
+		<input type="text" class="hmi-text-field" placeholder="Enter status text...">
+		<div class="hmi-action-row" style="display: flex; justify-content: flex-end; width: 100%; gap: 8px; margin-top: 4px;">
+			<button class="hmi-btn-cancel">Cancel</button>
+			<button class="hmi-btn-ok">OK</button>
+		</div>
+	</div>
+</div>
+
 
 <!-- 
-	ROW 3 COL 3
+	=== ROW 4 ===
+-->
+
+<!-- 
+	ROW 4 COL 1
 	ALARM (Type General / SubType Percentage) 
 	Attributes: data-warn-low="20" data-crit-low="10"
 -->
@@ -250,7 +297,7 @@
 </div>
 
 <!-- 
-	ROW 3 COL 4
+	ROW 4 COL 2
 	ALARM (Type General / SubType Percentage) 
 	Triggers alarm on EXACT ZERO values
 	Attributes: data-alert-zero="true" data-zero-text="NO PRODUCTION"
@@ -271,30 +318,7 @@
 </div>
 
 <!-- 
-	=== ROW 3 ===
--->
-
-<!-- 
-	ROW 4 COL 1
-	TEXT INPUT (Type General / SubType Text) 
-	Overrides text device content.
--->
-<div class="hmi-pack-card" data-device-idx="24" data-type="text-input">
-	<div class="hmi-card-header">
-		<div class="hmi-pack-label">Text Input</div>
-		<div class="hmi-badge">SYNCED</div>
-	</div>
-	<div class="hmi-value-grid">
-		<input type="text" class="hmi-text-field" placeholder="Enter status text...">
-		<div class="hmi-action-row" style="display: flex; justify-content: flex-end; width: 100%; gap: 8px; margin-top: 4px;">
-			<button class="hmi-btn-cancel">Cancel</button>
-			<button class="hmi-btn-ok">OK</button>
-		</div>
-	</div>
-</div>
-
-<!-- 
-	ROW 4 COL 2
+	ROW 4 COL 3
 	VALUE IMAGE (Type any with value) 
 	Overrides text device content.
 -->
@@ -320,19 +344,8 @@
 	</div>
 </div>
 
-
 <!-- 
-	ROW 4 COL 3
-	HOLLOW GRID MATRIX PLACEHOLDER 
--->
-<div class="hmi-pack-card hmi-card-placeholder">
-    <div class="hmi-card-header">
-        <div class="hmi-pack-label">[ SPARE BAY COMPONENT ]</div>
-    </div>
-</div>
-
-<!-- 
-	ROW 4 COL 4
+	ROW 3 COL 4
 	HOLLOW GRID MATRIX PLACEHOLDER 
 -->
 <div class="hmi-pack-card hmi-card-placeholder">
@@ -387,5 +400,25 @@
 			</span>
 		</div>
 	</div>
+</div>
+
+<!-- 
+	ROW 5 COL 3
+	HOLLOW GRID MATRIX PLACEHOLDER 
+-->
+<div class="hmi-pack-card hmi-card-placeholder">
+    <div class="hmi-card-header">
+        <div class="hmi-pack-label">[ SPARE BAY COMPONENT ]</div>
+    </div>
+</div>
+
+<!-- 
+	ROW 5 COL 4
+	HOLLOW GRID MATRIX PLACEHOLDER 
+-->
+<div class="hmi-pack-card hmi-card-placeholder">
+    <div class="hmi-card-header">
+        <div class="hmi-pack-label">[ SPARE BAY COMPONENT ]</div>
+    </div>
 </div>
 
