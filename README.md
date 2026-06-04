@@ -1,19 +1,20 @@
-# HMITiles for Domoticz
+# HMITiles-for-Domoticz
 
-Tile-based custom pages for Domoticz using HTML/CSS/JS.
+Tile-based custom pages for Domoticz using HTML, CSS, and vanilla JavaScript.
 
-An open-source project for experimenting with structured, tile-based dashboards inside Domoticz custom pages. 
-It is shared mainly as inspiration for others building their own UI solutions.
+An open-source framework for building structured, high-density, tile-based dashboards inside Domoticz custom page environments. It is shared primarily as an architectural blueprint and inspiration for others seeking to engineer custom smart home user interfaces.
+
+This framework brings High-Performance Human Machine Interface (HMI) design principles to the smart home environment, focusing on clean, consistent, and highly disciplined user interfaces. The core focus of this architecture is clarity, situational awareness, and operational efficiency—not visual special effects or decorative UI clutter.
 
 ---
 
 ## Screenshots
 
-**Solar Info Dashboard example**  
+**Solar Info Dashboard Example**  
 ![Solar Info Dashboard Live Data](blueprints/50-solar-info-dashboard/solarinfodashboard-livedata.png)
 ![Solar Info Dashboard Trends](blueprints/50-solar-info-dashboard/solarinfodashboard-trends.png)
 
-**Workbench (development / testing area)**  
+**Workbench (Development / Testing Area)**  
 ![Workbench](blueprints/10-hmitiles-workbench/hmitiles-workbench.png)
 
 **Raspberry Pi Pico WH Telemetry View**  
@@ -23,50 +24,37 @@ It is shared mainly as inspiration for others building their own UI solutions.
 
 ## Overview
 
-**HMITiles for Domoticz** is a set of reusable HMI-style tiles for Domoticz custom pages.
+**HMITiles-for-Domoticz** provides a collection of reusable, industrial-inspired modular components for Domoticz custom layouts. 
+These tiles combine seamlessly into responsive grid matrices to monitor complex home telemetry data points. 
 
-These tiles can be combined to build structured, tile-based dashboards for visualizing device data.
-
-The project started as a personal experiment based on earlier work with a [B4X HMITiles](http://www.b4x.com/android/forum/threads/hmitiles.169774/) concept.
-
----
-
-## Key ideas
-
-- Tile-based layout for device visualization
-- Simple HMI (Human Machine Interface) style design approach
-- Separation between UI logic and Domoticz data handling
-- Binding elements via `data-device-idx`
-- Minimal visual design with optional alarm highlighting
-- Independent custom pages per use case
+The framework started as a personal open-source project, evolving from earlier layout prototypes developed under a [B4X HMITiles](http://www.b4x.com/android/forum/threads/hmitiles.169774/) design concept.
 
 ---
 
+## Core Features & Design Principles
 
-## Key Features & Design Principles
-
-* **High-Performance HMI Rules**: Following widely accepted industrial HMI principles. Elements maintain muted gray or dark charcoal baselines during normal runtime, allowing desaturated alert indicators to draw operator attention cleanly without eye strain.
-* **Decoupled Architecture**: Keeps visual presentation logic completely isolated from raw Domoticz polling cycles.
-* **Declarative DOM Injection**: Zero-config device mapping. Hardware metrics link natively to HTML tags using standard `data-device-idx` attributes.
-* **Ecosystem Extension Hooks**: Allows individual custom pages to safely intercept the main core dataset flow. This lets you build advanced multi-threshold alarms, virtual text timestamps, and historical trend charts without creating duplicate interval loops or over-polling your Domoticz backend.
-* **Independent Routing**: Designed to run as completely standalone custom pages engineered specifically for targeted automation use cases.
+* **High-Performance HMI Rules**: Following widely accepted industrial HMI principles. Elements maintain muted gray or dark charcoal baselines during steady-state runtime. Saturated, desaturated warning highlights are reserved strictly for active alarm thresholds (`data-warn-low`, `data-crit-high`) to reduce operator eye strain and draw attention efficiently.
+* **Decoupled Architecture**: Keeps visual presentation layout properties completely isolated from backend server data fetches. 
+* **Declarative DOM Injection**: Zero-config device mapping. Domoticz hardware registers bind instantly to the user interface using clean HTML `data-device-idx` attributes.
+* **Ecosystem Extension Hooks**: Leverages a central `window.onHMITileProcess` callback executing at the top of the processing loop. Custom layouts can intercept, evaluate, and transform incoming data packets (e.g., streaming 24-hour canvas sparkline trend lines, managing text inputs, or running complex multi-variable conditions) without triggering separate polling loops or stalling the server.
+* **Generic State Validation**: Automated alarm handlers (`checkAlarmThresholds`) evaluate numeric profiles natively using metadata tags embedded in your HTML layout, removing all hardcoded device indexing from the core code.
+* **Independent Page Routing**: Engineered to function as completely standalone, purpose-driven custom pages built for discrete automation monitoring tasks.
 
 ---
 
 ## Included Page Blueprints
 
-* **`10-hmitiles-workbench`**: An interactive playground used for prototyping layouts, creating new visual tile components, and testing experimental structures.
-* **`20-create-single-tile-page` + more** -> Guide blueprints for building your first custom tile and standalone pages.
-* **`50-solar-info-dashboard`**: A comprehensive system layout tracking live flows across solar production, house consumption, grid balance, and battery bank state-of-charge.
-* **`51-pico-servo-control`**: A WiFi-based micro-controller dashboard enabling remote multi-axis servo position adjustments.
-* **`52-pico-telemetry-view`**: Real-time diagnostic monitoring for remote nodes, featuring processor core temperatures, virtual data update timestamps, and antenna Wi-Fi RSSI attenuation tracks.
+* **`10-hmitiles-workbench`**: An interactive testing layout panel used for mocking up new modular components, validating styles, and debugging device index assignments.
+* **`20-create-single-tile-page`**: A basic entry-level walkthrough for establishing file pathways, creating your first tile wrapper, and establishing server handshakes.
+* **`50-solar-info-dashboard`**: A dense four-column process view detailing live energy flows across production, household consumption, grid balance, and battery bank state-of-charge.
+* **`51-pico-servo-control`**: A clean, WiFi-based microcontroller interface facilitating remote multi-axis servo positioning commands.
+* **`52-pico-telemetry-view`**: Real-time diagnostic monitoring tracking internal silicon temperature logs, virtual text data timestamps, and antenna Wi-Fi RSSI signal strength fields.
 
 ---
 
 ## Directory Manual Mapping
 
-The `blueprints/` directory houses independent, self-contained documentation packages. 
-Opening any blueprint folder on GitHub will automatically render its local `README.md` containing full setup guides, code files, and visual element previews:
+The `blueprints/` folder acts as an interactive repository index. Selecting any blueprint directory on GitHub will automatically render its localized `README.md` containing specific implementation code blocks, connection tutorials, and layout previews:
 
 * **[10] Framework Tile Workbench** -> `blueprints/10-hmitiles-workbench/`
 * **[20-49] Step-By-Step Tutorials** -> Guide blueprints for building your first custom tile and standalone pages.
@@ -74,31 +62,26 @@ Opening any blueprint folder on GitHub will automatically render its local `READ
 
 ---
 
-## Repository structure
+## Repository Structure
 
 ```
-hmitiles/
-├── core/                         	# Standard shared framework engines
-│   ├── hmitiles.css				# Global styling for all tiles and layouts
-│   └── hmitiles.js					# Shared UI logic (device binding, DOM helpers)
-├── blueprints/                   	# Custom page examples, tutorials
-│   ├── 10-hmitiles-workbench/		# Folder blueprint
-│   │   ├── hmitilesworkbench		# Folder main layout
-│   │   ├──── index.html            # Main UI layout
-│   │   ├── HMITilesWorkbench.html	# Domoticz custom page wrapper
-│   │   ├── README.md             	# Documenattion
-│   │   └── hmitiles-workbench.png	# Screenshot of Custom Page
-│   │
-│   ├── 20-create-single-tile-page
-│   │   ├── SingleTilePage.html
-│   │   ├── singletilepage			# Folder main layout
-│   │   └──── index.html            # Main UI layout
-│   │
-│   ├── more blueprints
-│   ├── ...
+HMITiles-for-Domoticz/
+├── core/                           	# Standard shared framework engines
+│   ├── hmitiles.css                	# Global styling for all tiles and layouts
+│   └── hmitiles.js                 	# Shared UI logic (bulk polling loop, hook dispatcher)
+├── blueprints/                     	# Custom page examples, tutorials, and apps
+│   ├── 10-hmitiles-workbench/      	# Tile design test bed folder
+│   │   ├── index.html              	# Standalone workbench interface markup
+│   │   ├── HMITilesWorkbench.html  	# Domoticz custom page wrapper definition
+│   │   ├── README.md               	# Detailed usage instructions
+│   │   └── hmitiles-workbench.png  	# Layout preview graphic
+│   ├── 20-create-single-tile-page/ 	# Foundational onboarding tutorial
+│   │   ├── SingleTilePage.html     	# Domoticz tab navigation file
+│   │   ├── singletilepage/         	# Core application directory
+│   │   └── index.html              	# Main blueprint page structure
 │   └── ...
-├── LICENSE						  # MIT license
-└── README.md                     # Documentation entry point
+├── LICENSE                         	# MIT open-source license
+└── README.md                       	# Documentation entry point manual
 ```
 
 ---
@@ -120,17 +103,17 @@ domoticz/www/templates/
 ├── hmitiles.css            # Framework shared styles
 ├── hmitiles.js             # Core polling and hook loop engine
 ├── SingleTilePage.html     # Domoticz tab navigation wrapper file
-├── singletilepage/         # Dedicated application folder assets
-└──── index.html          	# Main HTML structure and page hook scripts
+└── singletilepage/         # Dedicated application folder assets
+	└── index.html          # Main HTML structure and page hook scripts
 ```
-
 ---
 
-## Notes
+## Project Status
 
-This is an experimental hobby project and may evolve over time. **It is not a finished product.**
+This is an experimental hobby framework shared as-is for home automation developers and will continue to evolve over time. 
+**It is not a commercial, ready-made consumer product.**
 
-Feedback, ideas, and suggestions are welcome.
+Feedback, optimization forks, code suggestions, or interface feature requests are highly welcome!
 
 ---
 
@@ -140,10 +123,9 @@ This framework was made possible thanks to the foundational work of the open-sou
 
 * **[Domoticz Home Automation](https://domoticz.com)** – For providing a robust, highly resilient, and open-source smart home server environment. Their flexible JSON API and custom web-server template directories serve as the engine core for these custom dashboards.
 * **AI Collaboration Support** – For real-time architectural engineering, code optimization, and assistance refactoring the ecosystem hook pattern to comply with strict high-performance HMI concepts.
-* **B4X Community** – For the original layout inspiration and early UI prototype testing that laid the groundwork for this project's visual direction.
 
 ---
 
 ## License
 
-*Developed by **Robert W.B. Linn** — Released under the MIT License.*
+*Developed by **Robert W.B. Linn** — Released under the terms of the [MIT License
