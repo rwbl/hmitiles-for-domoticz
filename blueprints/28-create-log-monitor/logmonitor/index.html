@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Log Monitor</title>
+
+    <!-- Link backward one folder level to reuse shared global common styles -->
+    <link rel="stylesheet" href="../hmitiles.css">
+	
+	<!-- Link backward to the HMI tile engine -->
+    <script src="../hmitiles.js" defer></script>
+</head>
+<body>
+
+	<!-- Inside the header block of index.html -->
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
+				<h2>Log Monitor</h2>
+			</div>
+		</div>
+	</header>
+
+    <!-- Master outer panel containing your grid -->
+	<!-- Set the device idx according devices list -->
+    <main class="hmi-panel">
+        
+        <!-- 
+			TILE 1 ROW 1 COL 1: MONOSPACE SYSTEM LOG TILE WITH DYNAMIC CHANNEL SELECTOR
+			NO IDX
+		-->
+		<div class="hmi-pack-card" data-type="log-monitor" data-log-limit="5">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Domoticz Server Log</div>
+				
+				<!-- Low-Contrast Log Channel Filter Selector Switch -->
+				<select class="hmi-log-channel-select">
+					<option value="1">STATUS</option>
+					<option value="2">DETAIL</option>
+					<option value="4">ERRORS</option>
+				</select>
+			</div>
+			
+			<!-- Scrollable Retro Terminal Screen -->
+			<div class="hmi-log-terminal">
+				<div class="hmi-log-line">Initializing log system link...</div>
+			</div>
+
+			<!-- Input Box & Dual Utility Button Layout Row -->
+			<div class="hmi-log-input-row">
+				<input type="text" class="hmi-log-input" placeholder="Type custom log message..." maxlength="100">
+				<button class="hmi-log-send-btn">SEND</button>
+				<button class="hmi-log-clear-btn">CLEAR</button>
+			</div>
+		</div>
+
+		<footer class="hmi-footer-version">
+			<span>HMITiles for Domoticz v1.0.0-Beta</span>
+		</footer>
+
+    </main>
+</body>
+</html>

@@ -709,5 +709,159 @@ body {
 }
 
 /* ==========================================================================
+   SELECTOR
+   ========================================================================== */
+
+/* Force the grid row to use the full available card width */
+.hmi-pack-card[data-type="selector"] .hmi-value-grid {
+    width: 100%;
+}
+
+/* Force the internal data wrapper to expand */
+.hmi-pack-card[data-type="selector"] .hmi-box-data {
+    width: 100%;
+    display: flex;
+}
+
+/* Spread the dropdown box over the complete tile width */
+.hmi-selector-dropdown {
+    width: 100%;
+    padding: 6px 10px;
+    box-sizing: border-box;
+    font-family: inherit; /* Inherit your retro monospace font */
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+/* ==========================================================================
+   LOG MONITOR
+   ========================================================================== */
+
+/* Compliant Terminal Windows */
+.hmi-log-terminal {
+    background-color: #1a1a1a;			/* Monochromatic dark slate background */
+    border: 1px solid #333333;
+    padding: 8px;
+    height: 120px;
+    width: 100%;
+    overflow-y: auto;  					/* Keep vertical scrolling active for trailing updates */
+    overflow-x: hidden; 				/* Lock the horizontal plane entirely */
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.85rem;
+    line-height: 1.3;
+    color: #d1d1d1;
+    text-align: left;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+}
+
+/* Individual entry styles */
+.hmi-log-line {
+    margin-bottom: 4px;
+    white-space: pre-wrap; 				/* Text wraps safely to the next line inside the card boundaries */
+    word-break: break-all; 				/* Safely splits extra-long URL strings to prevent tile blowouts */
+    border-bottom: 1px dashed #2d2d2d;
+    padding-bottom: 2px;
+}
+
+/* System error alert condition rows */
+.hmi-log-line.hmi-log-error {
+    color: #ff8888;                 /* Lighter, brighter pastel red to eliminate color bleed */
+}
+
+/* System warning alert notification rows */
+.hmi-log-line.hmi-log-warning {
+    color: #f1a94e; /* Muted desaturated operational amber orange */
+}
+
+/* Script loop diagnostic trace rows (dzVents / Lua hooks) */
+.hmi-log-line.hmi-log-script {
+    color: #8bc34a; /* Muted desaturated soft logic green */
+}
+
+/* Input entry rows */
+
+/* Main input layout row wrapper */
+.hmi-log-input-row {
+    display: flex;
+    gap: 6px;
+    width: 100%;
+    margin-top: 4px;
+}
+
+/* Standard Interactive Form Field: High contrast, light background */
+.hmi-log-input {
+    flex-grow: 1;
+    background-color: #ffffff;       /* Pure white zone to indicate active text entry */
+    border: 1px solid #7a7a7a;       /* Clean industrial gray framing outline */
+    color: #1a1a1a;                  /* Crisp dark charcoal text color for fast reading */
+    padding: 5px 8px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    box-sizing: border-box;
+}
+
+/* Focused input state to match professional desktop components */
+.hmi-log-input:focus {
+    outline: none;
+    border-color: #4a90e2;           /* Subtle blue halo highlighting active focus */
+    background-color: #fbfbfb;
+}
+
+/* High-Performance Button Set (Send & Clear) */
+.hmi-log-send-btn,
+.hmi-log-clear-btn {
+    background-color: #e0e0e0;       /* Uniform light neutral gray finish */
+    color: #1a1a1a;                  /* Bold crisp dark font */
+    border: 1px solid #7a7a7a;
+    padding: 4px 12px;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
+    box-sizing: border-box;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+}
+
+.hmi-log-send-btn:hover,
+.hmi-log-clear-btn:hover {
+    background-color: #ffffff;       /* Positive operator feedback visual highlight */
+    border-color: #1a1a1a;
+}
+
+/* Custom Dropdown: Perfectly mirroring the static header badge style */
+.hmi-log-channel-select {
+    /* 1. Directly apply your native badge styling blueprint */
+    background-color: var(--hmi-border-dark);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 1px;
+    text-transform: uppercase;
+    
+    /* 2. Form element resets to remove standard browser distortions */
+    border: none;                   /* Removes standard beveled input box borders */
+    font-family: inherit;           /* Prevents browser form font defaults */
+    line-height: normal;            /* Fixes the text vertical alignment crunch */
+    cursor: pointer;
+    display: inline-block;
+    
+    /* 3. Strip out default operating system dropdown arrow graphics */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    
+    /* 4. Center text alignments */
+    text-align: center;
+    text-align-last: center;        /* Forces precise center alignment in Firefox */
+}
+
+/* Subdued operational hover state */
+.hmi-log-channel-select:hover {
+    filter: brightness(1.2);         /* Clean, uniform illumination feedback change */
+}
+
+/* ==========================================================================
    END
    ========================================================================== */

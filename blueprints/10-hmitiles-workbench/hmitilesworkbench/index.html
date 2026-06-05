@@ -20,23 +20,88 @@ Description: All tiles have default Domoticz device idx set. Change accordingly 
 
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
+            
+            // =========================================================================
+            // WORKBENCH LOCAL EMBEDDED MOCK ENGINE HOOK
+            // =========================================================================
+            // 1. Simulate the background system server logs
+            window.fetchDomoticzServerLogs = async function() {
+                const tileElement = document.querySelector('[data-type="log-monitor"]');
+                if (!tileElement) return;
+
+                const terminal = tileElement.querySelector('.hmi-log-terminal');
+                if (!terminal) return;
+
+                const mockLogs = [
+                    { message: "2026-06-05 18:00:11.471  Status: [HMI Dashboard] ***TESTMSG***" },
+                    { message: "2026-06-05 18:01:24.810  Script: dzVents: [SolarInfoDashboard] Solar data received." },
+                    { message: "2026-06-05 18:02:45.102  Error: dzVents: syntax error near 'local' on line 23" }
+                ];
+
+                terminal.innerHTML = "";
+                mockLogs.forEach(item => {
+                    const line = document.createElement('div');
+                    line.className = "hmi-log-line";
+                    line.textContent = item.message;
+
+                    const upperMsg = item.message.toUpperCase();
+                    if (upperMsg.includes("ERROR") || upperMsg.includes("CRITICAL")) {
+                        line.className = "hmi-log-line hmi-log-error";
+                    } else if (upperMsg.includes("DZVENTS") || upperMsg.includes("LUA") || upperMsg.includes("SCRIPT")) {
+                        line.className = "hmi-log-line hmi-log-script";
+                    }
+                    terminal.appendChild(line);
+                });
+                terminal.scrollTop = terminal.scrollHeight;
+            };
+
+            // 2. OVERRIDE: Inject fake hardware values for offline workbench testing
+            // This replaces the real fetch loop to populate empty placeholders like '--'
+            window.fetchDomoticzData = async function() {
+                if (typeof processDevices !== "function") return;
+
+                // Simulated server response payload array containing every required testing value
+                const workbenchMockDevices = [
+                    { idx: "1", Name: "Any Type Value", Data: "1943", Status: "1943 Watt" },
+                    { idx: "2", Name: "General/Percentage Progress Bar", Data: "100", Status: "100%" },
+                    { idx: "3", Name: "Temp+Humidity/TH", Temp: 21.4, Humidity: 55, Status: "NORMAL" },
+                    { idx: "4", Name: "Temp+Humidity+Baro/TH,BTH", Temp: 19.8, Humidity: 48, Barometer: 1013, Status: "NORMAL" },
+                    { idx: "5", Name: "General/Barometer", Data: "1021.34", Status: "1021.34 hPa" },
+                    { idx: "6", Name: "Switch/Switch/On/Off", Status: "On" },
+                    { idx: "7", Name: "Switch/Switch/On/Off (Pump)", Status: "On" },
+                    { idx: "8", Name: "Switch/Switch/Dimmer", Data: "66", Status: "SET LEVEL: 66 %" },
+                    { idx: "9", Name: "Setpoint/Setpoint", SetPoint: "20.0", Data: "20.0" },
+                    
+                    // Injected values specifically matching your multi-variable components
+                    { idx: "10", Name: "Setpoint + Process Value", SetPoint: "21.5", Status: "HEATING" },
+                    { idx: "11", Name: "Process Value Sensor", Temp: "19.5", Data: "19.5" }, // Maps to data-pv-idx
+                    
+                    // Injected values for alarm thresholds to overwrite the '--' markers
+                    { idx: "16", Name: "General/Percentage Alarm Warning/Critical", Data: "78.4", Status: "78.4 %" },
+                    { idx: "17", Name: "General/Percentage Alarm ZERO", Data: "0.0", Status: "0.0 %" },
+                    
+                    { idx: "18", Name: "Any Type Image+Value", Data: "OK", Status: "NORMAL" },
+                    { idx: "19", Name: "Switch/Switch/Push On Button Static Text", Status: "OFF" },
+                    { idx: "20", Name: "Light/Switch/Selector Switch", Level: 0, Status: "Off" }
+                ];
+
+                // Pass the simulated payload array into your core hmitiles.js rendering engine
+                processDevices(workbenchMockDevices);
+            };
+
+            // =========================================================================
+            // COMPONENT COMPILATION AND RENDERING LIFECYCLE
+            // =========================================================================
             try {
-                // Fetch your master template index library file natively
                 const response = await fetch("hmitiles.index");
                 if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
                 const text = await response.text();
                 
-                // Parse the raw string text data into HTML document elements
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(text, "text/html");
-                
-                // Select EVERY tile card component stored inside the library file
                 const allTemplateCards = doc.querySelectorAll('.hmi-pack-card');
-				// const allTemplateCards = doc.querySelectorAll('main > .hmi-pack-card, body > .hmi-pack-card, .hmi-panel > .hmi-pack-card');
-
                 const targetGrid = document.getElementById("hmi-library-grid");
                 
-                // Loop through each component, clone it, and drop it into the grid matrix
                 allTemplateCards.forEach(card => {
                     const clonedCard = card.cloneNode(true);
                     targetGrid.appendChild(clonedCard);
@@ -44,10 +109,12 @@ Description: All tiles have default Domoticz device idx set. Change accordingly 
 
                 console.log(`Successfully generated dynamic library with ${allTemplateCards.length} tiles.`);
                 
-                // FORCE ENGINE KICKSTART: Tell your generic script loop to immediately scan 
-                // the newly injected elements and begin fetching their matching virtual device values.
-                if (typeof fetchDomoticzData === "function") {
-                    fetchDomoticzData();
+                // Fire your local mock loops sequentially to hydrate the interface elements
+                if (typeof window.fetchDomoticzData === "function") {
+                    window.fetchDomoticzData();
+                }
+                if (typeof window.fetchDomoticzServerLogs === "function") {
+                    window.fetchDomoticzServerLogs();
                 }
 
             } catch (err) {
@@ -57,6 +124,7 @@ Description: All tiles have default Domoticz device idx set. Change accordingly 
             }
         });
     </script>
+
 </head>
 
 <body>

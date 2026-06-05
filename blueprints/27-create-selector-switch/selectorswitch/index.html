@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Selector Switch</title>
+
+    <!-- Link backward one folder level to reuse shared global common styles -->
+    <link rel="stylesheet" href="../hmitiles.css">
+	
+	<!-- Link backward to the HMI tile engine -->
+    <script src="../hmitiles.js" defer></script>
+</head>
+<body>
+
+	<!-- Inside the header block of index.html -->
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
+				<h2>Selector Switch</h2>
+			</div>
+		</div>
+	</header>
+
+    <!-- Master outer panel containing your grid -->
+	<!!-- Set the device idx according devices list -->
+    <main class="hmi-panel">
+        
+        <!-- 
+			TILE 1 ROW 1 COL 1: MULTI-LEVEL SELECTOR SWITCH
+			IDX 25
+		-->
+		<div class="hmi-pack-card" data-type="selector" data-device-idx="25">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">House Mode</div>
+				<div class="hmi-badge">MODE</div>
+			</div>
+			<div class="hmi-value-grid">
+				<div class="hmi-box-data">
+					<select class="hmi-selector-dropdown">
+						<option value="0">Off</option>
+						<option value="10">Home</option>
+						<option value="20">Away</option>
+						<option value="30">Night</option>
+					</select>
+				</div>
+			</div>
+		</div>
+
+		<footer class="hmi-footer-version">
+			<span>HMITiles for Domoticz v1.0.0-Beta</span>
+		</footer>
+
+    </main>
+</body>
+</html>

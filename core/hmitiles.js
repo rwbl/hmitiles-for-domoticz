@@ -9,7 +9,10 @@
  * network polling, and interactive controls for the Domoticz platform.
  */
 
-// Configuration Setup
+// GLOBAL CONFIGURATION SETTINGS
+const DEBUG = true; // Set to true to see logs in console, false to hide them
+
+// Domoticz server URL
 const DOMOTICZ_URL = window.parent && window.parent.$ ? window.parent.$.domoticzurl : window.location.origin;
 
 // Set refresh rate to 1 minute (60000) minimum
@@ -23,7 +26,10 @@ const REFRESH_RATE = 60000;
  */
 async function fetchDomoticzData() {
     try {
-        const response = await fetch(`${DOMOTICZ_URL}/json.htm?type=command&param=getdevices&filter=all`);
+		const commandUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=getdevices&filter=all`;
+		if (DEBUG) console.log("fetchDomoticzData", commandUrl);
+		
+        const response = await fetch(commandUrl);
         if (!response.ok) throw new Error(`Network response error: ${response.status}`);
         
         const data = await response.json();
@@ -43,6 +49,7 @@ async function fetchDomoticzData() {
  * @returns {void}
  */
 function processDevices(devices) {
+	
     updateCommunicationsStatus(true);
 
     devices.forEach(device => {
@@ -69,6 +76,8 @@ function processDevices(devices) {
 		// Read its custom card type configuration tag
         const cardType = tileElement.getAttribute('data-type') || "standard";
 
+		if (DEBUG) console.log("processDevices idx=", device.idx, "cardType=", cardType);
+
         // =========================================================================
         // GENERIC GLOBAL TEXT INPUT LOGIC PIPELINE
         // =========================================================================
@@ -93,7 +102,7 @@ function processDevices(devices) {
 
 			return; // FIXED: Safely exits the loop pass ONLY for text-input cards!
 		}
-		
+
         // =========================================================================
         // GENERIC MULTI-VARIABLE COUPLING (Sniffs for sub-element classes inside the card)
         // =========================================================================
@@ -193,9 +202,30 @@ function processDevices(devices) {
         }
 
         // =========================================================================
+		// LIGHT/SWITCH, SELECTOR SWITCH
+        // =========================================================================
+		if (device.SwitchType === "Selector" || cardType === "selector") {
+			const dropdownElement = tileElement.querySelector('.hmi-selector-dropdown');
+			if (dropdownElement) {
+				// Domoticz typically exposes this via device.Level or device.LevelInt
+				const currentLevel = device.Level !== undefined ? device.Level : device.LevelInt;
+				if (currentLevel !== undefined) {
+					dropdownElement.value = currentLevel;
+				}
+			}
+
+			// FIX: Tell the card to act like it has "static" text behavior.
+			// This prevents updateHMIAnalogTile from failing when it looks for valueField!
+			const valueField = tileElement.querySelector('.hmi-value');
+			if (!valueField) {
+				tileElement.setAttribute('data-text', 'static');
+			}
+		}
+
+        // =========================================================================
 		// DIMMER SWITCH
         // =========================================================================
-        else if (device.SwitchType === "Dimmer" || device.SwitchTypeVal === 7) {
+        if (device.SwitchType === "Dimmer" || device.SwitchTypeVal === 7) {
             const slider = tileElement.querySelector('.hmi-slider');
             const dimmerText = tileElement.querySelector('.hmi-dimmer-text');
 
@@ -239,7 +269,7 @@ function processDevices(devices) {
         // =========================================================================
 		// LIGHT/SWITCH, SWITCH, PUMP, VALVE
         // =========================================================================
-        else if (device.Type === "Light/Switch" || cardType === "switch" || cardType === "pump" || cardType === "valve") {
+        if (device.Type === "Light/Switch" || cardType === "switch" || cardType === "pump" || cardType === "valve") {
             const rawStatus = String(device.Status || device.Data || "").toUpperCase();
             const isRawOn = (rawStatus === "ON" || rawStatus === "TRUE");
 
@@ -259,9 +289,11 @@ function processDevices(devices) {
         // =========================================================================
 		// ANYOTHER DEVICE
         // =========================================================================
-        else {
+        if (!displayStatus) {
             displayStatus = device.Status || device.Data || "";
         }
+
+		// console.log("processDevices idx=", device.idx, "name=", device.Name, "value=", rawValue, "status=", displayStatus, "lastUpdate=", device.LastUpdate);
 
         // Send out to core display text box renderer
         updateHMIAnalogTile(tileElement, {
@@ -292,20 +324,34 @@ function processDevices(devices) {
  */
 function updateHMIAnalogTile(element, data) {
     const valueField = element.querySelector('.hmi-value');
+    
+    // 1. SAFELY PROCESS VALUE FIELD (Only run if it actually exists in HTML)
     if (valueField) {
-        valueField.textContent = data.status; 
+        const textBehavior = valueField.getAttribute('data-text');
+
+        if (textBehavior === "static") {
+            // Do absolutely nothing! Text remains untouched.
+        } else {
+            // Standard behavior: Use the calculated status if no option is set
+            valueField.textContent = data.status; 
+        }
+    } else {
+        // If there is no valueField (like on your selector card), we log a clean message if DEBUG is on
+        if (DEBUG) console.log(`updateHMIAnalogTile -> Safe Skip: Tile [IDX ${element.getAttribute('data-device-idx')}] has no .hmi-value element.`);
     }
 
-    const statusBadge = element.querySelector('.hmi-clickable-badge');
+    // 2. SAFELY PROCESS STATUS BADGE (Only run if it actually exists in HTML)
+    const statusBadge = element.querySelector('.hmi-clickable-badge') || element.querySelector('.hmi-badge');
     if (statusBadge) {
         statusBadge.textContent = String(data.status).toUpperCase();
     }
     
+    // 3. SAFELY PROCESS GAUGE BAR FILL ELEMENTS
     const barFill = element.querySelector('.hmi-bar-fill');
     const barText = element.querySelector('.hmi-bar-text');
-    const numericValue = parseFloat(data.value) || 0;
     
     if (barFill && barText) {
+        const numericValue = parseFloat(data.value) || 0;
         const percentage = Math.min(Math.max(numericValue, 0), 100);
         barFill.style.width = `${percentage}%`;
         barText.textContent = `${Math.round(percentage)}%`;
@@ -332,19 +378,31 @@ function setupControlListeners() {
     // CLICK ACTIONS (Switches, Badges, Up/Down Thermostat buttons, and Graphs)
     document.body.addEventListener('click', async function(event) {
         
-        // HANDLE BADGE CLICK ACTIONS (Switches, Pumps, Valves)
+        // HANDLE BADGE CLICK ACTIONS (Switches, Pumps, Valves, Blinds)
         const badge = event.target.closest('.hmi-clickable-badge');
         if (badge) {
             const card = badge.closest('.hmi-pack-card');
             if (!card) return;
 
-			const idx = parseInt(card.getAttribute('data-device-idx'), 10);
-            const currentStatus = badge.textContent.trim().toUpperCase();
-            const isCurrentlyOn = (currentStatus === "ON" || currentStatus === "RUNNING" || currentStatus === "OPEN" || (parseInt(currentStatus, 10) > 0));
-            const targetCommand = isCurrentlyOn ? "Turn Off" : "Turn On";
+            const idx = parseInt(card.getAttribute('data-device-idx'), 10);
+            
+            // 1. Read the explicit action from the card if defined (e.g., "Toggle", "Stop")
+            const explicitAction = card.getAttribute('data-action');
+            let targetCommand;
 
-			console.log("DEBUG CARD ELEMENT:", card);
-            console.log(`SCADA Execution -> IDX ${idx}: Sending -> ${targetCommand}`);
+            if (explicitAction) {
+                // If data-action exists (Toggle or Stop), use it directly
+                targetCommand = explicitAction;
+            } else {
+                // 2. Fallback: Your original smart logic if no data-action is specified
+                const currentStatus = badge.textContent.trim().toUpperCase();
+                const isCurrentlyOn = (currentStatus === "ON" || currentStatus === "RUNNING" || currentStatus === "OPEN" || (parseInt(currentStatus, 10) > 0));
+                targetCommand = isCurrentlyOn ? "Turn Off" : "Turn On";
+            }
+
+            console.log("DEBUG CARD ELEMENT:", card);
+            if (DEBUG) console.log(`addEventListener click idx=${idx} sending ${targetCommand}`);
+            
             await sendDomoticzSwitchCommand(idx, targetCommand);
             return; 
         }
@@ -366,7 +424,7 @@ function setupControlListeners() {
             newTemp = newTemp.toFixed(1);
             valueField.textContent = newTemp;
 
-            console.log(`Setting Thermostat IDX ${idx} -> ${newTemp}°C`);
+            // console.log(`Setting Thermostat IDX ${idx} -> ${newTemp}°C`);
             await sendDomoticzSetpointCommand(idx, newTemp);
             return;
         }
@@ -383,7 +441,7 @@ function setupControlListeners() {
         }
     });
 
-    // SLIDER MOVING ACTION (Real-time numbers while dragging)
+    // SLIDER MOVING ACTION REAL-TIME (Real-time numbers while dragging)
     document.body.addEventListener('input', function(event) {
         const slider = event.target.closest('.hmi-slider');
         if (!slider) return;
@@ -398,23 +456,34 @@ function setupControlListeners() {
         }
     });
 	
-    // SLIDER RELEASED ACTION (Fires command link to network)
+	// SLIDER/SELECTOR CONTROLS RELEASED ENGINE (Fires command link to network for Sliders and Selectors)
     document.body.addEventListener('change', async function(event) {
         const slider = event.target.closest('.hmi-slider');
-        if (!slider) return;
+        const selector = event.target.closest('.hmi-selector-dropdown'); 
+        
+        if (!slider && !selector) return; // Exit if neither was changed
 
-        slider.isDragging = false; 
-        const card = slider.closest('.hmi-pack-card');
+        const card = (slider || selector).closest('.hmi-pack-card');
         if (!card) return;
 
         const idx = parseInt(card.getAttribute('data-device-idx'), 10);
-        const targetLevel = slider.value;
+        let targetLevel;
+        let switchCmd;
 
-        console.log(`Dimmer Hardware Action -> Setting IDX ${idx} -> ${targetLevel}%`);
-        
-        const switchCmd = (targetLevel == 0) ? "Off" : "Set%20Level";
+        if (slider) {
+            slider.isDragging = false; 
+            targetLevel = slider.value;
+            switchCmd = (targetLevel == 0) ? "Off" : "Set%20Level";
+            // console.log(`Dimmer Hardware Action -> Setting IDX ${idx} -> ${targetLevel}%`);
+        } 
+        else if (selector) {
+            targetLevel = selector.value;
+            switchCmd = "Set%20Level"; // Selectors always use Set Level
+            // console.log(`Selector Hardware Action -> Setting IDX ${idx} -> Level ${targetLevel}`);
+        }
+
         const commandUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=switchlight&idx=${idx}&switchcmd=${switchCmd}&level=${targetLevel}`;
-
+		if (DEBUG) console.log("addEventListener change", commandUrl);
         try {
             const response = await fetch(commandUrl);
             if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
@@ -423,9 +492,10 @@ function setupControlListeners() {
                 setTimeout(fetchDomoticzData, 400);
             }
         } catch (error) {
-            console.error(`Failed to dispatch dimmer execution:`, error);
+            console.error(`Failed to dispatch control execution:`, error);
         }
     });	
+	// END
 }
 
 /**
@@ -433,12 +503,26 @@ function setupControlListeners() {
  * @async
  * @function sendDomoticzSwitchCommand
  * @param {number} idx - The unique Domoticz database hardware index identifier code.
- * @param {string} command - The target action string (e.g., "Turn On", "Turn Off").
+ * @param {string} command - The target action string (e.g., "On", "Off", "Turn On", "Turn Off", "Toggle", "Stop").
+ * @param {number} level - The level set by Dimmer or Selector.
  * @returns {Promise<void>}
  */
-async function sendDomoticzSwitchCommand(idx, command) {
-    const switchCmdValue = (command === "Turn On") ? "On" : "Off";
-    const commandUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=switchlight&idx=${idx}&switchcmd=${switchCmdValue}&level=0`;
+async function sendDomoticzSwitchCommand(idx, command, level = 0) {
+    // Maps the command. Default is Off.
+    let switchCmdValue = "Off";
+	let targetLevel = level;
+    
+    if (command === "On" || command === "Turn On") {
+        switchCmdValue = "On";
+    } else if (command === "Toggle") {
+        switchCmdValue = "Toggle";
+    } else if (command === "Stop") {
+        switchCmdValue = "Stop";
+    } else if (command === "Set Level") {
+        switchCmdValue = "Set Level"; // For dimmers and selectors
+    }
+    const commandUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=switchlight&idx=${idx}&switchcmd=${switchCmdValue}&level=${targetLevel}`;
+    if (DEBUG) console.log("sendDomoticzSwitchCommand=", commandUrl);
 
     try {
         const response = await fetch(commandUrl);
@@ -462,6 +546,7 @@ async function sendDomoticzSwitchCommand(idx, command) {
  */
 async function sendDomoticzSetpointCommand(idx, targetTemperature) {
     const commandUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=setsetpoint&idx=${idx}&setpoint=${targetTemperature}`;
+	if (DEBUG) console.log("sendDomoticzSetpointCommand", commandUrl);
 
     try {
         const response = await fetch(commandUrl);
@@ -482,8 +567,9 @@ async function sendDomoticzSetpointCommand(idx, targetTemperature) {
  * @returns {void}
  */
 function openDomoticzChart(idx) {
-    const logUrl = `${DOMOTICZ_URL}/#/Devices/${idx}/Log`;
-    window.open(logUrl, '_blank'); // Opens chart in a new browser tab
+    const commandUrl = `${DOMOTICZ_URL}/#/Devices/${idx}/Log`;
+	if (DEBUG) console.log("openDomoticzChart", commandUrl);
+    window.open(commandUrl, '_blank'); // Opens chart in a new browser tab
 }
 
 /**
@@ -567,7 +653,7 @@ function toggleManualRequest() {
     btnBadge.innerText = "ON";
     
     // Here you would add your node-red http fetch request call!
-    console.log("Requesting data from Domoticz device IDX 6...");
+    // console.log("Requesting data from Domoticz device IDX 6...");
     
     // Auto reset visual toggle state mirroring the dzVents script logic
     setTimeout(() => {
@@ -617,8 +703,9 @@ function setupGlobalTextInputListeners(cardElement, idx) {
         if (badge) badge.textContent = "SAVING...";
 
         try {
-            const updateUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=udevice&idx=${idx}&nvalue=0&svalue=${encodeURIComponent(targetValue)}`;
-            const response = await fetch(updateUrl);
+            const commandUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=udevice&idx=${idx}&nvalue=0&svalue=${encodeURIComponent(targetValue)}`;
+			if (DEBUG) console.log("setupGlobalTextInputListeners", commandUrl);
+            const response = await fetch(commandUrl);
             
             if (response.ok) {
                 cardElement.setAttribute('data-alarm', 'saved');
@@ -634,12 +721,214 @@ function setupGlobalTextInputListeners(cardElement, idx) {
 }
 
 /**
+ * Gathering text inputs and dispatching them into the backend pipeline via click configurations
+ * @function setupLogInjectionListeners
+ * @returns {void}
+ */
+function setupLogInjectionListeners(tileElement) {
+    const btn = tileElement.querySelector('.hmi-log-send-btn');
+    const input = tileElement.querySelector('.hmi-log-input');
+
+    if (!btn || !input) return;
+
+    const dispatchMessage = async () => {
+        const text = input.value.trim();
+        if (!text) return; // Ignore blank entries
+
+        // Domoticz native custom log injection URL parameter string format
+        const targetUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=addlogmessage&message=${encodeURIComponent("[HMI Dashboard] " + text)}`;
+
+        if (DEBUG) console.log("Logger Link Action -> Injecting custom item:", targetUrl);
+
+        try {
+            const response = await fetch(targetUrl);
+            if (!response.ok) throw new Error(`HTTP error status: ${response.status}`);
+            const result = await response.json();
+            
+            if (result.status === "OK") {
+                input.value = ""; // Clear input textbox fields
+                setTimeout(fetchDomoticzData, 300); // Trigger immediate visual update reload
+            }
+        } catch (err) {
+            console.error("Logger data entry transmission anomaly:", err);
+        }
+    };
+
+    // Trigger action when clicking send button
+    btn.addEventListener('click', dispatchMessage);
+
+    // Trigger action when pressing "Enter" key while inside input box field
+    input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            dispatchMessage();
+        }
+    });
+}
+
+/**
+ * Retrieves the targeted log feed channel from Domoticz based on user selection.
+ * @async
+ * @function fetchDomoticzServerLogs
+ * @returns {Promise<void>}
+ */
+async function fetchDomoticzServerLogs() {
+    const tileElement = document.querySelector('[data-type="log-monitor"]');
+    if (!tileElement) return;
+
+    // Skip network activity if a hard clear loop delay is active
+    if (tileElement.hasAttribute('data-log-hold')) return;
+
+    const terminal = tileElement.querySelector('.hmi-log-terminal');
+    if (!terminal) return;
+
+    const limit = parseInt(tileElement.getAttribute('data-log-limit'), 10) || 5;
+    
+    // NEW: Extract active target integer flag from dropdown select element (default to 1)
+    const channelSelect = tileElement.querySelector('.hmi-log-channel-select');
+    const targetLogLevel = channelSelect ? channelSelect.value : "1";
+
+    // Build query link dynamically mapping user target criteria parameters
+    const logUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=getlog&loglevel=${targetLogLevel}`;
+
+    try {
+        const response = await fetch(logUrl);
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+        const data = await response.json();
+        
+        if (data.status === "OK" && data.result) {
+            terminal.innerHTML = ""; 
+            const entries = data.result.slice(-limit);
+            
+            entries.forEach(item => {
+                const line = document.createElement('div');
+                line.className = "hmi-log-line";
+                line.textContent = item.message;
+
+                // Keyword color analysis mapping rules
+                const upperMsg = item.message.toUpperCase();
+                if (upperMsg.includes("ERROR") || upperMsg.includes("CRITICAL")) {
+                    line.classList.add("hmi-log-error");
+                } else if (upperMsg.includes("WARNING") || upperMsg.includes("EXCEPTION")) {
+                    line.classList.add("hmi-log-warning");
+                } else if (upperMsg.includes("DZVENTS") || upperMsg.includes("LUA")) {
+                    line.classList.add("hmi-log-script");
+                }
+
+                terminal.appendChild(line);
+            });
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+    } catch (err) {
+        if (DEBUG) console.error("Log monitor sync hang:", err);
+    }
+
+    // Bind execution listeners safely once per application boot phase
+    if (!tileElement.hasAttribute('data-listeners-bound')) {
+        tileElement.setAttribute('data-listeners-bound', 'true');
+        setupLogInjectionListeners(tileElement);
+    }
+}
+
+/**
+ * Binds event listeners to the log monitor tile components for dispatching and clearing logs.
+ * Custom log message is added to the domoticz log level 2(details).
+ * @function setupLogInjectionListeners
+ * @param {HTMLElement} tileElement - The root DOM element card container for the log monitor widget.
+ * @returns {void}
+ */
+function setupLogInjectionListeners(tileElement) {
+    const btnSend = tileElement.querySelector('.hmi-log-send-btn');
+    const btnClear = tileElement.querySelector('.hmi-log-clear-btn'); 
+    const input = tileElement.querySelector('.hmi-log-input');
+    const terminal = tileElement.querySelector('.hmi-log-terminal');
+
+    if (!input || !terminal) return;
+
+    // =========================================================================
+    // CUSTOM LOG MESSAGE INJECTION PIPELINE LEVEL 2 (DETAILS)
+    // =========================================================================
+    const dispatchMessage = async () => {
+        const text = input.value.trim();
+        if (!text) return; // Ignore blank empty string inputs entirely
+
+        // Construct standard Domoticz log insertion string format query parameter URL
+        const targetUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=addlogmessage&message=${encodeURIComponent("[HMI Dashboard] " + text)}`;
+
+        if (DEBUG) console.log("Logger Link Action -> Injecting custom item:", targetUrl);
+
+        try {
+            const response = await fetch(targetUrl);
+            if (!response.ok) throw new Error(`HTTP error status: ${response.status}`);
+            const result = await response.json();
+            
+            if (result.status === "OK") {
+                input.value = ""; // Clear input textbox field variables
+                setTimeout(fetchDomoticzServerLogs, 300); // Trigger immediate visualization data update refresh
+            }
+        } catch (err) {
+            console.error("Logger data entry transmission anomaly:", err);
+        }
+    };
+
+    // Bind execution entry triggers to component actions
+    if (btnSend) btnSend.addEventListener('click', dispatchMessage);
+    input.addEventListener('keypress', (e) => { if (e.key === 'Enter') dispatchMessage(); });
+
+    // =========================================================================
+    // NATIVE SERVER-SIDE LOG PURGE ACTION PIPELINE
+    // =========================================================================
+    if (btnClear) {
+        btnClear.addEventListener('click', async () => {
+            // Uncovered master endpoint string discovered through network tracing
+            const clearUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=clearlog`;
+            
+            if (DEBUG) console.log("Logger Link Action -> Wiping Domoticz log database:", clearUrl);
+
+            try {
+                const response = await fetch(clearUrl);
+                if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+                const result = await response.json();
+                
+                if (result.status === "OK") {
+                    // Flush visual grid output rows to give user immediate operational feedback
+                    terminal.innerHTML = '<div class="hmi-log-line" style="font-style: italic; color: #777;">Domoticz server log cleared successfully...</div>';
+                    
+                    // Raise temporary background processing lock to let hardware database empty out safely
+                    tileElement.setAttribute('data-log-hold', 'true');
+                    
+                    setTimeout(() => {
+                        tileElement.removeAttribute('data-log-hold');
+                        fetchDomoticzServerLogs(); // Pull down a completely fresh monitoring data canvas array
+                    }, 2000);
+                }
+            } catch (err) {
+                console.error("Failed to execute native master server clear log action:", err);
+            }
+        });
+    }
+
+    // =========================================================================
+    // LOG VIEW CHANNEL FILTER DROPDOWN INTERACTION PIPELINE
+    // =========================================================================
+    const channelSelect = tileElement.querySelector('.hmi-log-channel-select');
+    
+    if (channelSelect && !channelSelect.hasAttribute('data-listener-attached')) {
+        channelSelect.setAttribute('data-listener-attached', 'true');
+        channelSelect.addEventListener('change', () => {
+            if (DEBUG) console.log("Logger Link Action -> Switching Log Filter Channel level to:", channelSelect.value);
+            // Trigger instant refresh using newly mapped channel value indices
+            fetchDomoticzServerLogs(); 
+        });
+    }
+}
+
+/**
  * Redirects the browser viewport straight to the native Domoticz root control panel menu.
  * @function goToDomoticzDashboard
  * @returns {void}
  */
 function goToDomoticzDashboard() {
-    console.log("SCADA Navigation -> Shifting viewport window back to main Domoticz desk.");
+    if (DEBUG) console.log("goToDomoticzDashboard Shifting viewport window back to main Domoticz desk.");
     
     // Directs the top-level frame layer window path to load the native dashboard
     window.top.location.href = `${DOMOTICZ_URL}/`;
@@ -653,4 +942,12 @@ window.addEventListener('DOMContentLoaded', () => {
     fetchDomoticzData();
     setInterval(fetchDomoticzData, REFRESH_RATE);
     setupControlListeners();
+
+	// Logging
+    const logTile = document.querySelector('[data-type="log-monitor"]');
+    if (logTile) {
+        fetchDomoticzServerLogs();
+        setInterval(fetchDomoticzServerLogs, 5000); // Check for logs every 5 seconds
+    }
 });
+
