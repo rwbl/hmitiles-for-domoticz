@@ -2,7 +2,7 @@
 	File: hmitiles.index
 	Project: HMITiles-for-Domoticz Workbench
 	Brief: Master Template Library for Standard HMI Tile Component Layouts.
-	Date: 2026-06-05
+	Date: 2026-06-06
 	Author: Robert W.B. Linn (c) 2026 MIT
 	Description: 
 	Copy and paste these cards into your index.html grid layout.
@@ -41,8 +41,7 @@
 -->
 <div class="hmi-pack-card" data-device-idx="2" data-type="progress-bar-tile">
 	<div class="hmi-card-header">
-		<!-- Battery State of Charge -->
-		<div class="hmi-pack-label">General/Percentage Progress Bar</div>
+		<div class="hmi-pack-label">General/Percentage (Progress Bar)</div>
 		<div class="hmi-badge">NORMAL</div>
 	</div>
 
@@ -63,7 +62,7 @@
 -->
 <div class="hmi-pack-card" data-type="temp_hum" data-device-idx="3">
     <div class="hmi-card-header">
-        <div class="hmi-pack-label">Temp+Humidity/TH</div>
+        <div class="hmi-pack-label">Temp+Humidity</div>
         <div class="hmi-badge">NORMAL</div>
     </div>
     <!-- Splits variables into stacked, cleanly spaced boxes -->
@@ -86,7 +85,7 @@
 -->
 <div class="hmi-pack-card" data-type="temp_hum_baro" data-device-idx="3">
     <div class="hmi-card-header">
-        <div class="hmi-pack-label">Temp+Humidity+Baro/TH,BTH</div>
+        <div class="hmi-pack-label">Temp+Humidity+Baro</div>
         <div class="hmi-badge">NORMAL</div>
     </div>
     <!-- Splits variables into stacked, cleanly spaced boxes -->
@@ -201,7 +200,7 @@
 -->
 <div class="hmi-pack-card" data-type="thermostat" data-device-idx="9">
     <div class="hmi-card-header">
-        <div class="hmi-pack-label">Setpoint/Setpoint</div>
+        <div class="hmi-pack-label">Setpoint/Setpoint (thermostat)</div>
         <div class="hmi-badge">HEATING</div>
     </div>
     <div class="hmi-value-grid">
@@ -249,7 +248,7 @@
 -->
 <div class="hmi-pack-card" data-device-idx="14">
     <div class="hmi-card-header">
-        <div class="hmi-pack-label">General/Text Timestamp</div>
+        <div class="hmi-pack-label">General/Text (Timestamp)</div>
     </div>
 	<div class="hmi-value-grid">
 		<div class="hmi-value-box">
@@ -267,7 +266,7 @@
 -->
 <div class="hmi-pack-card" data-device-idx="15" data-type="text-input">
 	<div class="hmi-card-header">
-		<div class="hmi-pack-label">General/Text Input</div>
+		<div class="hmi-pack-label">General/Text (Input)</div>
 		<div class="hmi-badge">SYNCED</div>
 	</div>
 	<div class="hmi-value-grid">
@@ -293,7 +292,7 @@
 -->
 <div class="hmi-pack-card" data-device-idx="16" data-warn-low="20" data-crit-low="10">
 	<div class="hmi-card-header">
-		<div class="hmi-pack-label">General/Percentage Alarm Warning/Critical</div>
+		<div class="hmi-pack-label">General/Percentage (Alarm/Warning/Critical)</div>
 		<div class="hmi-badge">NORMAL</div>
 	</div>
 	<div class="hmi-value-grid">
@@ -314,7 +313,7 @@
 <!-- Solar Tile () -->
 <div class="hmi-pack-card" data-device-idx="17" data-alert-zero="true" data-zero-text="NO PRODUCTION">
 	<div class="hmi-card-header">
-		<div class="hmi-pack-label">General/Percentage Alarm ZERO</div>
+		<div class="hmi-pack-label">General/Percentage (Alarm ZERO)</div>
 		<div class="hmi-badge">NORMAL</div>
 	</div>
 	<div class="hmi-value-grid">
@@ -360,7 +359,7 @@
 <!-- ROW 3 COL 1: Manual Data Request Push On Button -->
 <div class="hmi-pack-card" data-type="switch" data-device-idx="19" data-action="On" data-on-text="PUSH" data-off-text="PUSH">
 	<div class="hmi-card-header">
-		<div class="hmi-pack-label">Switch/Switch/Push On Button Static Text</div>
+		<div class="hmi-pack-label">Switch/Switch/Push On Button (Static Text)</div>
 		<div class="hmi-badge hmi-clickable-badge">PUSH</div>
 	</div>
 	<div class="hmi-value-grid">
@@ -408,7 +407,7 @@
 <div class="hmi-pack-card" data-type="info" data-device-idx="24">
 	<div class="hmi-card-header">
 		<!-- Clean, descriptive header label -->
-		<div class="hmi-pack-label">General/Text System Information</div>
+		<div class="hmi-pack-label">General/Text (System Info)</div>
 		<div class="hmi-badge">INFO</div>
 	</div>
 	<div class="hmi-value-grid" style="padding: 12px; min-height: 100px;">

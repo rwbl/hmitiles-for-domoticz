@@ -11,6 +11,7 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 - **Log Monitor Widget**: Added a scrollable monospace terminal tile to stream server entries. Features low-contrast keyword color-matching compliant with high-performance industry standards, channel selection dropdowns (Status, Detail, Errors), and a native server-side log purge execution pipe.
 - **Selector Switch Widget**: Implemented full-width dropdown control matrices that process and map configurations straight from user-defined local layout tags.
 - **Controls Routing Engine**: Extended the core listener loop to uniformly capture and execute explicit Toggle, Blinds Stop, and momentary Pulse/Push On network transmissions.
+- **hmitiles.css**: Horizontal rules.
 
 #### Changed
 - **HMITiles Workbench**: Reworked the index simulator template with matched virtual device IDXs and cross-referenced multi-variable datasets to support full offline rendering tests.
