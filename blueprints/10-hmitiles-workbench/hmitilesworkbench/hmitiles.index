@@ -83,7 +83,7 @@
 	ROW 1 COL 4
 	MULTI-VARIABLE SENSOR: (Type Temp+Humidity+Baro) 
 -->
-<div class="hmi-pack-card" data-type="temp_hum_baro" data-device-idx="3">
+<div class="hmi-pack-card" data-type="temp_hum_baro" data-device-idx="4">
     <div class="hmi-card-header">
         <div class="hmi-pack-label">Temp+Humidity+Baro</div>
         <div class="hmi-badge">NORMAL</div>
