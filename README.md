@@ -1,6 +1,6 @@
-# HMITiles-for-Domoticz
+# HMITiles Custom Pages Framework for Domoticz
 
-High-density, modular custom dashboard tiles for Domoticz using vanilla HTML, CSS, and JavaScript.
+**HMITiles for Domoticz** is a lightweight, decoupled HTML/CSS/JS framework designed to visualize and control your smart home devices using structured, high-density tiles.
 
 This open-source framework brings High-Performance Human Machine Interface (HMI) principles to the smart home environment.  
 The core focus is clarity, consistency, and situational awareness—not visual special effects or decorative UI clutter.
