@@ -38,6 +38,9 @@ The framework started as a personal open-source project, evolving from earlier l
 * **Generic State Validation**: Automated alarm handlers (`checkAlarmThresholds`) evaluate numeric profiles natively using metadata tags embedded in your HTML layout, removing all hardcoded device indexing from the core code.
 * **Independent Page Routing**: Engineered to function as completely standalone, purpose-driven custom pages built for discrete automation monitoring tasks.
 
+**Design Philosophy**
+This framework bypasses typical flashy smart-home trends to strictly mirror modern industrial SCADA standards - using muted baselines to reduce eye strain and reserving high-contrast colors exclusively for active process alarms.
+
 ---
 
 ## Included Page Blueprints
