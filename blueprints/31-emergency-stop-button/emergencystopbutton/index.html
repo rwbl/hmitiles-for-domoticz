@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Emergency Stop Button</title>
+
+    <!-- Link backward one folder level to reuse shared global common styles -->
+    <link rel="stylesheet" href="../hmitiles.css">
+	
+	<!-- Link backward to the HMI tile engine -->
+    <script src="../hmitiles.js" defer></script>
+</head>
+<body>
+
+	<!-- Inside the header block of index.html -->
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
+				<h2>Emergency Stop Button</h2>
+			</div>
+		</div>
+	</header>
+
+    <!-- Master outer panel containing your grid -->
+	<!-- Set the device idx according devices list -->
+    <main class="hmi-panel">
+        
+        <!-- 
+			TILE 1 ROW 1 COL 1: EMERGENCY STOP BUTTON (Reusing Switch Infrastructure)
+		-->
+		<div class="hmi-pack-card" data-type="switch" data-device-idx="6" data-action="On" data-on-text="TRIP" data-off-text="TRIP" data-alarm="critical">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Safety Subsystem</div>
+				<!-- Reuses your clickable badge framework to fire the execution link instantly -->
+				<div class="hmi-badge hmi-clickable-badge">E-STOP</div>
+			</div>
+			<div class="hmi-value-grid">
+				<div class="hmi-value-box" style="padding: 6px 0;">
+					<div class="hmi-box-data" style="text-align: center; width: 100%;">
+						<!-- Keeps text uniform and static, ensuring it matches your push layout parameters -->
+						<span class="hmi-value" data-text="static" style="font-weight: bold; letter-spacing: 1px;">EMERGENCY STOP</span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<footer class="hmi-footer-version">
+			<span>HMITiles for Domoticz</span>
+		</footer>
+
+    </main>
+</body>
+</html>

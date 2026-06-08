@@ -11,9 +11,9 @@
 -->
 
 <!-- 
-	=============
-	=== ROW 1 ===
-	=============
+	=====================
+	=== ROW 1 GENERAL ===
+	=====================
 -->
 
 <!-- 
@@ -58,6 +58,129 @@
 
 <!-- 
 	ROW 1 COL 3
+	TEXT / TIMING SYSTEM DISPLAY (Type General / SubType Text) 
+-->
+<div class="hmi-pack-card" data-device-idx="14">
+    <div class="hmi-card-header">
+        <div class="hmi-pack-label">General/Text (Timestamp)</div>
+    </div>
+	<div class="hmi-value-grid">
+		<div class="hmi-value-box">
+			<div class="hmi-box-data">
+                <span class="hmi-value">--:--:--</span>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 
+	ROW 1 COL 4
+	TEXT INPUT (Type General / SubType Text) 
+	Overrides text device content.
+-->
+<div class="hmi-pack-card" data-device-idx="15" data-type="text-input">
+	<div class="hmi-card-header">
+		<div class="hmi-pack-label">General/Text (Input)</div>
+		<div class="hmi-badge">SYNCED</div>
+	</div>
+	<div class="hmi-value-grid">
+		<input type="text" class="hmi-text-field" placeholder="Enter text to update device...">
+		<div class="hmi-action-row" style="display: flex; justify-content: flex-end; width: 100%; gap: 8px; margin-top: 4px;">
+			<button class="hmi-btn-cancel">Cancel</button>
+			<button class="hmi-btn-ok">OK</button>
+		</div>
+	</div>
+</div>
+
+<!-- 
+	=====================
+	=== ROW 2 GENERAL MORE     ===
+	=====================
+-->
+
+<!-- 
+	ROW 2 COL 1
+	ALARM (Type General / SubType Percentage) 
+	Attributes: data-warn-low="20" data-crit-low="10"
+-->
+<div class="hmi-pack-card" data-device-idx="16" data-warn-low="20" data-crit-low="10">
+	<div class="hmi-card-header">
+		<div class="hmi-pack-label">General/Percentage (Alarm/Warning/Critical)</div>
+		<div class="hmi-badge">NORMAL</div>
+	</div>
+	<div class="hmi-value-grid">
+		<div class="hmi-value-box">
+			<div class="hmi-box-data">
+				<span class="hmi-value">--</span>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 
+	ROW 2 COL 2
+	ALARM (Type General / SubType Percentage) 
+	Triggers alarm on EXACT ZERO values
+	Attributes: data-alert-zero="true" data-zero-text="NO PRODUCTION"
+-->
+<div class="hmi-pack-card" data-device-idx="17" data-alert-zero="true" data-zero-text="NO PRODUCTION">
+	<div class="hmi-card-header">
+		<div class="hmi-pack-label">General/Percentage (Alarm ZERO)</div>
+		<div class="hmi-badge">NORMAL</div>
+	</div>
+	<div class="hmi-value-grid">
+		<div class="hmi-value-box">
+			<div class="hmi-box-data">
+				<span class="hmi-value">--</span>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 
+	ROW 2 COL 3
+	VALUE IMAGE (Type any with value using Domoticz www/images 48x48px) 
+-->
+<div class="hmi-pack-card" data-type="icon-tile" data-device-idx="18">
+	<!-- Header block holding title and status token -->
+	<div class="hmi-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+		<div class="hmi-pack-label">Any Type Image+Value </div>
+		<div class="hmi-badge">NORMAL</div>
+	</div>
+
+	<!-- System Status Icon Row -->
+	<div class="hmi-icon-wrapper" style="display: flex; justify-content: flex-end; padding: 4px 12px 0 0;">
+		<img src="/images/Alert48_0.png" alt="Status" width="48" height="48">
+	</div>
+				
+	<!-- Metric Data Value Area -->
+	<div class="hmi-value-grid">
+		<div class="hmi-value-box">
+			<div class="hmi-box-data">
+				<span class="hmi-value">--</span>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 
+	ROW 2 COL 4
+	HOLLOW GRID MATRIX PLACEHOLDER 
+-->
+<div class="hmi-pack-card hmi-card-placeholder">
+    <div class="hmi-card-header">
+        <div class="hmi-pack-label">[ SPARE BAY COMPONENT ]</div>
+    </div>
+</div>
+
+<!-- 
+	=====================
+	=== ROW 3 ENV     ===
+	=====================
+-->
+
+<!-- 
+	ROW 3 COL 1
 	MULTI-VARIABLE SENSOR (Type Temp+Humidity) 
 -->
 <div class="hmi-pack-card" data-type="temp_hum" data-device-idx="3">
@@ -80,7 +203,7 @@
 
 
 <!-- 
-	ROW 1 COL 4
+	ROW 3 COL 2
 	MULTI-VARIABLE SENSOR: (Type Temp+Humidity+Baro) 
 -->
 <div class="hmi-pack-card" data-type="temp_hum_baro" data-device-idx="4">
@@ -105,15 +228,8 @@
     </div>
 </div>
 
-
 <!-- 
-	=============
-	=== ROW 2 ===
-	=============
--->
-
-<!-- 
-	ROW 2 COL 1
+	ROW 3 COL 3
 	STANDALONE BAROMETER / PRESSURE (Type General / SubType Barometer) 
 	Like Value Tile
 -->
@@ -131,9 +247,24 @@
 	</div>
 </div>
 
+<!-- 
+	ROW 3 COL 4
+	HOLLOW GRID MATRIX PLACEHOLDER 
+-->
+<div class="hmi-pack-card hmi-card-placeholder">
+    <div class="hmi-card-header">
+        <div class="hmi-pack-label">[ SPARE BAY COMPONENT ]</div>
+    </div>
+</div>
 
 <!-- 
-	ROW 2 COL 2
+	=====================
+	=== ROW 4 SWITCHES ===
+	=====================
+-->
+
+<!-- 
+	ROW 4 COL 1
 	INTERACTIVE ON/OFF TOGGLE SWITCH (Type Light/Switch / SubType Switch / SwitchType On/Off) 
 -->
 <div class="hmi-pack-card" data-type="switch" data-device-idx="6">
@@ -152,7 +283,7 @@
 
 
 <!-- 
-	ROW 2 COL 3
+	ROW 4 COL 2
 	PUMP / VALVE SYSTEM STATUS SWITCH (Type Light/Switch / SubType Switch / SwitchType On/Off) 
 -->
 <div class="hmi-pack-card" data-type="pump" data-device-idx="7">
@@ -170,7 +301,7 @@
 </div>
 
 <!-- 
-	ROW 2 COL 4
+	ROW 4 COL 3
 	DIMMER SLIDER HARDWARE (Type Light/Switch / SubType Switch / SwitchType Dimmer) 
 -->
 <div class="hmi-pack-card" data-type="dimmer" data-device-idx="8">
@@ -189,13 +320,100 @@
 </div>
 
 <!-- 
-	=============
-	=== ROW 3 ===
-	=============
+	ROW 4 COL 4
+	SWITCH PUSH ON WITH STATIC DATA (Type Light/Switch / SubType Switch / SwitchType Push On Button)
+-->
+<div class="hmi-pack-card" data-type="switch" data-device-idx="19" data-action="On" data-on-text="PUSH" data-off-text="PUSH">
+	<div class="hmi-card-header">
+		<div class="hmi-pack-label">Switch/Switch/Push On Button (Static Text)</div>
+		<div class="hmi-badge hmi-clickable-badge">PUSH</div>
+	</div>
+	<div class="hmi-value-grid">
+		<div class="hmi-value-box">
+			<div class="hmi-box-data">
+				<!-- If data-text is "static", the script ignores data.status updates -->
+				<span class="hmi-value" data-text="static">Trigger</span>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 
+	=====================
+	=== ROW 5 SWITCHES MORE ===
+	=====================
 -->
 
 <!-- 
-	ROW 3 COL 1
+	ROW 5 COL 1
+	MULTI-LEVEL SELECTOR SWITCH (Type Light/Switch / SubType Selector Switch)
+-->
+<div class="hmi-pack-card" data-type="selector" data-device-idx="20">
+	<div class="hmi-card-header">
+		<div class="hmi-pack-label">Light/Switch/Selector Switch</div>
+		<div class="hmi-badge">MODE</div>
+	</div>
+	<div class="hmi-value-grid">
+		<div class="hmi-box-data">
+			<select class="hmi-selector-dropdown">
+				<option value="0">Off</option>
+				<option value="10">Home</option>
+				<option value="20">Away</option>
+				<option value="30">Night</option>
+			</select>
+		</div>
+	</div>
+</div>
+
+<!-- 
+	ROW 5 COL 2
+	EMERGENCY STOP BUTTON (Reusing Switch Infrastructure)
+	SWITCH PUSH ON WITH STATIC DATA (Type Light/Switch / SubType Switch / SwitchType Push On Button)
+-->
+<div class="hmi-pack-card" data-type="switch" data-device-idx="25" data-action="On" data-on-text="TRIP" data-off-text="TRIP" data-alarm="critical">
+	<div class="hmi-card-header">
+		<div class="hmi-pack-label">Switch/Switch/Push On Button (Safety)</div>
+		<!-- Reuses clickable badge framework to fire the execution link instantly -->
+		<div class="hmi-badge hmi-clickable-badge">E-STOP</div>
+	</div>
+	<div class="hmi-value-grid">
+		<div class="hmi-value-box" style="padding: 6px 0;">
+			<div class="hmi-box-data" style="text-align: center; width: 100%;">
+				<!-- Keeps text uniform and static, ensuring it matches your push layout parameters -->
+				<span class="hmi-value" data-text="static" style="font-weight: bold; letter-spacing: 1px;">EMERGENCY STOP</span>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 
+	ROW 5 COL 3
+	HOLLOW GRID MATRIX PLACEHOLDER 
+-->
+<div class="hmi-pack-card hmi-card-placeholder">
+    <div class="hmi-card-header">
+        <div class="hmi-pack-label">[ SPARE BAY COMPONENT ]</div>
+    </div>
+</div>
+
+<!-- 
+	ROW 5 COL 4
+	HOLLOW GRID MATRIX PLACEHOLDER 
+-->
+<div class="hmi-pack-card hmi-card-placeholder">
+    <div class="hmi-card-header">
+        <div class="hmi-pack-label">[ SPARE BAY COMPONENT ]</div>
+    </div>
+</div>
+
+<!-- 
+	=====================
+	=== ROW 6 SETPOINT ===
+	=====================
+-->
+
+<!-- 
+	ROW 6 COL 1
 	THERMOSTAT / SETPOINT (Type Setpoint / SubType Setpoint) 
 -->
 <div class="hmi-pack-card" data-type="thermostat" data-device-idx="9">
@@ -215,7 +433,7 @@
 </div>
 
 <!-- 
-	ROW 3 COL 2
+	ROW 6 COL 2
 	THERMOSTAT (SP) + TEMPERATURE (PV)
 -->
 <div class="hmi-pack-card" data-device-idx="10" data-type="setpoint-stepper-tile" data-pv-idx="11" data-unit="°C" data-step="0.5">
@@ -243,165 +461,33 @@
 </div>
 
 <!-- 
-	ROW 3 COL 3
-	TEXT / TIMING SYSTEM DISPLAY (Type General / SubType Text) 
+	ROW 6 COL 3
+	HOLLOW GRID MATRIX PLACEHOLDER 
 -->
-<div class="hmi-pack-card" data-device-idx="14">
+<div class="hmi-pack-card hmi-card-placeholder">
     <div class="hmi-card-header">
-        <div class="hmi-pack-label">General/Text (Timestamp)</div>
+        <div class="hmi-pack-label">[ SPARE BAY COMPONENT ]</div>
     </div>
-	<div class="hmi-value-grid">
-		<div class="hmi-value-box">
-			<div class="hmi-box-data">
-                <span class="hmi-value">--:--:--</span>
-			</div>
-		</div>
-	</div>
 </div>
 
 <!-- 
-	ROW 4 COL 3
-	TEXT INPUT (Type General / SubType Text) 
-	Overrides text device content.
+	ROW 6 COL 3
+	HOLLOW GRID MATRIX PLACEHOLDER 
 -->
-<div class="hmi-pack-card" data-device-idx="15" data-type="text-input">
-	<div class="hmi-card-header">
-		<div class="hmi-pack-label">General/Text (Input)</div>
-		<div class="hmi-badge">SYNCED</div>
-	</div>
-	<div class="hmi-value-grid">
-		<input type="text" class="hmi-text-field" placeholder="Enter status text...">
-		<div class="hmi-action-row" style="display: flex; justify-content: flex-end; width: 100%; gap: 8px; margin-top: 4px;">
-			<button class="hmi-btn-cancel">Cancel</button>
-			<button class="hmi-btn-ok">OK</button>
-		</div>
-	</div>
-</div>
-
-
-<!-- 
-	=============
-	=== ROW 4 ===
-	=============
--->
-
-<!-- 
-	ROW 4 COL 1
-	ALARM (Type General / SubType Percentage) 
-	Attributes: data-warn-low="20" data-crit-low="10"
--->
-<div class="hmi-pack-card" data-device-idx="16" data-warn-low="20" data-crit-low="10">
-	<div class="hmi-card-header">
-		<div class="hmi-pack-label">General/Percentage (Alarm/Warning/Critical)</div>
-		<div class="hmi-badge">NORMAL</div>
-	</div>
-	<div class="hmi-value-grid">
-		<div class="hmi-value-box">
-			<div class="hmi-box-data">
-				<span class="hmi-value">--</span>
-			</div>
-		</div>
-	</div>
-</div>
-
-<!-- 
-	ROW 4 COL 2
-	ALARM (Type General / SubType Percentage) 
-	Triggers alarm on EXACT ZERO values
-	Attributes: data-alert-zero="true" data-zero-text="NO PRODUCTION"
--->
-<!-- Solar Tile () -->
-<div class="hmi-pack-card" data-device-idx="17" data-alert-zero="true" data-zero-text="NO PRODUCTION">
-	<div class="hmi-card-header">
-		<div class="hmi-pack-label">General/Percentage (Alarm ZERO)</div>
-		<div class="hmi-badge">NORMAL</div>
-	</div>
-	<div class="hmi-value-grid">
-		<div class="hmi-value-box">
-			<div class="hmi-box-data">
-				<span class="hmi-value">--</span>
-			</div>
-		</div>
-	</div>
-</div>
-
-<!-- 
-	ROW 4 COL 3
-	VALUE IMAGE (Type any with value) 
-	Overrides text device content.
--->
-<div class="hmi-pack-card" data-type="icon-tile" data-device-idx="18">
-	<!-- Header block holding title and status token -->
-	<div class="hmi-card-header" style="display: flex; justify-content: space-between; align-items: center;">
-		<div class="hmi-pack-label">Any Type Image+Value </div>
-		<div class="hmi-badge">NORMAL</div>
-	</div>
-
-	<!-- System Status Icon Row -->
-	<div class="hmi-icon-wrapper" style="display: flex; justify-content: flex-end; padding: 4px 12px 0 0;">
-		<img src="/images/Alert48_0.png" alt="Status" width="48" height="48">
-	</div>
-				
-	<!-- Metric Data Value Area -->
-	<div class="hmi-value-grid">
-		<div class="hmi-value-box">
-			<div class="hmi-box-data">
-				<span class="hmi-value">--</span>
-			</div>
-		</div>
-	</div>
-</div>
-
-<!-- 
-	ROW 3 COL 4
-	SWITCH PUSH ON WITH STATIC DATA (Type Light/Switch / SubType Switch / SwitchType Push On Button)
--->
-<!-- ROW 3 COL 1: Manual Data Request Push On Button -->
-<div class="hmi-pack-card" data-type="switch" data-device-idx="19" data-action="On" data-on-text="PUSH" data-off-text="PUSH">
-	<div class="hmi-card-header">
-		<div class="hmi-pack-label">Switch/Switch/Push On Button (Static Text)</div>
-		<div class="hmi-badge hmi-clickable-badge">PUSH</div>
-	</div>
-	<div class="hmi-value-grid">
-		<div class="hmi-value-box">
-			<div class="hmi-box-data">
-				<!-- If data-text is "static", the script ignores data.status updates -->
-				<span class="hmi-value" data-text="static">Trigger</span>
-			</div>
-		</div>
-	</div>
+<div class="hmi-pack-card hmi-card-placeholder">
+    <div class="hmi-card-header">
+        <div class="hmi-pack-label">[ SPARE BAY COMPONENT ]</div>
+    </div>
 </div>
 
 <!-- 
 	=============
-	=== ROW 5 ===
+	=== ROW 7 Genneral/Text Multiline ===
 	=============
 -->
 
 <!-- 
-	ROW 5 COL 1
-	MULTI-LEVEL SELECTOR SWITCH (Type Light/Switch / SubType Selector Switch)
-	IDX 25
--->
-<div class="hmi-pack-card" data-type="selector" data-device-idx="20">
-	<div class="hmi-card-header">
-		<div class="hmi-pack-label">Light/Switch/Selector Switch</div>
-		<div class="hmi-badge">MODE</div>
-	</div>
-	<div class="hmi-value-grid">
-		<div class="hmi-box-data">
-			<select class="hmi-selector-dropdown">
-				<option value="0">Off</option>
-				<option value="10">Home</option>
-				<option value="20">Away</option>
-				<option value="30">Night</option>
-			</select>
-		</div>
-	</div>
-</div>
-
-<!-- 
-	ROW 5 COL 2
+	ROW 7 COL 1
 	TEXT / SYSTEM DOCUMENTATION (Type General / SubType Text) 
 -->
 <div class="hmi-pack-card" data-type="info" data-device-idx="24">
@@ -425,7 +511,7 @@
 </div>
 
 <!-- 
-	ROW 5 COL 3
+	ROW 7 COL 2
 	TEXT / SYSTEM DOCUMENTATION (Type General / SubType Text) 
 -->
 <div class="hmi-pack-card" data-type="info" data-device-idx="24">
@@ -445,9 +531,9 @@
 	</div>
 </div>
 
-
 <!-- 
-	ROW 5 COL 4: MONOSPACE SYSTEM LOG TILE WITH DYNAMIC CHANNEL SELECTOR
+	ROW 7 COL 3
+	MONOSPACE SYSTEM LOG TILE WITH DYNAMIC CHANNEL SELECTOR
 -->
 <div class="hmi-pack-card" data-type="log-monitor" data-log-limit="5">
 	<div class="hmi-card-header">
@@ -475,13 +561,7 @@
 </div>
 
 <!-- 
-	=============
-	=== ROW 6 ===
-	=============
--->
-
-<!-- 
-	ROW 6 COL 1
+	ROW 7 COL 4
 	HOLLOW GRID MATRIX PLACEHOLDER 
 -->
 <div class="hmi-pack-card hmi-card-placeholder">
@@ -490,3 +570,62 @@
     </div>
 </div>
 
+<!-- 
+	=============
+	=== ROW 8 SPECIAL ===
+	=============
+-->
+
+<!-- 
+	ROW 8 COL 1
+	3X3 HIGH-PERFORMANCE STATUS INDICATOR MATRIX
+	Set the device idx according devices list
+-->
+<div class="hmi-pack-card" data-type="indicator-matrix" data-device-idx="41,42,43,44,45,46,47,48,49">
+	<div class="hmi-card-header">
+		<div class="hmi-pack-label">Status IND</div>
+	</div>
+	
+	<!-- Clean, rigid 3x3 layout block frame -->
+	<div class="hmi-matrix-grid">
+		<div class="hmi-matrix-cell" data-cell-index="0">P1</div>
+		<div class="hmi-matrix-cell" data-cell-index="1">P2</div>
+		<div class="hmi-matrix-cell" data-cell-index="2">P3</div>
+		<div class="hmi-matrix-cell" data-cell-index="3">F4</div>
+		<div class="hmi-matrix-cell" data-cell-index="4">F5</div>
+		<div class="hmi-matrix-cell" data-cell-index="5">F6</div>
+		<div class="hmi-matrix-cell" data-cell-index="6">F7</div>
+		<div class="hmi-matrix-cell" data-cell-index="7">F8</div>
+		<div class="hmi-matrix-cell" data-cell-index="8">F9</div>
+	</div>
+</div>
+
+<!-- 
+	ROW 8 COL 2
+	HOLLOW GRID MATRIX PLACEHOLDER 
+-->
+<div class="hmi-pack-card hmi-card-placeholder">
+    <div class="hmi-card-header">
+        <div class="hmi-pack-label">[ SPARE BAY COMPONENT ]</div>
+    </div>
+</div>
+
+<!-- 
+	ROW 8 COL 3
+	HOLLOW GRID MATRIX PLACEHOLDER 
+-->
+<div class="hmi-pack-card hmi-card-placeholder">
+    <div class="hmi-card-header">
+        <div class="hmi-pack-label">[ SPARE BAY COMPONENT ]</div>
+    </div>
+</div>
+
+<!-- 
+	ROW 8 COL 4
+	HOLLOW GRID MATRIX PLACEHOLDER 
+-->
+<div class="hmi-pack-card hmi-card-placeholder">
+    <div class="hmi-card-header">
+        <div class="hmi-pack-label">[ SPARE BAY COMPONENT ]</div>
+    </div>
+</div>

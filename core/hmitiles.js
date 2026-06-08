@@ -10,7 +10,7 @@
  */
 
 // GLOBAL CONFIGURATION SETTINGS
-const DEBUG = true; // Set to true to see logs in console, false to hide them
+const DEBUG = false; // Set to true to see logs in console, false to hide them
 
 // Domoticz server URL
 const DOMOTICZ_URL = window.parent && window.parent.$ ? window.parent.$.domoticzurl : window.location.origin;
@@ -68,249 +68,256 @@ function processDevices(devices) {
             // If the custom page function handles it and returns true, skip generic processing
             if (interceptResult === true) return; 
         }
-		
-        // Find the tile card matching this specific device index attribute
-        const tileElement = document.querySelector(`[data-device-idx="${device.idx}"]`);
-        if (!tileElement) return; 
 
-		// Read its custom card type configuration tag
-        const cardType = tileElement.getAttribute('data-type') || "standard";
-
-		if (DEBUG) console.log("processDevices idx=", device.idx, "cardType=", cardType);
-
+		// =========================================================================
+        // MULTI-TILE INSTANCE TARGET ROUTING ENGINE
         // =========================================================================
-        // GENERIC GLOBAL TEXT INPUT LOGIC PIPELINE
-        // =========================================================================
-		if (cardType === "text-input") {
-			const inputField = tileElement.querySelector('.hmi-text-field');
-			const badge = tileElement.querySelector('.hmi-badge');
-			
-			if (inputField && document.activeElement !== inputField) {
-				inputField.value = device.Data || "";
+        // 1. Locate EVERY tile card container instance matching this specific device index
+        const matchingTiles = document.querySelectorAll(`[data-device-idx="${device.idx}"]`);
+        if (matchingTiles.length === 0) return; // Move to next device in your array if no HTML tile matches
+
+        // 2. Iterate through each matching tile instance independently
+        matchingTiles.forEach(tileElement => {
+
+			// Read its custom card type configuration tag
+			const cardType = tileElement.getAttribute('data-type') || "standard";
+
+			if (DEBUG) console.log("processDevices idx=", device.idx, "cardType=", cardType);
+
+			// =========================================================================
+			// GENERIC GLOBAL TEXT INPUT LOGIC PIPELINE
+			// =========================================================================
+			if (cardType === "text-input") {
+				const inputField = tileElement.querySelector('.hmi-text-field');
+				const badge = tileElement.querySelector('.hmi-badge');
 				
-				// Return to standard state text if not currently interacting
-				if (tileElement.getAttribute('data-alarm') !== "saved") {
-					tileElement.removeAttribute('data-alarm');
-					if (badge) badge.textContent = "SYNCED";
+				if (inputField && document.activeElement !== inputField) {
+					inputField.value = device.Data || "";
+					
+					// Return to standard state text if not currently interacting
+					if (tileElement.getAttribute('data-alarm') !== "saved") {
+						tileElement.removeAttribute('data-alarm');
+						if (badge) badge.textContent = "SYNCED";
+					}
+				}
+				
+				if (!tileElement.hasAttribute('data-listeners-bound')) {
+					tileElement.setAttribute('data-listeners-bound', 'true');
+					setupGlobalTextInputListeners(tileElement, device.idx);
+				}
+
+				return; // FIXED: Safely exits the loop pass ONLY for text-input cards!
+			}
+
+			// =========================================================================
+			// GENERIC MULTI-VARIABLE COUPLING (Sniffs for sub-element classes inside the card)
+			// =========================================================================
+			const tempEl = tileElement.querySelector('.hmi-value-temp');
+			const humEl = tileElement.querySelector('.hmi-value-hum');
+			const baroEl = tileElement.querySelector('.hmi-value-baro');
+
+			if (tempEl || humEl || baroEl) {
+				// If the element fields exist, parse out Domoticz sub-properties natively
+				if (tempEl && device.Temp !== undefined) tempEl.textContent = `${parseFloat(device.Temp).toFixed(1)} °C`;
+				if (humEl && device.Humidity !== undefined) humEl.textContent = `${device.Humidity} %`;
+				if (baroEl && device.Barometer !== undefined) baroEl.textContent = `${device.Barometer} hPa`;
+				return; // Move to the next device immediately
+			}
+
+			// =========================================================================
+			// GENERIC PROGRESS BAR & LEVEL GAUGE SYNC
+			// =========================================================================
+			const barFill = tileElement.querySelector('.hmi-bar-fill');
+			const barText = tileElement.querySelector('.hmi-bar-text');
+			if (barFill && barText) {
+				const numericValue = parseFloat(device.Data) || parseFloat(device.Status) || 0;
+				const percentage = Math.min(Math.max(numericValue, 0), 100);
+				barFill.style.width = `${percentage}%`;
+				barText.textContent = `${Math.round(percentage)}%`;
+			}
+
+			// =========================================================================
+			// GENERIC GLOBAL SETPOINT STEPPER & PV PIPELINE
+			// =========================================================================
+			if (cardType === "setpoint-stepper-tile") {
+				const spField = tileElement.querySelector('.hmi-sp-value');
+				const pvField = tileElement.querySelector('.hmi-pv-value');
+				
+				const targetPVIdx = tileElement.getAttribute('data-pv-idx');
+				const targetUnit = tileElement.getAttribute('data-unit') || "";
+				const stepValue = parseFloat(tileElement.getAttribute('data-step') || 0.5);
+
+				// A. Extract and update the target Setpoint value
+				const currentSP = parseFloat(device.SetPoint || device.Data || 0);
+				if (spField) spField.textContent = `${currentSP.toFixed(1)} ${targetUnit}`;
+
+				// B. Reach across the response array to parse out the live process value (PV)
+				if (targetPVIdx) {
+					const pvDevice = devices.find(d => String(d.idx) === String(targetPVIdx));
+					if (pvDevice && pvField) {
+						const currentPV = parseFloat(pvDevice.Temp || pvDevice.Data || 0);
+						pvField.textContent = `${currentPV.toFixed(1)} ${targetUnit}`;
+					}
+				}
+
+				// C. Bind interactive step button listeners once on page load initialization
+				if (!tileElement.hasAttribute('data-listeners-bound')) {
+					tileElement.setAttribute('data-listeners-bound', 'true');
+					
+					const btnUp = tileElement.querySelector('.hmi-btn-up');
+					const btnDown = tileElement.querySelector('.hmi-btn-down');
+					
+					// Track internal current state target modifications locally
+					let workingSP = currentSP;
+
+					const sendSetpointUpdate = async (newVal) => {
+						if (spField) spField.textContent = `${newVal.toFixed(1)} ${targetUnit}`;
+						try {
+							// Standard Domoticz Setpoint Update Command API Endpoint
+							const targetUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=setsetpoint&idx=${device.idx}&setpoint=${newVal.toFixed(1)}`;
+							await fetch(targetUrl);
+						} catch (err) {
+							console.error("Setpoint transmission error:", err);
+						}
+					};
+
+					if (btnUp) {
+						btnUp.addEventListener('click', () => {
+							workingSP += stepValue;
+							sendSetpointUpdate(workingSP);
+						});
+					}
+
+					if (btnDown) {
+						btnDown.addEventListener('click', () => {
+							workingSP -= stepValue;
+							sendSetpointUpdate(workingSP);
+						});
+					}
+				}
+
+				// checkAlarmThresholds(device.idx, rawValue);
+				return; // Handled completely
+			}
+
+			// =========================================================================
+			// SETPOINT
+			// =========================================================================
+			if (device.SetPoint !== undefined) {
+				displayStatus = parseFloat(device.SetPoint).toFixed(1);
+			}
+
+			// =========================================================================
+			// LIGHT/SWITCH, SELECTOR SWITCH
+			// =========================================================================
+			if (device.SwitchType === "Selector" || cardType === "selector") {
+				const dropdownElement = tileElement.querySelector('.hmi-selector-dropdown');
+				if (dropdownElement) {
+					// Domoticz typically exposes this via device.Level or device.LevelInt
+					const currentLevel = device.Level !== undefined ? device.Level : device.LevelInt;
+					if (currentLevel !== undefined) {
+						dropdownElement.value = currentLevel;
+					}
+				}
+
+				// FIX: Tell the card to act like it has "static" text behavior.
+				// This prevents updateHMIAnalogTile from failing when it looks for valueField!
+				const valueField = tileElement.querySelector('.hmi-value');
+				if (!valueField) {
+					tileElement.setAttribute('data-text', 'static');
 				}
 			}
+
+			// =========================================================================
+			// DIMMER SWITCH
+			// =========================================================================
+			if (device.SwitchType === "Dimmer" || device.SwitchTypeVal === 7) {
+				const slider = tileElement.querySelector('.hmi-slider');
+				const dimmerText = tileElement.querySelector('.hmi-dimmer-text');
+
+				// GENERIC TEXT TRANSLATION ENGINE
+				const customOnText = tileElement.getAttribute('data-on-text');
+				const customOffText = tileElement.getAttribute('data-off-text');
+
+				// EXTRACT CORE STATUS INFORMATION
+				const rawStatus = String(device.Status || device.Data || "").toUpperCase();
+				const isDeviceOff = (rawStatus === "OFF");
+				
+				// FORCE LEVEL CORRECTION (If Domoticz says OFF, level is 0)
+				let currentLevel = parseInt(device.Level, 10) || 0;
+				if (isDeviceOff) {
+					currentLevel = 0;
+				}
+
+				// UPDATE SLIDER INTERFACE (Only if user isn't actively clicking/dragging)
+				if (slider && document.activeElement !== slider) {
+					slider.value = currentLevel;
+				}
+				if (dimmerText) {
+					dimmerText.textContent = currentLevel;
+				}
+
+				// MAP FALLBACK TEXT DISPLAY FOR THE CORE RENDERER
+				displayStatus = rawStatus;
+				if (rawStatus !== "ON" && rawStatus !== "OFF") {
+					displayStatus = "ON";
+				}
+				if (dimmerText) dimmerText.textContent = currentLevel;	// device.Level;
+
+				// SET LEVEL TEXT IF LEVEL GREATER 0 to OPEN/CLOSED
+				if (currentLevel > 0) {
+					displayStatus = customOnText ? customOnText : (device.Status || device.Data || "OPEN");
+				} else {
+					displayStatus = customOffText ? customOffText : (device.Status || device.Data || "CLOSED");
+				}
+			}
+
+			// =========================================================================
+			// LIGHT/SWITCH, SWITCH, PUMP, VALVE
+			// =========================================================================
+			if (device.Type === "Light/Switch" || cardType === "switch" || cardType === "pump" || cardType === "valve") {
+				const rawStatus = String(device.Status || device.Data || "").toUpperCase();
+				const isRawOn = (rawStatus === "ON" || rawStatus === "TRUE");
+
+				// GENERIC TEXT TRANSLATION ENGINE
+				const customOnText = tileElement.getAttribute('data-on-text');
+				const customOffText = tileElement.getAttribute('data-off-text');
+
+				if (isRawOn) {
+					// Use custom HTML text, otherwise fall back to native Domoticz text
+					displayStatus = customOnText ? customOnText : (device.Status || device.Data || "ON");
+				} else {
+					// Use custom HTML text, otherwise fall back to native Domoticz text
+					displayStatus = customOffText ? customOffText : (device.Status || device.Data || "OFF");
+				}
+			}
+
+			// =========================================================================
+			// ANYOTHER DEVICE
+			// =========================================================================
+			if (!displayStatus) {
+				displayStatus = device.Status || device.Data || "";
+			}
+
+			// console.log("processDevices idx=", device.idx, "name=", device.Name, "value=", rawValue, "status=", displayStatus, "lastUpdate=", device.LastUpdate);
+
+			// Send out to core display text box renderer
+			updateHMIAnalogTile(tileElement, {
+				name: device.Name,
+				value: rawValue,
+				status: displayStatus,
+				lastUpdate: device.LastUpdate
+			});
 			
-			if (!tileElement.hasAttribute('data-listeners-bound')) {
-				tileElement.setAttribute('data-listeners-bound', 'true');
-				setupGlobalTextInputListeners(tileElement, device.idx);
-			}
+			// =========================================================================
+			// AUTOMATIC ALARM THRESHOLD TRIGGER PIPELINE
+			// =========================================================================
+			// This fires automatically for EVERY device. If the card contains 
+			// data-warn or data-crit attributes, it evaluates them natively!
+			checkAlarmThresholds(device.idx, rawValue);
 
-			return; // FIXED: Safely exits the loop pass ONLY for text-input cards!
-		}
-
-        // =========================================================================
-        // GENERIC MULTI-VARIABLE COUPLING (Sniffs for sub-element classes inside the card)
-        // =========================================================================
-        const tempEl = tileElement.querySelector('.hmi-value-temp');
-        const humEl = tileElement.querySelector('.hmi-value-hum');
-        const baroEl = tileElement.querySelector('.hmi-value-baro');
-
-        if (tempEl || humEl || baroEl) {
-            // If the element fields exist, parse out Domoticz sub-properties natively
-            if (tempEl && device.Temp !== undefined) tempEl.textContent = `${parseFloat(device.Temp).toFixed(1)} °C`;
-            if (humEl && device.Humidity !== undefined) humEl.textContent = `${device.Humidity} %`;
-            if (baroEl && device.Barometer !== undefined) baroEl.textContent = `${device.Barometer} hPa`;
-            return; // Move to the next device immediately
-        }
-
-        // =========================================================================
-        // GENERIC PROGRESS BAR & LEVEL GAUGE SYNC
-        // =========================================================================
-        const barFill = tileElement.querySelector('.hmi-bar-fill');
-        const barText = tileElement.querySelector('.hmi-bar-text');
-        if (barFill && barText) {
-            const numericValue = parseFloat(device.Data) || parseFloat(device.Status) || 0;
-            const percentage = Math.min(Math.max(numericValue, 0), 100);
-            barFill.style.width = `${percentage}%`;
-            barText.textContent = `${Math.round(percentage)}%`;
-        }
-
-        // =========================================================================
-        // GENERIC GLOBAL SETPOINT STEPPER & PV PIPELINE
-        // =========================================================================
-        if (cardType === "setpoint-stepper-tile") {
-            const spField = tileElement.querySelector('.hmi-sp-value');
-            const pvField = tileElement.querySelector('.hmi-pv-value');
-            
-            const targetPVIdx = tileElement.getAttribute('data-pv-idx');
-            const targetUnit = tileElement.getAttribute('data-unit') || "";
-            const stepValue = parseFloat(tileElement.getAttribute('data-step') || 0.5);
-
-            // A. Extract and update the target Setpoint value
-            const currentSP = parseFloat(device.SetPoint || device.Data || 0);
-            if (spField) spField.textContent = `${currentSP.toFixed(1)} ${targetUnit}`;
-
-            // B. Reach across the response array to parse out the live process value (PV)
-            if (targetPVIdx) {
-                const pvDevice = devices.find(d => String(d.idx) === String(targetPVIdx));
-                if (pvDevice && pvField) {
-                    const currentPV = parseFloat(pvDevice.Temp || pvDevice.Data || 0);
-                    pvField.textContent = `${currentPV.toFixed(1)} ${targetUnit}`;
-                }
-            }
-
-            // C. Bind interactive step button listeners once on page load initialization
-            if (!tileElement.hasAttribute('data-listeners-bound')) {
-                tileElement.setAttribute('data-listeners-bound', 'true');
-                
-                const btnUp = tileElement.querySelector('.hmi-btn-up');
-                const btnDown = tileElement.querySelector('.hmi-btn-down');
-                
-                // Track internal current state target modifications locally
-                let workingSP = currentSP;
-
-                const sendSetpointUpdate = async (newVal) => {
-                    if (spField) spField.textContent = `${newVal.toFixed(1)} ${targetUnit}`;
-                    try {
-                        // Standard Domoticz Setpoint Update Command API Endpoint
-                        const targetUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=setsetpoint&idx=${device.idx}&setpoint=${newVal.toFixed(1)}`;
-                        await fetch(targetUrl);
-                    } catch (err) {
-                        console.error("Setpoint transmission error:", err);
-                    }
-                };
-
-                if (btnUp) {
-                    btnUp.addEventListener('click', () => {
-                        workingSP += stepValue;
-                        sendSetpointUpdate(workingSP);
-                    });
-                }
-
-                if (btnDown) {
-                    btnDown.addEventListener('click', () => {
-                        workingSP -= stepValue;
-                        sendSetpointUpdate(workingSP);
-                    });
-                }
-            }
-
-            // checkAlarmThresholds(device.idx, rawValue);
-            return; // Handled completely
-        }
-
-        // =========================================================================
-		// SETPOINT
-        // =========================================================================
-        if (device.SetPoint !== undefined) {
-            displayStatus = parseFloat(device.SetPoint).toFixed(1);
-        }
-
-        // =========================================================================
-		// LIGHT/SWITCH, SELECTOR SWITCH
-        // =========================================================================
-		if (device.SwitchType === "Selector" || cardType === "selector") {
-			const dropdownElement = tileElement.querySelector('.hmi-selector-dropdown');
-			if (dropdownElement) {
-				// Domoticz typically exposes this via device.Level or device.LevelInt
-				const currentLevel = device.Level !== undefined ? device.Level : device.LevelInt;
-				if (currentLevel !== undefined) {
-					dropdownElement.value = currentLevel;
-				}
-			}
-
-			// FIX: Tell the card to act like it has "static" text behavior.
-			// This prevents updateHMIAnalogTile from failing when it looks for valueField!
-			const valueField = tileElement.querySelector('.hmi-value');
-			if (!valueField) {
-				tileElement.setAttribute('data-text', 'static');
-			}
-		}
-
-        // =========================================================================
-		// DIMMER SWITCH
-        // =========================================================================
-        if (device.SwitchType === "Dimmer" || device.SwitchTypeVal === 7) {
-            const slider = tileElement.querySelector('.hmi-slider');
-            const dimmerText = tileElement.querySelector('.hmi-dimmer-text');
-
-            // GENERIC TEXT TRANSLATION ENGINE
-            const customOnText = tileElement.getAttribute('data-on-text');
-            const customOffText = tileElement.getAttribute('data-off-text');
-
-			// EXTRACT CORE STATUS INFORMATION
-            const rawStatus = String(device.Status || device.Data || "").toUpperCase();
-            const isDeviceOff = (rawStatus === "OFF");
-            
-            // FORCE LEVEL CORRECTION (If Domoticz says OFF, level is 0)
-            let currentLevel = parseInt(device.Level, 10) || 0;
-            if (isDeviceOff) {
-                currentLevel = 0;
-            }
-
-            // UPDATE SLIDER INTERFACE (Only if user isn't actively clicking/dragging)
-            if (slider && document.activeElement !== slider) {
-                slider.value = currentLevel;
-            }
-            if (dimmerText) {
-                dimmerText.textContent = currentLevel;
-            }
-
-            // MAP FALLBACK TEXT DISPLAY FOR THE CORE RENDERER
-            displayStatus = rawStatus;
-            if (rawStatus !== "ON" && rawStatus !== "OFF") {
-                displayStatus = "ON";
-            }
-            if (dimmerText) dimmerText.textContent = currentLevel;	// device.Level;
-
-            // SET LEVEL TEXT IF LEVEL GREATER 0 to OPEN/CLOSED
-            if (currentLevel > 0) {
-                displayStatus = customOnText ? customOnText : (device.Status || device.Data || "OPEN");
-            } else {
-                displayStatus = customOffText ? customOffText : (device.Status || device.Data || "CLOSED");
-            }
-        }
-
-        // =========================================================================
-		// LIGHT/SWITCH, SWITCH, PUMP, VALVE
-        // =========================================================================
-        if (device.Type === "Light/Switch" || cardType === "switch" || cardType === "pump" || cardType === "valve") {
-            const rawStatus = String(device.Status || device.Data || "").toUpperCase();
-            const isRawOn = (rawStatus === "ON" || rawStatus === "TRUE");
-
-            // GENERIC TEXT TRANSLATION ENGINE
-            const customOnText = tileElement.getAttribute('data-on-text');
-            const customOffText = tileElement.getAttribute('data-off-text');
-
-            if (isRawOn) {
-                // Use custom HTML text, otherwise fall back to native Domoticz text
-                displayStatus = customOnText ? customOnText : (device.Status || device.Data || "ON");
-            } else {
-                // Use custom HTML text, otherwise fall back to native Domoticz text
-                displayStatus = customOffText ? customOffText : (device.Status || device.Data || "OFF");
-            }
-        }
-
-        // =========================================================================
-		// ANYOTHER DEVICE
-        // =========================================================================
-        if (!displayStatus) {
-            displayStatus = device.Status || device.Data || "";
-        }
-
-		// console.log("processDevices idx=", device.idx, "name=", device.Name, "value=", rawValue, "status=", displayStatus, "lastUpdate=", device.LastUpdate);
-
-        // Send out to core display text box renderer
-        updateHMIAnalogTile(tileElement, {
-            name: device.Name,
-            value: rawValue,
-            status: displayStatus,
-            lastUpdate: device.LastUpdate
-        });
-		
-        // =========================================================================
-        // AUTOMATIC ALARM THRESHOLD TRIGGER PIPELINE
-        // =========================================================================
-        // This fires automatically for EVERY device. If the card contains 
-        // data-warn or data-crit attributes, it evaluates them natively!
-        checkAlarmThresholds(device.idx, rawValue);
-		
-    });
+		}); // This closing brace seals the multi-tile .forEach loop blocks securely!
+    }); // This is your existing device array loop ending bracket
 }
 
 /**
@@ -407,28 +414,35 @@ function setupControlListeners() {
             return; 
         }
 
-        // HANDLE THERMOSTAT UP/DOWN BUTTON CLICKS
+		// HANDLE THERMOSTAT UP/DOWN BUTTON CLICKS
         const tempBtn = event.target.closest('.hmi-temp-btn');
         if (tempBtn) {
             const card = tempBtn.closest('.hmi-pack-card');
             if (!card) return;
 
             const idx = parseInt(card.getAttribute('data-device-idx'), 10);
-            const valueField = card.querySelector('.hmi-value');
-            if (!valueField) return;
+            
+            // Look up the active value box from the current clicked element card
+            const activeValueField = card.querySelector('.hmi-value');
+            if (!activeValueField) return;
 
-            let currentTemp = parseFloat(valueField.textContent) || 20.0;
+            let currentTemp = parseFloat(activeValueField.textContent) || 20.0;
             const isUpClick = tempBtn.classList.contains('btn-up');
             let newTemp = isUpClick ? currentTemp + 0.5 : currentTemp - 0.5;
             
             newTemp = newTemp.toFixed(1);
-            valueField.textContent = newTemp;
 
-            // console.log(`Setting Thermostat IDX ${idx} -> ${newTemp}°C`);
+            // Instantly update EVERY copy of this specific thermostat card on your layout screen
+            const allMatchingCards = document.querySelectorAll(`[data-device-idx="${idx}"]`);
+            allMatchingCards.forEach(matchingCard => {
+                const valueField = matchingCard.querySelector('.hmi-value');
+                if (valueField) valueField.textContent = newTemp;
+            });
+
             await sendDomoticzSetpointCommand(idx, newTemp);
             return;
         }
-
+		
         // HANDLE CLICKING THE CARD TO OPEN CHARTS
         const clickableCard = event.target.closest('.hmi-clickable-card');
         if (clickableCard) {
@@ -450,10 +464,22 @@ function setupControlListeners() {
         const card = slider.closest('.hmi-pack-card');
         if (!card) return;
 
-        const dimmerText = card.querySelector('.hmi-dimmer-text');
-        if (dimmerText) {
-            dimmerText.textContent = slider.value;
-        }
+        const idx = card.getAttribute('data-device-idx');
+        if (!idx) return;
+
+        // FIX: Find every duplicate dimmer card with this IDX and match their numbers/sliders dynamically
+        const allMatchingCards = document.querySelectorAll(`[data-device-idx="${idx}"]`);
+        allMatchingCards.forEach(matchingCard => {
+            // Update the text percentage indicator layout box
+            const dimmerText = matchingCard.querySelector('.hmi-dimmer-text');
+            if (dimmerText) dimmerText.textContent = slider.value;
+
+            // Sync the physical input slider position bar handle smoothly if it isn't the one being touched
+            const localSlider = matchingCard.querySelector('.hmi-slider');
+            if (localSlider && localSlider !== slider) {
+                localSlider.value = slider.value;
+            }
+        });
     });
 	
 	// SLIDER/SELECTOR CONTROLS RELEASED ENGINE (Fires command link to network for Sliders and Selectors)
@@ -765,30 +791,26 @@ function setupLogInjectionListeners(tileElement) {
     });
 }
 
+/*
+	SERVERLOGS
+*/
+
 /**
- * Retrieves the targeted log feed channel from Domoticz based on user selection.
+ * Retrieves the master log database once and streams it locally to all log tiles.
  * @async
  * @function fetchDomoticzServerLogs
  * @returns {Promise<void>}
  */
 async function fetchDomoticzServerLogs() {
-    const tileElement = document.querySelector('[data-type="log-monitor"]');
-    if (!tileElement) return;
+    // 1. Grab EVERY log monitor tile currently loaded on the screen
+    const logTiles = document.querySelectorAll('[data-type="log-monitor"]');
+    if (logTiles.length === 0) return;
 
-    // Skip network activity if a hard clear loop delay is active
-    if (tileElement.hasAttribute('data-log-hold')) return;
+    // Use the first tile's dropdown channel to drive the server request
+    const channelSelect = logTiles[0].querySelector('.hmi-log-channel-select');
+    const targetLogLevel = channelSelect ? channelSelect.value : "268435455";
 
-    const terminal = tileElement.querySelector('.hmi-log-terminal');
-    if (!terminal) return;
-
-    const limit = parseInt(tileElement.getAttribute('data-log-limit'), 10) || 5;
-    
-    // NEW: Extract active target integer flag from dropdown select element (default to 1)
-    const channelSelect = tileElement.querySelector('.hmi-log-channel-select');
-    const targetLogLevel = channelSelect ? channelSelect.value : "1";
-
-    // Build query link dynamically mapping user target criteria parameters
-    const logUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=getlog&loglevel=${targetLogLevel}`;
+    const logUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=getlog&lastlogtime=0&loglevel=${targetLogLevel}`;
 
     try {
         const response = await fetch(logUrl);
@@ -796,65 +818,138 @@ async function fetchDomoticzServerLogs() {
         const data = await response.json();
         
         if (data.status === "OK" && data.result) {
-            terminal.innerHTML = ""; 
-            const entries = data.result.slice(-limit);
             
-            entries.forEach(item => {
-                const line = document.createElement('div');
-                line.className = "hmi-log-line";
-                line.textContent = item.message;
+            // 2. Loop through each individual log tile found on your layout page
+            logTiles.forEach(tileElement => {
+                // Skip rendering if this specific tile is currently in a "clear log hold" state
+                if (tileElement.hasAttribute('data-log-hold')) return;
 
-                // Keyword color analysis mapping rules
-                const upperMsg = item.message.toUpperCase();
-                if (upperMsg.includes("ERROR") || upperMsg.includes("CRITICAL")) {
-                    line.classList.add("hmi-log-error");
-                } else if (upperMsg.includes("WARNING") || upperMsg.includes("EXCEPTION")) {
-                    line.classList.add("hmi-log-warning");
-                } else if (upperMsg.includes("DZVENTS") || upperMsg.includes("LUA")) {
-                    line.classList.add("hmi-log-script");
+                const terminal = tileElement.querySelector('.hmi-log-terminal');
+                if (!terminal) return;
+
+                const limit = parseInt(tileElement.getAttribute('data-log-limit'), 10) || 5;
+                terminal.innerHTML = ""; 
+
+                let entries = data.result;
+                
+                // DECLARATIVE LOCAL TEXT FILTER PIPELINE
+                const filterKeyword = tileElement.getAttribute('data-log-filter');
+                if (filterKeyword && filterKeyword.trim() !== "") {
+                    entries = entries.filter(item => item.message.includes(filterKeyword.trim()));
                 }
+                
+                const finalEntries = entries.slice(-limit);
+                
+                finalEntries.forEach(item => {
+                    const line = document.createElement('div');
+                    line.className = "hmi-log-line";
+                    line.textContent = item.message;
 
-                terminal.appendChild(line);
+                    // High-Performance Keyword Color Evaluator
+                    const upperMsg = item.message.toUpperCase();
+                    if (upperMsg.includes("ERROR") || upperMsg.includes("CRITICAL")) {
+                        line.classList.add("hmi-log-error");
+                    } else if (upperMsg.includes("WARNING") || upperMsg.includes("EXCEPTION")) {
+                        line.classList.add("hmi-log-warning");
+                    } else if (upperMsg.includes("DZVENTS") || upperMsg.includes("LUA")) {
+                        line.classList.add("hmi-log-script");
+                    }
+                    terminal.appendChild(line);
+                });
+                terminal.scrollTop = terminal.scrollHeight;
+
+                // Bind listener configurations securely to this specific tile block instance
+                if (!tileElement.hasAttribute('data-listeners-bound')) {
+                    tileElement.setAttribute('data-listeners-bound', 'true');
+                    setupLogInjectionListeners(tileElement);
+                }
             });
-            terminal.scrollTop = terminal.scrollHeight;
         }
     } catch (err) {
-        if (DEBUG) console.error("Log monitor sync hang:", err);
-    }
-
-    // Bind execution listeners safely once per application boot phase
-    if (!tileElement.hasAttribute('data-listeners-bound')) {
-        tileElement.setAttribute('data-listeners-bound', 'true');
-        setupLogInjectionListeners(tileElement);
+        if (DEBUG) console.error("Log system synchronization exception:", err);
     }
 }
 
 /**
- * Binds event listeners to the log monitor tile components for dispatching and clearing logs.
- * Custom log message is added to the domoticz log level 2(details).
+ * Executes a single batched HTTP query request to fetch statuses for all matrix sub-devices.
+ * @async
+ * @function fetchDomoticzMatrixStatus
+ * @returns {Promise<void>}
+ */
+async function fetchDomoticzMatrixStatus() {
+    const matrixTiles = document.querySelectorAll('[data-type="indicator-matrix"]');
+    if (matrixTiles.length === 0) return;
+
+    // Loop through each matrix tile found on the screen canvas independently
+    matrixTiles.forEach(async (matrixTile) => {
+        const idxString = matrixTile.getAttribute('data-device-idx') || "";
+        if (!idxString) return;
+
+        // Domoticz batch-device query endpoint syntax: param=getdevices with a comma-separated rid list
+        const queryUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=getdevices&rid=${idxString}`;
+
+        try {
+            const response = await fetch(queryUrl);
+            if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+            const data = await response.json();
+            
+            if (data.status === "OK" && data.result) {
+                const csvArray = idxString.split(",");
+
+                // Loop through your 9 discrete cells sequentially from cellIndex 0 to 8
+                csvArray.forEach((targetIdx, cellIndex) => {
+                    const cellElement = matrixTile.querySelector(`[data-cell-index="${cellIndex}"]`);
+                    if (!cellElement) return;
+
+                    // Locate the specific sub-device configuration block returned inside the server payload
+                    const deviceData = data.result.find(d => String(d.idx) === String(targetIdx));
+                    
+                    // Reset styling classes
+                    cellElement.classList.remove('state-ok', 'state-error', 'state-disabled');
+
+                    if (deviceData) {
+                        const statusText = String(deviceData.Status || deviceData.Data || "").toUpperCase();
+                        
+                        // Execute high-performance color routing tree
+                        if (statusText === "ERROR" || statusText === "ALARM" || statusText === "OFF") {
+                            cellElement.classList.add('state-error');    // Black
+                        } else if (statusText === "DISABLED" || statusText === "GRAY" || statusText === "NONE") {
+                            cellElement.classList.add('state-disabled'); // Gray
+                        } else {
+                            cellElement.classList.add('state-ok');       // White
+                        }
+                    } else {
+                        // Fallback: If device is missing entirely from server database, force a Gray Disabled state
+                        cellElement.classList.add('state-disabled');
+                    }
+                });
+            }
+        } catch (err) {
+            if (DEBUG) console.error("Matrix status synchronization exception:", err);
+        }
+    });
+}
+
+/**
+ * Binds control event listeners specifically to the unified log monitor tile components.
  * @function setupLogInjectionListeners
- * @param {HTMLElement} tileElement - The root DOM element card container for the log monitor widget.
+ * @param {HTMLElement} tileElement - The root DOM element container for the log tile.
  * @returns {void}
  */
 function setupLogInjectionListeners(tileElement) {
     const btnSend = tileElement.querySelector('.hmi-log-send-btn');
     const btnClear = tileElement.querySelector('.hmi-log-clear-btn'); 
     const input = tileElement.querySelector('.hmi-log-input');
-    const terminal = tileElement.querySelector('.hmi-log-terminal');
+    const channelSelect = tileElement.querySelector('.hmi-log-channel-select');
 
-    if (!input || !terminal) return;
+    if (!input) return;
 
-    // =========================================================================
-    // CUSTOM LOG MESSAGE INJECTION PIPELINE LEVEL 2 (DETAILS)
-    // =========================================================================
     const dispatchMessage = async () => {
         const text = input.value.trim();
-        if (!text) return; // Ignore blank empty string inputs entirely
+        if (!text) return; 
 
-        // Construct standard Domoticz log insertion string format query parameter URL
-        const targetUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=addlogmessage&message=${encodeURIComponent("[HMI Dashboard] " + text)}`;
-
-        if (DEBUG) console.log("Logger Link Action -> Injecting custom item:", targetUrl);
+        const customPrefix = tileElement.getAttribute('data-log-prefix') || "[HMI Dashboard]";
+        const targetUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=addlogmessage&message=${encodeURIComponent(customPrefix + " " + text)}`;
 
         try {
             const response = await fetch(targetUrl);
@@ -862,63 +957,43 @@ function setupLogInjectionListeners(tileElement) {
             const result = await response.json();
             
             if (result.status === "OK") {
-                input.value = ""; // Clear input textbox field variables
-                setTimeout(fetchDomoticzServerLogs, 300); // Trigger immediate visualization data update refresh
+                input.value = ""; 
+                setTimeout(fetchDomoticzServerLogs, 300); 
             }
         } catch (err) {
-            console.error("Logger data entry transmission anomaly:", err);
+            console.error("Logger data entry transmission exception:", err);
         }
     };
 
-    // Bind execution entry triggers to component actions
     if (btnSend) btnSend.addEventListener('click', dispatchMessage);
     input.addEventListener('keypress', (e) => { if (e.key === 'Enter') dispatchMessage(); });
 
-    // =========================================================================
-    // NATIVE SERVER-SIDE LOG PURGE ACTION PIPELINE
-    // =========================================================================
     if (btnClear) {
         btnClear.addEventListener('click', async () => {
-            // Uncovered master endpoint string discovered through network tracing
             const clearUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=clearlog`;
-            
-            if (DEBUG) console.log("Logger Link Action -> Wiping Domoticz log database:", clearUrl);
-
             try {
                 const response = await fetch(clearUrl);
                 if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
                 const result = await response.json();
                 
                 if (result.status === "OK") {
-                    // Flush visual grid output rows to give user immediate operational feedback
-                    terminal.innerHTML = '<div class="hmi-log-line" style="font-style: italic; color: #777;">Domoticz server log cleared successfully...</div>';
-                    
-                    // Raise temporary background processing lock to let hardware database empty out safely
+                    const terminal = tileElement.querySelector('.hmi-log-terminal');
+                    if (terminal) terminal.innerHTML = '<div class="hmi-log-line" style="font-style: italic; color: #777;">Master server log cleared successfully...</div>';
                     tileElement.setAttribute('data-log-hold', 'true');
-                    
                     setTimeout(() => {
                         tileElement.removeAttribute('data-log-hold');
-                        fetchDomoticzServerLogs(); // Pull down a completely fresh monitoring data canvas array
+                        fetchDomoticzServerLogs(); 
                     }, 2000);
                 }
             } catch (err) {
-                console.error("Failed to execute native master server clear log action:", err);
+                console.error("Failed to clear master server logs:", err);
             }
         });
     }
 
-    // =========================================================================
-    // LOG VIEW CHANNEL FILTER DROPDOWN INTERACTION PIPELINE
-    // =========================================================================
-    const channelSelect = tileElement.querySelector('.hmi-log-channel-select');
-    
     if (channelSelect && !channelSelect.hasAttribute('data-listener-attached')) {
         channelSelect.setAttribute('data-listener-attached', 'true');
-        channelSelect.addEventListener('change', () => {
-            if (DEBUG) console.log("Logger Link Action -> Switching Log Filter Channel level to:", channelSelect.value);
-            // Trigger instant refresh using newly mapped channel value indices
-            fetchDomoticzServerLogs(); 
-        });
+        channelSelect.addEventListener('change', fetchDomoticzServerLogs);
     }
 }
 
@@ -943,11 +1018,23 @@ window.addEventListener('DOMContentLoaded', () => {
     setInterval(fetchDomoticzData, REFRESH_RATE);
     setupControlListeners();
 
-	// Logging
-    const logTile = document.querySelector('[data-type="log-monitor"]');
+	// =========================================================================
+    // SYSTEM LOGGING INITIALIZATION ENGINE (SINGLE TIMING LOOP)
+    // =========================================================================
+	const logTile = document.querySelector('[data-type="log-monitor"]');
     if (logTile) {
         fetchDomoticzServerLogs();
-        setInterval(fetchDomoticzServerLogs, 5000); // Check for logs every 5 seconds
+        setInterval(fetchDomoticzServerLogs, 5000); // Simple, low-overhead 5s polling cycle
+    }	
+
+	// =========================================================================
+    // INITIALIZE MATRIX INDICATOR ROUTINES IF THE SPECIALIZED COMPONENT EXISTS
+    // =========================================================================
+    const matrixTile = document.querySelector('[data-type="indicator-matrix"]');
+    if (matrixTile) {
+        fetchDomoticzMatrixStatus();
+        setInterval(fetchDomoticzMatrixStatus, 5000); // Dedicated 5s polling loop
     }
+	
 });
 

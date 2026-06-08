@@ -34,20 +34,19 @@
 			<div class="hmi-card-header">
 				<div class="hmi-pack-label">Domoticz Server Log</div>
 				
-				<!-- Low-Contrast Log Channel Filter Selector Switch -->
+				<!-- Updated Dropdown containing your new master ALL bitmask parameter option -->
 				<select class="hmi-log-channel-select">
+					<option value="268435455">ALL LOGS</option>
 					<option value="1">STATUS</option>
 					<option value="2">DETAIL</option>
 					<option value="4">ERRORS</option>
 				</select>
 			</div>
 			
-			<!-- Scrollable Retro Terminal Screen -->
+			<!-- Rest of your scrollable terminal window layout and button rows stay exactly the same -->
 			<div class="hmi-log-terminal">
 				<div class="hmi-log-line">Initializing log system link...</div>
 			</div>
-
-			<!-- Input Box & Dual Utility Button Layout Row -->
 			<div class="hmi-log-input-row">
 				<input type="text" class="hmi-log-input" placeholder="Type custom log message..." maxlength="100">
 				<button class="hmi-log-send-btn">SEND</button>

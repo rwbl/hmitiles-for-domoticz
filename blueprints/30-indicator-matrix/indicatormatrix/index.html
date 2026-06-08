@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Indicator Matrix</title>
+
+    <!-- Link backward one folder level to reuse shared global common styles -->
+    <link rel="stylesheet" href="../hmitiles.css">
+	
+	<!-- Link backward to the HMI tile engine -->
+    <script src="../hmitiles.js" defer></script>
+</head>
+<body>
+
+	<!-- Inside the header block of index.html -->
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
+				<h2>Indicator Matrix</h2>
+			</div>
+		</div>
+	</header>
+
+    <!-- Master outer panel containing your grid -->
+    <main class="hmi-panel">
+        
+        <!-- 
+			TILE 1 ROW 1 COL 1: 3X3 HIGH-PERFORMANCE STATUS INDICATOR MATRIX
+			Set the device idx according devices list
+		-->
+		<div class="hmi-pack-card" data-type="indicator-matrix" data-device-idx="41 42 43 44 45 46 47 48 49">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Status IND</div>
+			</div>
+			
+			<!-- Clean, rigid 3x3 layout block frame -->
+			<div class="hmi-matrix-grid">
+				<div class="hmi-matrix-cell" data-cell-index="0">P1</div>
+				<div class="hmi-matrix-cell" data-cell-index="1">P2</div>
+				<div class="hmi-matrix-cell" data-cell-index="2">P3</div>
+				<div class="hmi-matrix-cell" data-cell-index="3">F4</div>
+				<div class="hmi-matrix-cell" data-cell-index="4">F5</div>
+				<div class="hmi-matrix-cell" data-cell-index="5">F6</div>
+				<div class="hmi-matrix-cell" data-cell-index="6">F7</div>
+				<div class="hmi-matrix-cell" data-cell-index="7">F8</div>
+				<div class="hmi-matrix-cell" data-cell-index="8">F9</div>
+			</div>
+		</div>
+
+		<footer class="hmi-footer-version">
+			<span>HMITiles for Domoticz</span>
+		</footer>
+
+    </main>
+</body>
+</html>

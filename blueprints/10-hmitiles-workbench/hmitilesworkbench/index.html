@@ -82,11 +82,61 @@ Description: All tiles have default Domoticz device idx set. Change accordingly 
                     
                     { idx: "18", Name: "Any Type Image+Value", Data: "OK", Status: "NORMAL" },
                     { idx: "19", Name: "Switch/Switch/Push On Button Static Text", Status: "OFF" },
-                    { idx: "20", Name: "Light/Switch/Selector Switch", Level: 0, Status: "Off" }
+                    { idx: "20", Name: "Light/Switch/Selector Switch", Level: 0, Status: "Off" },
+
                 ];
 
                 // Pass the simulated payload array into your core hmitiles.js rendering engine
                 processDevices(workbenchMockDevices);
+            };
+
+            // =========================================================================
+            // WORKBENCH LOCAL EMBEDDED MATRIX SIMULATOR HOOK
+            // =========================================================================
+            // Simulates a real batched HTTP data packet response locally
+            window.fetchDomoticzMatrixStatus = async function() {
+                const matrixTiles = document.querySelectorAll('[data-type="indicator-matrix"]');
+                if (matrixTiles.length === 0) return;
+
+                // Fake result payload matching your 9 custom devices exactly
+                const mockMatrixDevices = [
+                    { idx: "41", Status: "OK" },
+                    { idx: "42", Status: "DISABLED" },
+                    { idx: "43", Status: "DISABLED" },
+                    { idx: "44", Status: "OK" },
+                    { idx: "45", Status: "DISABLED" },
+                    { idx: "46", Status: "DISABLED" },
+                    { idx: "47", Status: "DISABLED" },
+                    { idx: "48", Status: "DISABLED" },
+                    { idx: "49", Status: "ERROR" }
+                ];
+
+                matrixTiles.forEach(matrixTile => {
+                    const idxString = matrixTile.getAttribute('data-device-idx') || "";
+                    if (!idxString) return;
+
+                    const csvArray = idxString.split(",");
+
+                    csvArray.forEach((targetIdx, cellIndex) => {
+                        const cellElement = matrixTile.querySelector(`[data-cell-index="${cellIndex}"]`);
+                        if (!cellElement) return;
+
+                        const deviceData = mockMatrixDevices.find(d => String(d.idx) === String(targetIdx));
+                        
+                        cellElement.classList.remove('state-ok', 'state-error', 'state-disabled');
+
+                        if (deviceData) {
+                            const statusText = String(deviceData.Status).toUpperCase();
+                            if (statusText === "ERROR" || statusText === "ALARM" || statusText === "OFF") {
+                                cellElement.classList.add('state-error'); // Black
+                            } else if (statusText === "DISABLED" || statusText === "GRAY" || statusText === "NONE") {
+                                cellElement.classList.add('state-disabled'); // Gray
+                            } else {
+                                cellElement.classList.add('state-ok'); // White
+                            }
+                        }
+                    });
+                });
             };
 
             // =========================================================================
@@ -116,7 +166,10 @@ Description: All tiles have default Domoticz device idx set. Change accordingly 
                 if (typeof window.fetchDomoticzServerLogs === "function") {
                     window.fetchDomoticzServerLogs();
                 }
-
+				// Safely trigger your standalone window simulator hook
+                if (typeof window.fetchDomoticzMatrixStatus === "function") {
+                    window.fetchDomoticzMatrixStatus();
+                }
             } catch (err) {
                 console.error("Failed to compile local components master library view:", err);
                 document.getElementById("hmi-library-grid").innerHTML = 

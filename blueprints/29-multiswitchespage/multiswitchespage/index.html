@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Input Tile</title>
+
+    <!-- Link backward one folder level to reuse shared global common styles -->
+    <link rel="stylesheet" href="../hmitiles.css">
+	
+	<!-- Link backward to the HMI tile engine -->
+    <script src="../hmitiles.js" defer></script>
+</head>
+<body>
+
+	<!-- Inside the header block of index.html -->
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
+				<h2>Input Tile</h2>
+			</div>
+		</div>
+	</header>
+
+    <!-- Master outer panel containing your grid -->
+    <main class="hmi-panel">
+        
+        <!-- 
+			TILE 1 ROW 1 COL 1: TEXT INPUT
+			Set the device idx according devices list
+		-->
+		<div class="hmi-pack-card" data-device-idx="23" data-type="text-input">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">System Banner Alert</div>
+				<div class="hmi-badge">SYNCED</div>
+			</div>
+			<div class="hmi-value-grid">
+				<input type="text" class="hmi-text-field" placeholder="Enter status text...">
+				<div class="hmi-action-row" style="display: flex; justify-content: flex-end; width: 100%; gap: 8px; margin-top: 4px;">
+					<button class="hmi-btn-cancel">Cancel</button>
+					<button class="hmi-btn-ok">OK</button>
+				</div>
+			</div>
+		</div>
+
+        <!-- 
+			TILE 1 ROW 1 COL 2: TEXT INPUT
+			Set the device idx according devices list
+		-->
+		<div class="hmi-pack-card" data-device-idx="24" data-type="text-input">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Custom Weather Override Status</div>
+				<div class="hmi-badge">SYNCED</div>
+			</div>
+			<div class="hmi-value-grid" style="display: flex; flex-direction: column; padding: 12px; gap: 12px;">
+				<input type="text" class="hmi-text-field" placeholder="Enter custom weather string...">
+				<div class="hmi-action-row" style="display: flex; justify-content: flex-end; width: 100%; gap: 8px; margin-top: 4px;">
+					<button class="hmi-btn-cancel">Cancel</button>
+					<button class="hmi-btn-ok">OK</button>
+				</div>
+			</div>
+		</div>
+
+		<footer class="hmi-footer-version">
+			<span>HMITiles for Domoticz</span>
+		</footer>
+
+    </main>
+</body>
+</html>
