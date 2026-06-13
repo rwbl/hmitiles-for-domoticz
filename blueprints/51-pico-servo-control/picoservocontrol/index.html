@@ -4,7 +4,7 @@
 	File: index
 	Project: PicoServoControl
 	Brief: Industry-standard HMI tiles to control an servo connected to a Raspberry Pi Pico WH via Wi-Fi.
-	Date: 2026-06-03
+	Date: 2026-06-13
 	Author: Robert W.B. Linn (c) 2026 MIT
 -->
 <head>
@@ -79,6 +79,30 @@
                 </div>
             </div>
         </div>
+
+        <!-- 
+			ROW 1 COL 4: MONOSPACE SYSTEM LOG TILE WITH FIX CHANNEL SELECTOR ALL LOGS AND FILTER
+			IDX: None
+		-->
+		<div class="hmi-pack-card" data-type="log-monitor" data-log-limit="8" data-log-prefix="[HMI Dashboard]" data-log-filter="[PicoServoControl]">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Domoticz Server Log</div>
+				<select class="hmi-log-channel-select">
+					<option value="268435455">ALL LOGS</option>
+				</select>
+			</div>
+			
+			<div class="hmi-log-terminal">
+				<div class="hmi-log-line">Initializing log system link...</div>
+			</div>
+
+			<!-- The input field and send button are hidden. Do not remove. -->
+			<div class="hmi-log-input-row" style="justify-content: flex-end;">
+				<input type="text" class="hmi-log-input" placeholder="Type custom log message..." maxlength="100" style="display: none;">
+				<button class="hmi-log-send-btn" style="display: none;">SEND</button>
+				<button class="hmi-log-clear-btn">CLEAR</button>
+			</div>
+		</div>
 
 		<!-- FOOTER -->
 		<footer class="hmi-footer-version">

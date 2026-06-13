@@ -746,49 +746,51 @@ function setupGlobalTextInputListeners(cardElement, idx) {
     });
 }
 
-/**
- * Gathering text inputs and dispatching them into the backend pipeline via click configurations
- * @function setupLogInjectionListeners
- * @returns {void}
- */
 function setupLogInjectionListeners(tileElement) {
+    const terminal = tileElement.querySelector('.hmi-log-terminal');
+    const clearBtn = tileElement.querySelector('.hmi-log-clear-btn');
     const btn = tileElement.querySelector('.hmi-log-send-btn');
     const input = tileElement.querySelector('.hmi-log-input');
 
-    if (!btn || !input) return;
+    // 1. SIMPLE CLEAR FIX: Include the log filter text so it passes your filter rule
+    if (clearBtn && terminal) {
+        clearBtn.addEventListener('click', function() {
+            const filterText = tileElement.getAttribute('data-log-filter') || "";
+            // We append the filter text invisibly or at the end so the fetch loop accepts it
+            terminal.innerHTML = `<div class="hmi-log-line" style="color: #999;">Log cleared. Window idle... <!-- ${filterText} --></div>`;
+        });
+    }
 
-    const dispatchMessage = async () => {
-        const text = input.value.trim();
-        if (!text) return; // Ignore blank entries
+    // 2. Safe check for SEND inputs
+	// SEND Button and Input logic (only runs if BOTH elements actually exist)
+    if (btn && input) {
+		const dispatchMessage = async () => {
+			const text = input.value.trim();
+			if (!text) return;
 
-        // Domoticz native custom log injection URL parameter string format
-        const targetUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=addlogmessage&message=${encodeURIComponent("[HMI Dashboard] " + text)}`;
+			const targetUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=addlogmessage&message=${encodeURIComponent("[HMI Dashboard] " + text)}`;
 
-        if (DEBUG) console.log("Logger Link Action -> Injecting custom item:", targetUrl);
+			try {
+				const response = await fetch(targetUrl);
+				if (!response.ok) throw new Error(`HTTP error status: ${response.status}`);
+				const result = await response.json();
+				
+				if (result.status === "OK") {
+					input.value = "";
+					setTimeout(fetchDomoticzData, 300);
+				}
+			} catch (err) {
+				console.error("Logger data entry transmission anomaly:", err);
+			}
+		};
 
-        try {
-            const response = await fetch(targetUrl);
-            if (!response.ok) throw new Error(`HTTP error status: ${response.status}`);
-            const result = await response.json();
-            
-            if (result.status === "OK") {
-                input.value = ""; // Clear input textbox fields
-                setTimeout(fetchDomoticzData, 300); // Trigger immediate visual update reload
-            }
-        } catch (err) {
-            console.error("Logger data entry transmission anomaly:", err);
-        }
-    };
-
-    // Trigger action when clicking send button
-    btn.addEventListener('click', dispatchMessage);
-
-    // Trigger action when pressing "Enter" key while inside input box field
-    input.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            dispatchMessage();
-        }
-    });
+		btn.addEventListener('click', dispatchMessage);
+		input.addEventListener('keypress', function(e) {
+			if (e.key === 'Enter') {
+				dispatchMessage();
+			}
+		});
+	}
 }
 
 /*

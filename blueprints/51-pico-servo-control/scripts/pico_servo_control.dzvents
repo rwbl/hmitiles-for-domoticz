@@ -1,9 +1,20 @@
 --[[
-Event: pico_servo_control
-Brief: Listens to switch on/off or slider to set the angle of a servo connected to a Raspberry Pi Pico WH (Pico).
-Date: 2026-06-03
-Author: Robert W.B. Linn
-Description: Optimized to handle Domoticz 100% slider states and link widgets.
+Event:          pico_servo_control
+Brief:          Listens to switch on/off or slider to set the angle of a 
+                servo connected to a Raspberry Pi Pico WH (Pico).
+Date:           2026-06-13
+Author:         Robert W.B. Linn
+Description:    Optimized to handle Domoticz 100% slider states & link widgets.
+                curl used to send HTTP command from event to the Pico server.
+Log:
+Status: User: name (IP: ...) initiated a switch command (21/ServoToggle/Off)
+VirtualSensors: Light/Switch (ServoToggle)
+dzVents: Handling events for: "ServoToggle", value: "Off"
+dzVents: [PicoServoControl]: Device idx: 21 state: Off
+dzVents: [PicoServoControl]: Dispatching Wi-Fi action link http://pico-ip/close
+VirtualSensors: Light/Switch (ServoSlider)
+dzVents: Handling shellcommandResponse-events for: "OnPicoServoControlResponse"
+dzVents: [PicoServoControl]: Wi-Fi command successfully delivered to the server.
 ]]--
 
 local IDX_SERVO_SLIDER = 20
@@ -11,15 +22,17 @@ local IDX_SERVO_SWITCH = 21
 
 -- Raspberry Pi Pico IP address (no port required as 80 is used)
 local URL_SERVER = 'http://192.168.1.115/'
+
 -- Default positions open or close. In addition number 0-100% possible.
 local CMD_OPEN = 'open'
 local CMD_CLOSE = 'close'
+
 local SHELL_RESPONSE = 'OnPicoServoControlResponse'
 
 local function sendCommand(domoticz, cmd)
     local cmdString = URL_SERVER .. cmd
     
-    domoticz.log('Dispatching Wi-Fi action link -> ' .. cmdString, domoticz.LOG_INFO)
+    domoticz.log('Dispatching Wi-Fi action link ' .. cmdString, domoticz.LOG_INFO)
     
     -- Use curl -s (silent) and fire it in a safe background thread.
     local networkCommand = "curl -s -m 2 " .. cmdString
