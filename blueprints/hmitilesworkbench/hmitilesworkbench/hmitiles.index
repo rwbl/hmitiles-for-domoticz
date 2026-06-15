@@ -257,12 +257,57 @@
 
 <!-- 
 	TILE 4 ROW 3 COL 4
-	HOLLOW GRID MATRIX PLACEHOLDER 
+	COMPACT WIND MONITORING MATRIX
 -->
-<div class="hmi-pack-card hmi-card-placeholder">
-    <div class="hmi-card-header">
-        <div class="hmi-pack-label">[ SPARE BAY COMPONENT ]</div>
-    </div>
+<div class="hmi-pack-card" data-type="wind" data-device-idx="30">
+	
+	<div class="hmi-card-header">
+		<div class="hmi-pack-label">Wind</div>
+		<div class="hmi-badge hmi-alarm-state wind-alert-badge" style="display: none;">NO ALERT</div>
+	</div>
+
+	<div class="hmi-wind-grid">
+		
+		<div class="hmi-wind-columns">
+			
+			<!-- Column 1: Speed -->
+			<div class="hmi-wind-col-split">
+				<span class="hmi-wind-label">Speed</span>
+				<span class="hmi-wind-val-line wind-speed-kmh">0</span>
+				<span class="hmi-wind-subvalue wind-speed-ms">(0 m/s)</span>
+			</div>
+
+			<!-- Column 2: Gust -->
+			<div class="hmi-wind-col-split">
+				<span class="hmi-wind-label">Gust</span>
+				<span class="hmi-wind-val-line gust-color wind-gust-kmh">0</span>
+				<span class="hmi-wind-subvalue">km/h</span>
+			</div>
+
+			<!-- Column 3: Chill -->
+			<div class="hmi-wind-col-split">
+				<span class="hmi-wind-label">Chill</span>
+				<span class="hmi-wind-val-line chill-color wind-chill-temp">0</span>
+				<span class="hmi-wind-subvalue">°C</span>
+			</div>
+
+			<!-- Column 4: Temp -->
+			<div class="hmi-wind-col">
+				<span class="hmi-wind-label">Temp</span>
+				<span class="hmi-wind-val-line wind-air-temp">0</span>
+				<span class="hmi-wind-subvalue">°C</span>
+			</div>
+
+		</div>
+
+		<!-- Lower Status Area Row Tracking -->
+		<div class="hmi-wind-status-bar">
+			<span class="hmi-wind-bf-desc wind-bf-value-desc">F0 - Calm</span> 
+			<span class="hmi-wind-divider">•</span>
+			<span class="hmi-wind-direction wind-direction-cardinal">Direction: N (0°)</span>
+		</div>
+
+	</div>
 </div>
 
 <!-- 

@@ -55,7 +55,7 @@ function processDevices(devices) {
     devices.forEach(device => {
 		
 		// Get the raw value from property data
-		const rawValue = parseFloat(device.Data) || parseFloat(device.Status) || 0; 
+		let rawValue = parseFloat(device.Data) || parseFloat(device.Status) || 0; 
         let displayStatus = device.Status || device.Data || "";
 		
         // =========================================================================
@@ -293,13 +293,26 @@ function processDevices(devices) {
 			}
 
 			// =========================================================================
+			// WIND (Standalone Component)
+			// =========================================================================
+			if (device.Type === 'Wind') {
+				// Fallback to zero string if device data string is empty
+				const windRawData = device.Data || "0;N;0;0;0;0";
+				
+				// Core engine handler update
+				updateWindTile(tileElement, windRawData, device.Name);
+				
+				return; // Exit loop routing cleanly
+			}
+
+			// =========================================================================
 			// ANYOTHER DEVICE
 			// =========================================================================
 			if (!displayStatus) {
 				displayStatus = device.Status || device.Data || "";
 			}
 
-			// console.log("processDevices idx=", device.idx, "name=", device.Name, "value=", rawValue, "status=", displayStatus, "lastUpdate=", device.LastUpdate);
+			console.log("processDevices idx=", device.idx, "name=", device.Name, "value=", rawValue, "status=", displayStatus, "lastUpdate=", device.LastUpdate);
 
 			// Send out to core display text box renderer
 			updateHMIAnalogTile(tileElement, {
@@ -318,6 +331,118 @@ function processDevices(devices) {
 
 		}); // This closing brace seals the multi-tile .forEach loop blocks securely!
     }); // This is your existing device array loop ending bracket
+}
+
+/**
+ * Processes, parses, and updates a standalone Wind Environment Station tile component
+ * @param {HTMLElement} card - The individual .hmi-pack-card element
+ * @param {string} svalue - Semicolon separated raw values: WB;WD;WS;WG;22;24
+ * @param {string} deviceName - The name of the device from Domoticz
+ */
+function updateWindTile(card, svalue, deviceName) {
+    if (!card) {
+        console.error("❌ CRITICAL: Target 'card' DOM element node is null or invalid!");
+        return;
+    }
+    if (!svalue) {
+        console.error("❌ CRITICAL: Incoming data payload 'svalue' is empty or undefined!");
+        return;
+    }
+
+    // Split raw text segments cleanly into a standard array data list
+    const windParts = svalue.split(';');
+
+    if (windParts.length < 4) {
+        console.error("❌ CRITICAL: Data verification failed. Payload contains less than 4 blocks.");
+        return;
+    }
+
+    // EXTRACTION BLOCK WRAPPED SECURELY TO PREVENT MARKDOWN ENGINE DELETIONS
+    const bearingStr = windParts["0"];
+    const direction  = windParts["1"] || 'N';
+    const speedStr    = windParts["2"];
+    const gustStr     = windParts["3"];
+    const tempStr    = windParts["4"];
+    const chillStr   = windParts["5"];
+
+    // Parse mapped string sequences securely into numeric floating calculations
+    const bearing   = parseInt(bearingStr, 10) || 0;
+    const speedMS   = (parseFloat(speedStr) / 10) || 0;
+    const gustMS    = (parseFloat(gustStr) / 10) || 0;
+    const airTemp   = tempStr !== undefined ? parseFloat(tempStr) : 0;
+    const windChill = chillStr !== undefined ? parseFloat(chillStr) : 0;
+
+    // Convert metrics into human-readable rounded integers
+    const speedKMH     = Math.round(speedMS * 3.6);
+    const gustKMH      = Math.round(gustMS * 3.6);
+    const displayTemp  = Math.round(airTemp);
+    const displayChill = Math.round(windChill);
+
+    // Calculate Beaufort Scale thresholds from wind speed (m/s)
+    let bftValue = 0;
+    let bftDesc = "Calm";
+
+    if (speedMS >= 0.3 && speedMS < 1.6)        { bftValue = 1;  bftDesc = "Light Air"; }
+    else if (speedMS >= 1.6 && speedMS < 3.4)   { bftValue = 2;  bftDesc = "Light Breeze"; }
+    else if (speedMS >= 3.4 && speedMS < 5.5)   { bftValue = 3;  bftDesc = "Gentle Breeze"; }
+    else if (speedMS >= 5.5 && speedMS < 8.0)   { bftValue = 4;  bftDesc = "Moderate Breeze"; }
+    else if (speedMS >= 8.0 && speedMS < 10.8)  { bftValue = 5;  bftDesc = "Fresh Breeze"; }
+    else if (speedMS >= 10.8 && speedMS < 13.9) { bftValue = 6;  bftDesc = "Strong Breeze"; }
+    else if (speedMS >= 13.9 && speedMS < 17.2) { bftValue = 7;  bftDesc = "Near Gale"; }
+    else if (speedMS >= 17.2 && speedMS < 20.8) { bftValue = 8;  bftDesc = "Gale Force"; }
+    else if (speedMS >= 20.8 && speedMS < 24.5) { bftValue = 9;  bftDesc = "Strong Gale"; }
+    else if (speedMS >= 24.5 && speedMS < 28.5) { bftValue = 10; bftDesc = "Storm"; }
+    else if (speedMS >= 28.5 && speedMS < 32.7) { bftValue = 11; bftDesc = "Violent Storm"; }
+    else if (speedMS >= 32.7)                   { bftValue = 12; bftDesc = "Hurricane"; }
+
+    // =========================================================================
+    // DOM TREE REFRESH INJECTION LAYER
+    // =========================================================================
+    const titleEl = card.querySelector('.hmi-pack-label');
+    if (titleEl && deviceName) {
+        titleEl.textContent = deviceName;
+    }
+
+    // Capture column inner nodes
+    const speedKmhEl = card.querySelector('.wind-speed-kmh');
+    const speedMsEl  = card.querySelector('.wind-speed-ms');
+    const gustKmhEl  = card.querySelector('.wind-gust-kmh');
+    const chillEl    = card.querySelector('.wind-chill-temp');
+    const tempEl     = card.querySelector('.wind-air-temp');
+    if (speedKmhEl) speedKmhEl.textContent = speedKMH;
+    if (speedMsEl)  speedMsEl.textContent  = "(" + Math.round(speedMS) + " m/s)";
+    if (gustKmhEl)  gustKmhEl.textContent  = gustKMH;
+    if (chillEl)    chillEl.textContent    = displayChill;
+    if (tempEl)     tempEl.textContent     = displayTemp;
+
+    // Capture lower notification row items
+    const statusTextEl = card.querySelector('.wind-bf-value-desc');
+    const directionEl  = card.querySelector('.wind-direction-cardinal');
+
+    if (statusTextEl) statusTextEl.textContent = "F" + bftValue + " - " + bftDesc;
+    if (directionEl)  directionEl.textContent  = "Direction: " + direction + " (" + bearing + "°)";
+
+    // Managing warning badges dynamically
+    const alertBadge = card.querySelector('.wind-alert-badge');
+    if (alertBadge) {
+        if (bftValue >= 8) {
+            alertBadge.textContent = "STORM WARNING";
+            alertBadge.style.display = "block";
+            alertBadge.className = "hmi-badge hmi-alarm-state wind-alert-badge";
+            if (statusTextEl) statusTextEl.style.color = "#c0392b";
+        } else if (bftValue >= 6) {
+            alertBadge.textContent = "STRONG WIND";
+            alertBadge.style.display = "block";
+            alertBadge.className = "hmi-badge hmi-warning-state wind-alert-badge";
+            if (statusTextEl) statusTextEl.style.color = "#d35400";
+        } else {
+            alertBadge.textContent = "NO ALERT";
+            alertBadge.style.display = "block";
+            alertBadge.className = "hmi-badge hmi-warning-state wind-alert-badge";
+            // alertBadge.style.display = "none";
+            if (statusTextEl) statusTextEl.style.color = "";
+        }
+    }
 }
 
 /**

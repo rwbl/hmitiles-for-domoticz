@@ -13,9 +13,12 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 - **Indicator Matrix** (`HMITile`): High-Performance Grid Indicator 3x3 Matrix.
 - **Log Monitor** (`HMITile`): Added a scrollable monospace terminal tile to stream server entries. Features low-contrast keyword color-matching compliant with high-performance industry standards, channel selection dropdowns (Status, Detail, Errors), and a native server-side log purge execution pipe.
 - **Selector Switch** (`HMITile`): Implemented full-width dropdown control matrices that process and map configurations straight from user-defined local layout tags.
+- **Wind** (`HMITile`): Indicates meteorological data values.
+
 - **HMITiles Workbench** (`Example`): Added example number input with min 0.
 - **PicoServoControl** (`Example`): Added example HMITilesLogMonitor with filter `[PicoServoControl]`.
 - **InputTile** (`Example`): Added example number input with min 0.
+
 - **Controls Routing Engine** (`hmitiles.js`): Extended the core listener loop to uniformly capture and execute explicit Toggle, Blinds Stop, and momentary Pulse/Push On network transmissions.
 - **Styles** (`hmitiles.css`): Horizontal rules; Additional classes related to new or updated tiles.
 

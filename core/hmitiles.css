@@ -89,6 +89,13 @@ hr.hmi-divider-short {
     margin-top: auto;
 }
 
+.hmi-last-update {
+	font-size: 10px; 
+	color: #aaa; 
+	text-align: right; 
+	padding: 0 10px 4px 0;
+}
+
 /* ==========================================================================
    MASTER CONTAINER & GRID SYSTEMS (4x3 / 4x2 MATRIX) (.hmi-panel)
    ========================================================================== */
@@ -958,6 +965,94 @@ hr.hmi-divider-short {
     0% { opacity: 1; }
     50% { opacity: 0.85; }
     100% { opacity: 1; }
+}
+
+/* =========================================================================
+   HMITILES: WIND MATRIX PANEL
+   ========================================================================= */
+
+.hmi-wind-grid {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 10px 4px 10px; 
+}
+
+.hmi-wind-columns {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    width: 100%;
+    text-align: center;
+}
+
+.hmi-wind-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.hmi-wind-col-split {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #eee;
+}
+
+.hmi-wind-label {
+    font-size: 11px;
+    color: #666;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Wrapper line container to hold the bold value cleanly */
+.hmi-wind-val-line {
+    font-weight: bold;
+    color: #111;
+    margin-top: 4px;
+}
+
+/* Base typography utility for engineering units sitting on line 2 */
+.hmi-wind-subvalue {
+    font-size: 11px;
+    color: #777;
+    margin-top: 1px;
+}
+
+/* Color Accent Variations matching your dashboard palette */
+.gust-color {
+    color: #d35400;
+}
+
+.chill-color {
+    color: #2980b9;
+}
+
+.hmi-wind-status-bar {
+    border-top: 1px solid #eee;
+    margin-top: 12px;
+    padding-top: 8px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #333;
+}
+
+.hmi-wind-bf-desc {
+    color: #222; 
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-right: 6px;
+}
+
+.hmi-wind-divider {
+    color: #bbb;
+    font-weight: normal;
+    margin-right: 6px;
+}
+
+.hmi-wind-direction {
+    color: #555;
 }
 
 /* ==========================================================================
