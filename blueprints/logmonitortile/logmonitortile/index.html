@@ -27,14 +27,12 @@
     <main class="hmi-panel">
         
         <!-- 
-			TILE 1 ROW 1 COL 1: MONOSPACE SYSTEM LOG TILE WITH DYNAMIC CHANNEL SELECTOR
+			TILE 1 ROW 1 COL 1: MONOSPACE SYSTEM LOG TILE WITH DYNAMIC CHANNEL SELECTOR NO FILTER
 			NO IDX
 		-->
-		<div class="hmi-pack-card" data-type="log-monitor" data-log-limit="5">
+		<div class="hmi-pack-card" data-type="log-monitor" data-log-limit="8" data-log-prefix="[HMI Dashboard]" data-log-filter="">
 			<div class="hmi-card-header">
 				<div class="hmi-pack-label">Domoticz Server Log</div>
-				
-				<!-- Updated Dropdown containing your new master ALL bitmask parameter option -->
 				<select class="hmi-log-channel-select">
 					<option value="268435455">ALL LOGS</option>
 					<option value="1">STATUS</option>
@@ -43,10 +41,36 @@
 				</select>
 			</div>
 			
-			<!-- Rest of your scrollable terminal window layout and button rows stay exactly the same -->
 			<div class="hmi-log-terminal">
 				<div class="hmi-log-line">Initializing log system link...</div>
 			</div>
+
+			<div class="hmi-log-input-row">
+				<input type="text" class="hmi-log-input" placeholder="Type custom log message..." maxlength="100">
+				<button class="hmi-log-send-btn">SEND</button>
+				<button class="hmi-log-clear-btn">CLEAR</button>
+			</div>
+		</div>
+
+        <!-- 
+			TILE 2 ROW 1 COL 2: MONOSPACE SYSTEM LOG TILE WITH DYNAMIC CHANNEL SELECTOR AND FILTER
+			NO IDX
+		-->
+		<div class="hmi-pack-card" data-type="log-monitor" data-log-limit="8" data-log-prefix="[HMI Dashboard]" data-log-filter="MYTEST">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Domoticz Server Log Filter MYTEST</div>
+				<select class="hmi-log-channel-select">
+					<option value="268435455">ALL LOGS</option>
+					<option value="1">STATUS</option>
+					<option value="2">DETAIL</option>
+					<option value="4">ERRORS</option>
+				</select>
+			</div>
+			
+			<div class="hmi-log-terminal">
+				<div class="hmi-log-line">Initializing log system link...</div>
+			</div>
+
 			<div class="hmi-log-input-row">
 				<input type="text" class="hmi-log-input" placeholder="Type custom log message..." maxlength="100">
 				<button class="hmi-log-send-btn">SEND</button>

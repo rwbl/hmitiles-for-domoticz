@@ -631,6 +631,15 @@ hr.hmi-divider-short {
     transition: border-color 0.2s ease;
 }
 
+/* Full width input row */
+.hmi-action-row {
+	display: flex; 
+	justify-content: flex-end; 
+	width: 100%; 
+	gap: 8px; 
+	margin-top: 4px;	
+}
+
 /* EDITING STATE: Turns the standard badge amber when typing */
 .hmi-pack-card[data-alarm="editing"] .hmi-badge {
     background-color: #d1a119 !important; /* Your custom muted amber */
@@ -901,6 +910,44 @@ hr.hmi-divider-short {
 .hmi-matrix-cell.state-disabled {
     background-color: #555c66; 
     color: #8892a0; 
+}
+
+/* =========================================================================
+   HIGH-PERFORMANCE EMERGENCY STOP COMPONENT
+   ========================================================================= */
+
+.hmi-btn-estop {
+    width: 100%;
+    background-color: #2a2a2a;         /* Boring uniform charcoal baseline when safe */
+    color: #e2e8f0;
+    border: 2px solid var(--hmi-border-dark);
+    padding: 14px;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 14px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: all 0.15s ease;
+}
+
+.hmi-btn-estop:hover {
+    background-color: #383838;
+    border-color: #555555;
+}
+
+/* Tripped Active Alert State - Unmissable Desaturated Industrial Red */
+.hmi-btn-estop.active {
+    background-color: #b33c3c !important; 
+    color: #ffffff !important;
+    border-color: #ffffff !important;
+    animation: hmi-estop-pulse 2s infinite ease-in-out; /* Subtle pulse animation */
+}
+
+@keyframes hmi-estop-pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.85; }
+    100% { opacity: 1; }
 }
 
 /* ==========================================================================

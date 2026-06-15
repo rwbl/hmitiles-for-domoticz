@@ -12,7 +12,7 @@
 
 <!-- 
 	=====================
-	=== ROW 1 GENERAL ===
+	ROW 1 GENERAL ===
 	=====================
 -->
 
@@ -80,7 +80,7 @@
 -->
 <div class="hmi-pack-card" data-device-idx="15" data-type="text-input">
 	<div class="hmi-card-header">
-		<div class="hmi-pack-label">General/Text (Input)</div>
+		<div class="hmi-pack-label">General/Text (Input Text)</div>
 		<div class="hmi-badge">SYNCED</div>
 	</div>
 	<div class="hmi-value-grid">
@@ -94,7 +94,7 @@
 
 <!-- 
 	=====================
-	=== ROW 2 GENERAL MORE     ===
+	ROW 2 GENERAL MORE
 	=====================
 -->
 
@@ -165,17 +165,25 @@
 
 <!-- 
 	ROW 2 COL 4
-	HOLLOW GRID MATRIX PLACEHOLDER 
+	NUMBER INPUT WITH MIN 0
 -->
-<div class="hmi-pack-card hmi-card-placeholder">
-    <div class="hmi-card-header">
-        <div class="hmi-pack-label">[ SPARE BAY COMPONENT ]</div>
-    </div>
+<div class="hmi-pack-card" data-device-idx="21" data-type="text-input">
+	<div class="hmi-card-header">
+		<div class="hmi-pack-label">General/Text (Input Number)</div>
+		<div class="hmi-badge">SYNCED</div>
+	</div>
+	<div class="hmi-value-grid" style="display: flex; flex-direction: column; padding: 12px; gap: 12px;">
+		<input type="number" class="hmi-text-field" placeholder="0" min="0">
+		<div class="hmi-action-row">
+			<button class="hmi-btn-cancel">Cancel</button>
+			<button class="hmi-btn-ok">OK</button>
+		</div>
+	</div>
 </div>
 
 <!-- 
 	=====================
-	=== ROW 3 ENV     ===
+	ROW 3 ENV
 	=====================
 -->
 
@@ -259,7 +267,7 @@
 
 <!-- 
 	=====================
-	=== ROW 4 SWITCHES ===
+	ROW 4 SWITCHES ===
 	=====================
 -->
 
@@ -340,7 +348,7 @@
 
 <!-- 
 	=====================
-	=== ROW 5 SWITCHES MORE ===
+	ROW 5 SWITCHES MORE ===
 	=====================
 -->
 
@@ -408,7 +416,7 @@
 
 <!-- 
 	=====================
-	=== ROW 6 SETPOINT ===
+	ROW 6 SETPOINT ===
 	=====================
 -->
 
@@ -482,7 +490,7 @@
 
 <!-- 
 	=============
-	=== ROW 7 Genneral/Text Multiline ===
+	ROW 7 Genneral/Text Multiline ===
 	=============
 -->
 
@@ -572,7 +580,7 @@
 
 <!-- 
 	=============
-	=== ROW 8 SPECIAL ===
+	ROW 8 SPECIAL ===
 	=============
 -->
 
