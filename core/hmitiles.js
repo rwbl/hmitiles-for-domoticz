@@ -54,6 +54,8 @@ function processDevices(devices) {
 
     devices.forEach(device => {
 		
+		if (DEBUG) console.log("processDevices idx data type", device.idx, device.Data, device.Type);
+		
 		// Get the raw value from property data
 		let rawValue = parseFloat(device.Data) || parseFloat(device.Status) || 0; 
         let displayStatus = device.Status || device.Data || "";

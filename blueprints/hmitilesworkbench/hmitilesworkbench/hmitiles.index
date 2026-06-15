@@ -259,7 +259,7 @@
 	TILE 4 ROW 3 COL 4
 	COMPACT WIND MONITORING MATRIX
 -->
-<div class="hmi-pack-card" data-type="wind" data-device-idx="30">
+<div class="hmi-pack-card" data-type="wind" data-device-idx="22">
 	
 	<div class="hmi-card-header">
 		<div class="hmi-pack-label">Wind</div>
