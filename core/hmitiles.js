@@ -388,7 +388,8 @@ function setupControlListeners() {
         // HANDLE BADGE CLICK ACTIONS (Switches, Pumps, Valves, Blinds)
         const badge = event.target.closest('.hmi-clickable-badge');
         if (badge) {
-            const card = badge.closest('.hmi-pack-card');
+			// Supported are card and innercard (a card-within-a-card)
+            const card = badge.closest('.hmi-pack-card, .hmi-pack-innercard');
             if (!card) return;
 
             const idx = parseInt(card.getAttribute('data-device-idx'), 10);

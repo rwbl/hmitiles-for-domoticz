@@ -12,12 +12,12 @@
 
 <!-- 
 	=====================
-	ROW 1 GENERAL ===
+	ROW 1 GENERAL
 	=====================
 -->
 
 <!-- 
-	ROW 1 COL 1
+	TILE 1 ROW 1 COL 1
 	VALUE (Type any with value) 
 -->
 <div class="hmi-pack-card hmi-clickable-card" data-device-idx="1" data-alarm="normal">
@@ -36,7 +36,7 @@
 
 
 <!-- 
-	ROW 1 COL 2
+	TILE 2 ROW 1 COL 2
 	BAR PERCENTAGE (Type General / SubType Percentage) 
 -->
 <div class="hmi-pack-card" data-device-idx="2" data-type="progress-bar-tile">
@@ -57,7 +57,7 @@
 </div>
 
 <!-- 
-	ROW 1 COL 3
+	TILE 3 ROW 1 COL 3
 	TEXT / TIMING SYSTEM DISPLAY (Type General / SubType Text) 
 -->
 <div class="hmi-pack-card" data-device-idx="14">
@@ -74,7 +74,7 @@
 </div>
 
 <!-- 
-	ROW 1 COL 4
+	TILE 4 ROW 1 COL 4
 	TEXT INPUT (Type General / SubType Text) 
 	Overrides text device content.
 -->
@@ -99,7 +99,7 @@
 -->
 
 <!-- 
-	ROW 2 COL 1
+	TILE 1 ROW 2 COL 1
 	ALARM (Type General / SubType Percentage) 
 	Attributes: data-warn-low="20" data-crit-low="10"
 -->
@@ -118,7 +118,7 @@
 </div>
 
 <!-- 
-	ROW 2 COL 2
+	TILE 2 ROW 2 COL 2
 	ALARM (Type General / SubType Percentage) 
 	Triggers alarm on EXACT ZERO values
 	Attributes: data-alert-zero="true" data-zero-text="NO PRODUCTION"
@@ -138,7 +138,7 @@
 </div>
 
 <!-- 
-	ROW 2 COL 3
+	TILE 3 ROW 2 COL 3
 	VALUE IMAGE (Type any with value using Domoticz www/images 48x48px) 
 -->
 <div class="hmi-pack-card" data-type="icon-tile" data-device-idx="18">
@@ -164,7 +164,7 @@
 </div>
 
 <!-- 
-	ROW 2 COL 4
+	TILE 4 ROW 2 COL 4
 	NUMBER INPUT WITH MIN 0
 -->
 <div class="hmi-pack-card" data-device-idx="21" data-type="text-input">
@@ -188,7 +188,7 @@
 -->
 
 <!-- 
-	ROW 3 COL 1
+	TILE 1 ROW 3 COL 1
 	MULTI-VARIABLE SENSOR (Type Temp+Humidity) 
 -->
 <div class="hmi-pack-card" data-type="temp_hum" data-device-idx="3">
@@ -211,7 +211,7 @@
 
 
 <!-- 
-	ROW 3 COL 2
+	TILE 2 ROW 3 COL 2
 	MULTI-VARIABLE SENSOR: (Type Temp+Humidity+Baro) 
 -->
 <div class="hmi-pack-card" data-type="temp_hum_baro" data-device-idx="4">
@@ -237,7 +237,7 @@
 </div>
 
 <!-- 
-	ROW 3 COL 3
+	TILE 3 ROW 3 COL 3
 	STANDALONE BAROMETER / PRESSURE (Type General / SubType Barometer) 
 	Like Value Tile
 -->
@@ -256,7 +256,7 @@
 </div>
 
 <!-- 
-	ROW 3 COL 4
+	TILE 4 ROW 3 COL 4
 	HOLLOW GRID MATRIX PLACEHOLDER 
 -->
 <div class="hmi-pack-card hmi-card-placeholder">
@@ -267,12 +267,12 @@
 
 <!-- 
 	=====================
-	ROW 4 SWITCHES ===
+	ROW 4 SWITCHES
 	=====================
 -->
 
 <!-- 
-	ROW 4 COL 1
+	TILE 1 ROW 4 COL 1
 	INTERACTIVE ON/OFF TOGGLE SWITCH (Type Light/Switch / SubType Switch / SwitchType On/Off) 
 -->
 <div class="hmi-pack-card" data-type="switch" data-device-idx="6">
@@ -291,7 +291,7 @@
 
 
 <!-- 
-	ROW 4 COL 2
+	TILE 2 ROW 4 COL 2
 	PUMP / VALVE SYSTEM STATUS SWITCH (Type Light/Switch / SubType Switch / SwitchType On/Off) 
 -->
 <div class="hmi-pack-card" data-type="pump" data-device-idx="7">
@@ -309,7 +309,7 @@
 </div>
 
 <!-- 
-	ROW 4 COL 3
+	TILE 3 ROW 4 COL 3
 	DIMMER SLIDER HARDWARE (Type Light/Switch / SubType Switch / SwitchType Dimmer) 
 -->
 <div class="hmi-pack-card" data-type="dimmer" data-device-idx="8">
@@ -328,7 +328,7 @@
 </div>
 
 <!-- 
-	ROW 4 COL 4
+	TILE 4 ROW 4 COL 4
 	SWITCH PUSH ON WITH STATIC DATA (Type Light/Switch / SubType Switch / SwitchType Push On Button)
 -->
 <div class="hmi-pack-card" data-type="switch" data-device-idx="19" data-action="On" data-on-text="PUSH" data-off-text="PUSH">
@@ -348,12 +348,12 @@
 
 <!-- 
 	=====================
-	ROW 5 SWITCHES MORE ===
+	ROW 5 SWITCHES MORE
 	=====================
 -->
 
 <!-- 
-	ROW 5 COL 1
+	TILE 1 ROW 5 COL 1
 	MULTI-LEVEL SELECTOR SWITCH (Type Light/Switch / SubType Selector Switch)
 -->
 <div class="hmi-pack-card" data-type="selector" data-device-idx="20">
@@ -374,7 +374,7 @@
 </div>
 
 <!-- 
-	ROW 5 COL 2
+	TILE 2 ROW 5 COL 2
 	EMERGENCY STOP BUTTON (Reusing Switch Infrastructure)
 	SWITCH PUSH ON WITH STATIC DATA (Type Light/Switch / SubType Switch / SwitchType Push On Button)
 -->
@@ -395,17 +395,49 @@
 </div>
 
 <!-- 
-	ROW 5 COL 3
-	HOLLOW GRID MATRIX PLACEHOLDER 
+	TILE 2 ROW 5 COL 3 4-SWITCH PANEL
+	Integrates directly into hmitiles.js by using inner cards.
 -->
-<div class="hmi-pack-card hmi-card-placeholder">
-    <div class="hmi-card-header">
-        <div class="hmi-pack-label">[ SPARE BAY COMPONENT ]</div>
-    </div>
+<div class="hmi-pack-card">
+	<div class="hmi-card-header">
+		<div class="hmi-pack-label">4-Switch Panel</div>
+	</div>
+	<div class="hmi-value-grid">
+		<!-- SWITCH 1 (IDX N) -->
+		<div class="hmi-pack-innercard" data-type="switch" data-device-idx="6">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Switch 1</div>
+				<div class="hmi-badge hmi-clickable-badge">OFF</div>
+			</div>
+		</div>
+		<!-- SWITCH 2 (IDX N) -->
+		<div class="hmi-pack-innercard" data-type="switch" data-device-idx="6">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Switch 2</div>
+				<div class="hmi-badge hmi-clickable-badge">OFF</div>
+			</div>
+		</div>
+
+		<!-- SWITCH 3 (IDX N) -->
+		<div class="hmi-pack-innercard" data-type="switch" data-device-idx="6">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Switch 3</div>
+				<div class="hmi-badge hmi-clickable-badge">OFF</div>
+			</div>
+		</div>
+
+		<!-- SWITCH 4 (IDX N) -->
+		<div class="hmi-pack-innercard" data-type="switch" data-device-idx="6">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Switch 4</div>
+				<div class="hmi-badge hmi-clickable-badge">OFF</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 <!-- 
-	ROW 5 COL 4
+	TILE 3 ROW 5 COL 4
 	HOLLOW GRID MATRIX PLACEHOLDER 
 -->
 <div class="hmi-pack-card hmi-card-placeholder">
@@ -416,12 +448,12 @@
 
 <!-- 
 	=====================
-	ROW 6 SETPOINT ===
+	ROW 6 SETPOINT
 	=====================
 -->
 
 <!-- 
-	ROW 6 COL 1
+	TILE 1 ROW 6 COL 1
 	THERMOSTAT / SETPOINT (Type Setpoint / SubType Setpoint) 
 -->
 <div class="hmi-pack-card" data-type="thermostat" data-device-idx="9">
@@ -441,7 +473,7 @@
 </div>
 
 <!-- 
-	ROW 6 COL 2
+	TILE 2 ROW 6 COL 2
 	THERMOSTAT (SP) + TEMPERATURE (PV)
 -->
 <div class="hmi-pack-card" data-device-idx="10" data-type="setpoint-stepper-tile" data-pv-idx="11" data-unit="°C" data-step="0.5">
@@ -469,7 +501,7 @@
 </div>
 
 <!-- 
-	ROW 6 COL 3
+	TILE 3 ROW 6 COL 3
 	HOLLOW GRID MATRIX PLACEHOLDER 
 -->
 <div class="hmi-pack-card hmi-card-placeholder">
@@ -479,7 +511,7 @@
 </div>
 
 <!-- 
-	ROW 6 COL 3
+	TILE 4 ROW 6 COL 4
 	HOLLOW GRID MATRIX PLACEHOLDER 
 -->
 <div class="hmi-pack-card hmi-card-placeholder">
@@ -489,13 +521,13 @@
 </div>
 
 <!-- 
-	=============
-	ROW 7 Genneral/Text Multiline ===
-	=============
+	============================
+	ROW 7 General/Text Multiline
+	============================
 -->
 
 <!-- 
-	ROW 7 COL 1
+	TILE 1 ROW 7 COL 1
 	TEXT / SYSTEM DOCUMENTATION (Type General / SubType Text) 
 -->
 <div class="hmi-pack-card" data-type="info" data-device-idx="24">
@@ -519,7 +551,7 @@
 </div>
 
 <!-- 
-	ROW 7 COL 2
+	TILE 2 ROW 7 COL 2
 	TEXT / SYSTEM DOCUMENTATION (Type General / SubType Text) 
 -->
 <div class="hmi-pack-card" data-type="info" data-device-idx="24">
@@ -540,7 +572,7 @@
 </div>
 
 <!-- 
-	ROW 7 COL 3
+	TILE 3 ROW 7 COL 3
 	MONOSPACE SYSTEM LOG TILE WITH DYNAMIC CHANNEL SELECTOR
 -->
 <div class="hmi-pack-card" data-type="log-monitor" data-log-limit="5">
@@ -569,7 +601,7 @@
 </div>
 
 <!-- 
-	ROW 7 COL 4
+	TILE 4 ROW 7 COL 4
 	HOLLOW GRID MATRIX PLACEHOLDER 
 -->
 <div class="hmi-pack-card hmi-card-placeholder">
@@ -580,12 +612,12 @@
 
 <!-- 
 	=============
-	ROW 8 SPECIAL ===
+	ROW 8 SPECIAL
 	=============
 -->
 
 <!-- 
-	ROW 8 COL 1
+	TILE 1 ROW 8 COL 1
 	3X3 HIGH-PERFORMANCE STATUS INDICATOR MATRIX
 	Set the device idx according devices list
 -->
@@ -609,7 +641,7 @@
 </div>
 
 <!-- 
-	ROW 8 COL 2
+	TILE 2 ROW 8 COL 2
 	HOLLOW GRID MATRIX PLACEHOLDER 
 -->
 <div class="hmi-pack-card hmi-card-placeholder">
@@ -619,7 +651,7 @@
 </div>
 
 <!-- 
-	ROW 8 COL 3
+	TILE 3 ROW 8 COL 3
 	HOLLOW GRID MATRIX PLACEHOLDER 
 -->
 <div class="hmi-pack-card hmi-card-placeholder">
@@ -629,7 +661,7 @@
 </div>
 
 <!-- 
-	ROW 8 COL 4
+	TILE 4 ROW 8 COL 4
 	HOLLOW GRID MATRIX PLACEHOLDER 
 -->
 <div class="hmi-pack-card hmi-card-placeholder">
