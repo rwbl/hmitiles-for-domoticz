@@ -308,6 +308,14 @@ function processDevices(devices) {
 			}
 
 			// =========================================================================
+			// AIR QUALITY
+			// =========================================================================
+			if (device.Type === 'Air Quality') {
+				rawValue = parseInt(device.Data, 10) || 0;
+				displayStatus = `${rawValue} PPM`;
+			}
+
+			// =========================================================================
 			// ANYOTHER DEVICE
 			// =========================================================================
 			if (!displayStatus) {
@@ -738,60 +746,72 @@ function updateDashboardTimestamp() {
 }
 
 /**
- * Evaluates live metrics against dynamic boundary levels declared via HTML attributes.
+ * Evaluates live metrics against a generic 5-level alarm severity matrix.
+ * Supports both ascending spikes (e.g., CO2) and descending drops (e.g., Battery).
  * @function checkAlarmThresholds
  * @param {number} idx - The unique Domoticz database hardware index identifier code.
  * @param {number} currentValue - The raw numeric value calculation used to determine warning states.
- * @returns {void}
  */
 function checkAlarmThresholds(idx, currentValue) {
     const card = document.querySelector(`[data-device-idx="${idx}"]`) || document.getElementById(`idx-${idx}`);
     if (!card) return;
 
-    // 1. Extract data limits from HTML attributes natively
-    const critLow = card.getAttribute('data-crit-low');
-    const warnLow = card.getAttribute('data-warn-low');
-    const critHigh = card.getAttribute('data-crit-high');
-    const warnHigh = card.getAttribute('data-warn-high');
-    const alertZero = card.getAttribute('data-alert-zero');
+    // 1. Extract potential threshold configurations dynamically
+    const lvlCritHigh = card.getAttribute('data-level-high');
+    const lvlWarnHigh = card.getAttribute('data-level-medium');
+    const lvlCritLow  = card.getAttribute('data-level-low');
+    const lvlWarnLow  = card.getAttribute('data-level-info');
 
-    // =========================================================================
-    // CRITICAL SHORT-CIRCUIT SAFETY BLOCK
-    // =========================================================================
-    // If this card is a simple switch or has NO alarms defined, QUIT IMMEDIATELY
-    // and do NOT touch the badge text!
-    if (critLow === null && warnLow === null && critHigh === null && warnHigh === null && alertZero === null) {
+    // Structural exit if this card has no boundary rules mapped
+    if (lvlCritHigh === null && lvlWarnHigh === null && lvlCritLow === null && lvlWarnLow === null) {
         return; 
     }
-    // =========================================================================
 
     const badge = card.querySelector('.hmi-badge');
     let state = "normal";
-    let badgeText = "NORMAL";
+    let badgeText = card.getAttribute('data-text-normal') || "NORMAL";
+    const val = parseFloat(currentValue);
 
-    // 2. Run generic boundary check matrix
-    if (alertZero === "true" && currentValue === 0) {
-        state = "warning";
-        badgeText = card.getAttribute('data-zero-text') || "NO PRODUCTION";
-    }
-    else if (critLow !== null && currentValue <= parseFloat(critLow)) {
+    // =========================================================================
+    // 2. PROCESS THRESHOLD BOUNDARIES (Generic Matrix Logic)
+    // =========================================================================
+    
+    // DIRECTION A: ASCENDING SPIKES (e.g., Air Quality, CO2, Temp, Grid Load)
+    if (lvlCritHigh !== null && val >= parseFloat(lvlCritHigh)) {
         state = "critical";
-        badgeText = "CRITICAL";
-    } else if (warnLow !== null && currentValue <= parseFloat(warnLow)) {
+        badgeText = card.getAttribute('data-text-high') || "CRITICAL";
+    } 
+    else if (lvlWarnHigh !== null && val >= parseFloat(lvlWarnHigh)) {
         state = "warning";
-        badgeText = "LOW WARN";
-    }
-    else if (critHigh !== null && currentValue >= parseFloat(critHigh)) {
+        badgeText = card.getAttribute('data-text-medium') || "WARNING";
+    } 
+    
+    // DIRECTION B: DESCENDING DROPS (e.g., Battery SOC, Water Tank Depth)
+    // Ordered from lowest value up to catch absolute critical states first
+    else if (lvlCritLow !== null && val <= parseFloat(lvlCritLow)) {
         state = "critical";
-        badgeText = "CRITICAL";
-    } else if (warnHigh !== null && currentValue >= parseFloat(warnHigh)) {
+        badgeText = card.getAttribute('data-text-low') || "CRITICAL";
+    } 
+    else if (lvlWarnLow !== null && val <= parseFloat(lvlWarnLow)) {
         state = "warning";
-        badgeText = "HIGH WARN";
+        badgeText = card.getAttribute('data-text-info') || "LOW WARN";
     }
 
-    // 3. Apply output modifications dynamically
+    // =========================================================================
+    // 3. APPLY OUTPUT STYLES AND LABELS DYNAMICALLY
+    // =========================================================================
     card.setAttribute("data-alarm", state);
-    if (badge) badge.textContent = badgeText;
+    
+    if (badge) {
+        badge.textContent = badgeText.toUpperCase();
+        badge.className = "hmi-badge hmi-clickable-badge";
+        
+        if (state === "critical") {
+            badge.classList.add("hmi-alarm-state");
+        } else if (state === "warning") {
+            badge.classList.add("hmi-warning-state");
+        }
+    }
 }
 
 /**

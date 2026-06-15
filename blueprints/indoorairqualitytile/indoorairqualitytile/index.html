@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Indoor Air Quality Tile</title>
+
+    <!-- Link backward one folder level to reuse shared global common styles -->
+    <link rel="stylesheet" href="../hmitiles.css">
+	
+	<!-- Link backward one folder level to the HMI tile engine -->
+    <script src="../hmitiles.js" defer></script>
+</head>
+<body>
+
+	<!-- Inside the header block of index.html -->
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
+				<h2>Indoor Air Quality Tile</h2>
+			</div>
+		</div>
+	</header>
+
+    <!-- Master outer panel containing your grid -->
+	<!-- Set the device idx according devices list -->
+    <main class="hmi-panel">
+        
+        <!-- 
+			TILE 1 ROW 1 COL 1: AIR QUALITY / CO2 AUTOMATIC ALARM TILE
+			MULTI-TIER ALARM TILE BLUEPRINT (5-LEVEL GENERIC SEVERITY MATRIX)
+		-->
+		<div class="hmi-pack-card" data-type="alarm" data-device-idx="31" 
+			 data-level-info="700"     data-text-info="Good"
+			 data-level-low="900"      data-text-low="Fair"
+			 data-level-medium="1100"   data-text-medium="Mediocre"
+			 data-level-high="1600"     data-text-high="Bad"
+			 data-text-normal="Excellent">
+			
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Air Quality Monitor</div>
+				<div class="hmi-badge hmi-clickable-badge">EXCELLENT</div>
+			</div>
+			<div class="hmi-value-grid">
+				<div class="hmi-value-box">
+					<div class="hmi-box-data">
+						<span class="hmi-value">--</span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<footer class="hmi-footer-version">
+			<span>HMITiles for Domoticz</span>
+		</footer>
+
+    </main>
+</body>
+</html>

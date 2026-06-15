@@ -30,8 +30,11 @@
 			Set the device idx according devices list
 			IDX 5
 		-->
-		<!-- Battery Tile (Triggers alarm on LOW values) -->
-		<div class="hmi-pack-card" id="idx-12" data-device-idx="12" data-warn-low="20" data-crit-low="10">
+		<!-- Battery Tile (Triggers alarm on HIGH values) -->
+		<div class="hmi-pack-card" id="idx-12" data-device-idx="12" 
+			 data-level-info="20"     data-text-info="Low"
+			 data-level-low="10"      data-text-low="Empty"
+			 data-text-normal="Full">
 			<div class="hmi-card-header">
 				<div class="hmi-pack-label">System Battery SOC</div>
 				<div class="hmi-badge">NORMAL</div>

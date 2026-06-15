@@ -1055,6 +1055,57 @@ hr.hmi-divider-short {
     color: #555;
 }
 
+/* =========================================================================
+   INDOOR AIR QUALITY / CO2 MATRIX
+   ========================================================================= */
+.hmi-iaq-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 16px 12px 12px 12px;
+}
+
+/* Big central numbers hierarchy tracking */
+.hmi-iaq-val-line {
+    font-size: 32px;
+    font-weight: 800;
+    color: #111;
+    line-height: 1.1;
+}
+
+.hmi-iaq-subvalue {
+    font-size: 11px;
+    color: #666;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+    margin-bottom: 12px;
+}
+
+/* Health Severity Rating Tracker Status Bar */
+.hmi-iaq-status-bar {
+    width: 100%;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #222;
+}
+
+/* High-Performance Status Alert Badges (Neutral, Caution, Emergency) */
+.hmi-badge.iaq-excellent { background-color: #27ae60; color: #fff; } /* Green */
+.hmi-badge.iaq-good      { background-color: #2ecc71; color: #fff; } /* Light Green */
+.hmi-badge.iaq-fair      { background-color: #f39c12; color: #fff; } /* Amber */
+.hmi-badge.iaq-mediocre  { background-color: #e67e22; color: #fff; } /* Orange */
+.hmi-badge.iaq-bad       { background-color: #c0392b; color: #fff; } /* Red Crimson */
+
 /* ==========================================================================
    END
    ========================================================================== */

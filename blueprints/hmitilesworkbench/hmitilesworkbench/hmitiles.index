@@ -101,11 +101,15 @@
 <!-- 
 	TILE 1 ROW 2 COL 1
 	ALARM (Type General / SubType Percentage) 
-	Attributes: data-warn-low="20" data-crit-low="10"
 -->
-<div class="hmi-pack-card" data-device-idx="16" data-warn-low="20" data-crit-low="10">
+<div class="hmi-pack-card" data-device-idx="16" 
+			data-level-info=""			data-text-info=""
+			data-level-low="10"      	data-text-low="Low"
+			data-level-medium="50"   	data-text-medium="Half"
+			data-level-high="100"     	data-text-high="Full"
+			data-text-normal="Full">
 	<div class="hmi-card-header">
-		<div class="hmi-pack-label">General/Percentage (Alarm/Warning/Critical)</div>
+		<div class="hmi-pack-label">General/Percentage (Warning)</div>
 		<div class="hmi-badge">NORMAL</div>
 	</div>
 	<div class="hmi-value-grid">
@@ -120,12 +124,15 @@
 <!-- 
 	TILE 2 ROW 2 COL 2
 	ALARM (Type General / SubType Percentage) 
-	Triggers alarm on EXACT ZERO values
-	Attributes: data-alert-zero="true" data-zero-text="NO PRODUCTION"
 -->
-<div class="hmi-pack-card" data-device-idx="17" data-alert-zero="true" data-zero-text="NO PRODUCTION">
+<div class="hmi-pack-card" data-device-idx="17" 
+			data-level-info="0"			data-text-info=""
+			data-level-low="0"      	data-text-low="Empty"
+			data-level-medium="50"   	data-text-medium="Half"
+			data-level-high="100"     	data-text-high="Full"
+			data-text-normal="Full">
 	<div class="hmi-card-header">
-		<div class="hmi-pack-label">General/Percentage (Alarm ZERO)</div>
+		<div class="hmi-pack-label">General/Percentage (Alarm)</div>
 		<div class="hmi-badge">NORMAL</div>
 	</div>
 	<div class="hmi-value-grid">
@@ -143,7 +150,7 @@
 -->
 <div class="hmi-pack-card" data-type="icon-tile" data-device-idx="18">
 	<!-- Header block holding title and status token -->
-	<div class="hmi-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+	<div class="hmi-card-header">
 		<div class="hmi-pack-label">Any Type Image+Value </div>
 		<div class="hmi-badge">NORMAL</div>
 	</div>

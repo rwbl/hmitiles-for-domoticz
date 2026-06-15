@@ -77,14 +77,15 @@ Description: All tiles have default Domoticz device idx set. Change accordingly 
                     { idx: "11", Name: "Process Value Sensor", Temp: "19.5", Data: "19.5" }, // Maps to data-pv-idx
                     
                     // Injected values for alarm thresholds to overwrite the '--' markers
-                    { idx: "16", Name: "General/Percentage Alarm Warning/Critical", Data: "8.4", Status: "8.4 %" },
+                    { idx: "16", Name: "General/Percentage Alarm Warning/Critical", Data: "50", Status: "50 %" },
                     { idx: "17", Name: "General/Percentage Alarm ZERO", Data: "0.0", Status: "0.0 %" },
                     
                     { idx: "18", Name: "Any Type Image+Value", Data: "OK", Status: "NORMAL" },
                     { idx: "19", Name: "Switch/Switch/Push On Button Static Text", Status: "OFF" },
                     { idx: "20", Name: "Light/Switch/Selector Switch", Level: 0, Status: "Off" },
 
-                    { idx: "21", Name: "General/Text/Input/Number", Data: "1234"}
+                    { idx: "21", Name: "General/Text/Input/Number", Data: "1234", Status: "OK"},
+                    { idx: "22", Name: "Wind/Wind", Data: "180;S;100;150;18;21", Status: "NO ALERT", Type: "Wind"}
 
                 ];
 
