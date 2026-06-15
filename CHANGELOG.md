@@ -20,7 +20,7 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 - **Styles** (`hmitiles.css`): Horizontal rules; Additional classes related to new or updated tiles.
 
 #### Changed
-- **Blueprint**: Folder naming without prefix numbering to easier maintenance.
+- **Blueprint**: Folder naming without prefix numbering for easier maintenance.
 - **HMITiles Workbench** (`Example`): Reworked the index simulator template with matched virtual device IDXs and cross-referenced multi-variable datasets to support full offline rendering tests.
 - **Core Script Layout** (`hmitiles.js`): Injected a global configuration `DEBUG` flag switch to easily gate console diagnostic outputs across browser events.
 
