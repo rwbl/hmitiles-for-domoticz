@@ -2,7 +2,7 @@
 
 The **Wind Matrix Tile** aggregates comprehensive weather telemetry parameters into a single, high-density, horizontal monitoring card. It parses composite meteorological data values natively to display immediate spatial conditions and quantitative tracking indices simultaneously.
 
-![Wind Tile Layout Preview](your-screenshot-asset-path-here.png) <!-- Optional: Add your layout screenshot asset link here -->
+![Wind Tile Layout Preview](windtile.png)
 
 #### ✨ Key Features
 * **Engine Native Integration**: Runs smoothly out-of-the-box using custom string segmentation parsing logic, eliminating layout rendering overhead or dependencies.
