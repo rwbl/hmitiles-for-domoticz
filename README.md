@@ -10,14 +10,14 @@ The core focus is clarity, consistency, and situational awareness—not visual s
 ## Screenshots
 
 **Solar Info Dashboard Example**  
-![Solar Info Dashboard Live Data](blueprints/50-solar-info-dashboard/solarinfodashboard-livedata.png)
-![Solar Info Dashboard Trends](blueprints/50-solar-info-dashboard/solarinfodashboard-trends.png)
+![Solar Info Dashboard Live Data](blueprints/solarinfodashboard/solarinfodashboard-livedata.png)
+![Solar Info Dashboard Trends](blueprints/solarinfodashboard/solarinfodashboard-trends.png)
 
 **Workbench (Development / Testing Area)**  
-![Workbench](blueprints/10-hmitiles-workbench/hmitiles-workbench.png)
+![Workbench](blueprints/hmitilesworkbench/hmitilesworkbench.png)
 
 **Raspberry Pi Pico WH Telemetry View**  
-![Pico Telemetry View](blueprints/52-pico-telemetry-view/pico-telemetry-view.png)
+![Pico Telemetry View](blueprints/picotelemetryview/picotelemetryview.png)
 
 ---
 
@@ -44,22 +44,21 @@ This framework bypasses typical flashy smart-home trends to strictly mirror mode
 ---
 
 ## Included Page Blueprints
+(Selective)
 
-* **`10-hmitiles-workbench`**: An interactive testing layout panel used for mocking up new modular components, validating styles, and debugging device index assignments.
-* **`20-create-single-tile-page`**: A basic entry-level walkthrough for establishing file pathways, creating your first tile wrapper, and establishing server handshakes.
-* **`50-solar-info-dashboard`**: A dense four-column process view detailing live energy flows across production, household consumption, grid balance, and battery bank state-of-charge.
-* **`51-pico-servo-control`**: A clean, WiFi-based microcontroller interface facilitating remote multi-axis servo positioning commands.
-* **`52-pico-telemetry-view`**: Real-time diagnostic monitoring tracking internal silicon temperature logs, virtual text data timestamps, and antenna Wi-Fi RSSI signal strength fields.
+* **`hmitilesworkbench`**: An interactive testing layout panel used for mocking up new modular components, validating styles, and debugging device index assignments.
+* **`valuetile`**: A basic entry-level walkthrough for establishing file pathways, creating your first tile wrapper, and establishing server handshakes.
+* **`solarinfodashboard`**: A dense four-column process view detailing live energy flows across production, household consumption, grid balance, and battery bank state-of-charge.
+* **`picoservocontrol`**: A clean, WiFi-based microcontroller interface facilitating remote multi-axis servo positioning commands.
+* **`picotelemetryview`**: Real-time diagnostic monitoring tracking internal silicon temperature logs, virtual text data timestamps, and antenna Wi-Fi RSSI signal strength fields.
 
 ---
 
 ## Directory Manual Mapping
 
-The `blueprints/` folder acts as an interactive repository index. Selecting any blueprint directory on GitHub will automatically render its localized `README.md` containing specific implementation code blocks, connection tutorials, and layout previews:
+The `blueprints/` folder acts as an interactive repository index. 
 
-* **[10] Framework Tile Workbench** -> `blueprints/10-hmitiles-workbench/`
-* **[20-49] Step-By-Step Tutorials** -> Guide blueprints for building your first custom tile and standalone pages.
-* **[50+] Ready-to-Run Applications** -> Full deployment examples featuring the centralized ecosystem hook architecture.
+Selecting any blueprint directory on GitHub will automatically render its localized `README.md` containing specific implementation code blocks, connection tutorials, and layout previews:
 
 ---
 
@@ -71,14 +70,14 @@ HMITiles-for-Domoticz/
 │   ├── hmitiles.css                	# Global styling for all tiles and layouts
 │   └── hmitiles.js                 	# Shared UI logic (bulk polling loop, hook dispatcher)
 ├── blueprints/                     	# Custom page examples, tutorials, and apps
-│   ├── 10-hmitiles-workbench/      	# Tile design test bed folder
+│   ├── hmitilesworkbench/      		# Tile design test bed folder
 │   │   ├── index.html              	# Standalone workbench interface markup
 │   │   ├── HMITilesWorkbench.html  	# Domoticz custom page wrapper definition
 │   │   ├── README.md               	# Detailed usage instructions
-│   │   └── hmitiles-workbench.png  	# Layout preview graphic
-│   ├── 20-create-single-tile-page/ 	# Foundational onboarding tutorial
-│   │   ├── SingleTilePage.html     	# Domoticz tab navigation file
-│   │   ├── singletilepage/         	# Core application directory
+│   │   └── hmitilesworkbench.png  	    # Layout preview graphic
+│   ├── valuetile/ 	                    # Example using value tile
+│   │   ├── ValueTile.html     	        # Domoticz custom page tab navigation file
+│   │   ├── valuetile/         	        # Core application directory
 │   │   └── index.html              	# Main blueprint page structure
 │   └── ...
 ├── LICENSE                         	# MIT open-source license
@@ -92,10 +91,10 @@ HMITiles-for-Domoticz/
 Follow these steps to deploy and run the `SingleTilePage` blueprint example directly inside your local Domoticz installation.
 
 1. **Deploy Core Framework**: Copy the files `hmitiles.css` and `hmitiles.js` from the `core/` repository folder into your Domoticz `/www/templates/` directory.
-2. **Select the Blueprint**: Navigate into the repository folder `blueprints/20-create-single-tile-page/`.
-3. **Deploy Custom Page Wrapper**: Copy the file `SingleTilePage.html` into your Domoticz `/www/templates/` directory.
-4. **Deploy Application Subfolder**: Copy the entire subfolder `singletilepage/` into your Domoticz `/www/templates/` directory.
-5. **Launch Interface**: Open your Domoticz Web UI -> select the **Custom** tab -> click **SingleTilePage**. The custom dashboard view `Blueprint Single Tile Page` will load immediately.
+2. **Select the Blueprint**: Navigate into the repository folder `blueprints/valuetile/`.
+3. **Deploy Custom Page Wrapper**: Copy the file `ValueTile.html` into your Domoticz `/www/templates/` directory.
+4. **Deploy Application Subfolder**: Copy the entire subfolder `valuetile/` into your Domoticz `/www/templates/` directory.
+5. **Launch Interface**: Open your Domoticz Web UI -> select the **Custom** tab -> click **ValueTile**. The custom dashboard view `ValueTile` will load immediately.
 
 ### Final Domoticz Directory Structure
 Your Domoticz `/www/templates/` server folder path must reflect this exact layout:
@@ -103,8 +102,8 @@ Your Domoticz `/www/templates/` server folder path must reflect this exact layou
 domoticz/www/templates/
 ├── hmitiles.css            # Framework shared styles
 ├── hmitiles.js             # Core polling and hook loop engine
-├── SingleTilePage.html     # Domoticz tab navigation wrapper file
-└── singletilepage/         # Dedicated application folder assets
+├── ValueTile.html     		# Domoticz tab navigation wrapper file
+└── valuetile/         		# Dedicated application folder assets
 	└── index.html          # Main HTML structure and page hook scripts
 ```
 ---
