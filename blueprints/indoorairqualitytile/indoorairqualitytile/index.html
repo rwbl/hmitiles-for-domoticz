@@ -31,11 +31,12 @@
 			MULTI-TIER ALARM TILE BLUEPRINT (5-LEVEL GENERIC SEVERITY MATRIX)
 		-->
 		<div class="hmi-pack-card" data-type="alarm" data-device-idx="31" 
-			 data-level-info="700"     data-text-info="Good"
-			 data-level-low="900"      data-text-low="Fair"
-			 data-level-medium="1100"   data-text-medium="Mediocre"
-			 data-level-high="1600"     data-text-high="Bad"
-			 data-text-normal="Excellent">
+			 data-alarm-type="up"
+			 data-level-info="0"        data-text-normal="Excellent"   data-state-normal="normal"
+			 data-level-low="700"       data-text-info="Good"          data-state-info="normal"
+			 data-level-medium="900"    data-text-low="Fair"           data-state-low="normal"
+			 data-level-high="1100"     data-text-medium="Mediocre"    data-state-medium="warning"
+			 data-level-critical="1600" data-text-high="Bad"           data-state-high="critical">
 			
 			<div class="hmi-card-header">
 				<div class="hmi-pack-label">Air Quality Monitor</div>

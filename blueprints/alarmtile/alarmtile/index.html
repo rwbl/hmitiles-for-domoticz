@@ -23,18 +23,20 @@
 	</header>
 
     <!-- Master outer panel containing your grid -->
+	<!-- Set the device idx according devices list -->
     <main class="hmi-panel">
         
         <!-- 
-			TILE 1 ROW 1 COL 1: CUSTOM TILE
-			Set the device idx according devices list
-			IDX 5
+			TILE 1 ROW 1 COL 1: BATTERY STATUS
 		-->
-		<!-- Battery Tile (Triggers alarm on HIGH values) -->
-		<div class="hmi-pack-card" id="idx-12" data-device-idx="12" 
-			 data-level-info="20"     data-text-info="Low"
-			 data-level-low="10"      data-text-low="Empty"
-			 data-text-normal="Full">
+		<div class="hmi-pack-card" data-device-idx="12" 
+			data-alarm-type="down"
+			data-level-critical="0"   data-text-critical="Empty"     data-state-critical="critical"
+			data-level-low="25"        data-text-low="QUARTER"       data-state-low="warning"
+			data-level-medium="50"     data-text-medium="HALF"       data-state-medium="normal"
+			data-level-high="75"       data-text-high="3QUARTERS"    data-state-high="normal"
+			data-level-info="100"      data-text-info="FULL"         data-state-info="normal"
+			data-text-normal="Normal">
 			<div class="hmi-card-header">
 				<div class="hmi-pack-label">System Battery SOC</div>
 				<div class="hmi-badge">NORMAL</div>
@@ -48,8 +50,17 @@
             </div>
 		</div>
 
-		<!-- Solar Tile (Triggers alarm on EXACT ZERO values) -->
-		<div class="hmi-pack-card" id="idx-5" data-device-idx="5" data-alert-zero="true" data-zero-text="NO PRODUCTION">
+        <!-- 
+			TILE 1 ROW 1 COL 2: SOLAR PRODUCTION
+		-->
+		<div class="hmi-pack-card" data-device-idx="5" 
+			data-alarm-type="up"
+			data-level-info="0"          data-text-info="NO PROD"      data-state-info="warning"
+			data-level-low="500"        data-text-low="LOW"           data-state-low="warning"
+			data-level-medium="1000"     data-text-medium="MEDIUM"     data-state-medium="normal"
+			data-level-high="3000"       data-text-high="GOOD"         data-state-high="normal"
+			data-level-critical="5000"   data-text-critical="VERY GOOD" data-state-critical="normal"
+			data-text-normal="NORMAL">	
 			<div class="hmi-card-header">
 				<div class="hmi-pack-label">Solar Generation</div>
 				<div class="hmi-badge">NORMAL</div>

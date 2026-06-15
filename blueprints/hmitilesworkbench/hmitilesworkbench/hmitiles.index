@@ -103,11 +103,13 @@
 	ALARM (Type General / SubType Percentage) 
 -->
 <div class="hmi-pack-card" data-device-idx="16" 
-			data-level-info=""			data-text-info=""
-			data-level-low="10"      	data-text-low="Low"
-			data-level-medium="50"   	data-text-medium="Half"
-			data-level-high="100"     	data-text-high="Full"
-			data-text-normal="Full">
+		data-alarm-type="down"
+		data-level-critical="0"   data-text-critical="Empty"     data-state-critical="critical"
+		data-level-low="25"        data-text-low="QUARTER"       data-state-low="warning"
+		data-level-medium="50"     data-text-medium="HALF"       data-state-medium="normal"
+		data-level-high="75"       data-text-high="3QUARTERS"    data-state-high="normal"
+		data-level-info="100"      data-text-info="FULL"         data-state-info="normal"
+		data-text-normal="Normal">
 	<div class="hmi-card-header">
 		<div class="hmi-pack-label">General/Percentage (Warning)</div>
 		<div class="hmi-badge">NORMAL</div>
@@ -126,11 +128,13 @@
 	ALARM (Type General / SubType Percentage) 
 -->
 <div class="hmi-pack-card" data-device-idx="17" 
-			data-level-info="0"			data-text-info=""
-			data-level-low="0"      	data-text-low="Empty"
-			data-level-medium="50"   	data-text-medium="Half"
-			data-level-high="100"     	data-text-high="Full"
-			data-text-normal="Full">
+	data-alarm-type="up"
+	data-level-info="0"          data-text-info="NO PROD"      data-state-info="critical"
+	data-level-low="500"        data-text-low="LOW"           data-state-low="warning"
+	data-level-medium="1000"     data-text-medium="MEDIUM"     data-state-medium="normal"
+	data-level-high="3000"       data-text-high="GOOD"         data-state-high="normal"
+	data-level-critical="5000"   data-text-critical="VERY GOOD" data-state-critical="normal"
+	data-text-normal="NORMAL">	
 	<div class="hmi-card-header">
 		<div class="hmi-pack-label">General/Percentage (Alarm)</div>
 		<div class="hmi-badge">NORMAL</div>
