@@ -71,7 +71,7 @@ HMITiles-for-Domoticz/
 │   └── hmitiles.js                 	# Shared UI logic (bulk polling loop, hook dispatcher)
 ├── apps/                     			# Custom page example applications
 │   ├── solarinfopanel/      			# Solar Info Panel with live data & trends
-│   └── ...								# More examples
+│   └── ...								# More application examples
 ├── blueprints/                     	# Custom page examples, tutorials, and apps
 │   ├── hmitilesworkbench/      		# Tile design test bed folder
 │   │   ├── index.html              	# Standalone workbench interface markup
@@ -82,7 +82,7 @@ HMITiles-for-Domoticz/
 │   │   ├── ValueTile.html     	        # Domoticz custom page tab navigation file
 │   │   ├── valuetile/         	        # Core application directory
 │   │   └── index.html              	# Main blueprint page structure
-│   └── ...								# More blueprints
+│   └── ...								# More blueprints tiles & pages
 ├── LICENSE                         	# MIT open-source license
 └── README.md                       	# Documentation entry point manual
 ```
