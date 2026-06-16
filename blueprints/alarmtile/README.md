@@ -72,3 +72,33 @@ The **Alarm Tile** is a multi-purpose component driven by a completely generic b
 	<div class="hmi-value-grid"><div class="hmi-value-box"><div class="hmi-box-data"><span class="hmi-value">--</span></div></div></div>
 </div>
 ```
+
+## Alarm States Text Other
+
+### Option 1: Clean & Technical
+This option uses precise, professional terms that align perfectly with energy generation 
+```
+data.data-text-info="NO PROD." (No Production)
+data-text-low="LOW"
+data-text-medium="MODERATE"
+data-text-high="OPTIMAL"
+data-text-critical="PEAK"
+```
+
+### Option 2: Simple & IntuitiveThese short, high-contrast words are incredibly easy to read at a quick glance.
+```
+data-text-info="OFF"data-text-low="WEAK"
+data-text-medium="NORMAL"
+data-text-high="GOOD"
+data-text-critical="MAX"
+```
+
+### Option 3: Action-Oriented (Consumption Focus)
+These terms help immediately know how much household load your solar system can currently sustain.
+```
+data-text-info="IDLE"
+data-text-low="BASELOAD" (Covers standby devices)
+data-text-medium="ACTIVE" (Covers small appliances)
+data-text-high="SURPLUS" (Great time to run dishwasher/laundry)
+data-text-critical="OVERFLOW" (Perfect time to charge an EV or battery)
+```
