@@ -9,15 +9,15 @@ The core focus is clarity, consistency, and situational awareness—not visual s
 
 ## Screenshots
 
-**Solar Info Dashboard Example**  
-![Solar Info Dashboard Live Data](blueprints/solarinfodashboard/solarinfodashboard-livedata.png)
-![Solar Info Dashboard Trends](blueprints/solarinfodashboard/solarinfodashboard-trends.png)
-
 **Workbench (Development / Testing Area)**  
 ![Workbench](blueprints/hmitilesworkbench/hmitilesworkbench.png)
 
+**Solar Info Dashboard**  
+![Solar Info Dashboard Live Data](apps/solarinfodashboard/solarinfodashboard-livedata.png)
+![Solar Info Dashboard Trends](apps/solarinfodashboard/solarinfodashboard-trends.png)
+
 **Raspberry Pi Pico WH Telemetry View**  
-![Pico Telemetry View](blueprints/picotelemetryview/picotelemetryview.png)
+![Pico Telemetry View](apps/picotelemetryview/picotelemetryview.png)
 
 ---
 
