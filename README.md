@@ -45,11 +45,11 @@ This framework bypasses typical flashy smart-home trends to strictly mirror mode
 
 ## Included Custom Page Apps & Blueprints
 (Selective)
-## Blueprints
+#### Blueprints
 * **`hmitilesworkbench`**: An interactive testing layout panel used for mocking up new modular components, validating styles, and debugging device index assignments.
 * **`valuetile`**: A basic entry-level walkthrough for establishing file pathways, creating your first tile wrapper, and establishing server handshakes.
 * and many more...
-### Apps
+#### Apps
 * **`solarinfodashboard`**: A dense four-column process view detailing live energy flows across production, household consumption, grid balance, and battery bank state-of-charge.
 * **`picoservocontrol`**: A clean, WiFi-based microcontroller interface facilitating remote multi-axis servo positioning commands.
 * **`picotelemetryview`**: Real-time diagnostic monitoring tracking internal silicon temperature logs, virtual text data timestamps, and antenna Wi-Fi RSSI signal strength fields.
