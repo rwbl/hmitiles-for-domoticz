@@ -8,15 +8,14 @@ The core focus is clarity, consistency, and situational awareness—not visual s
 ---
 
 ## Screenshots
-
+### HMITiles
 **Workbench (Development / Testing Area)**  
 ![Workbench](blueprints/hmitilesworkbench/hmitilesworkbench.png)
-
-**Example Solar Info Dashboard**  
+---
+### Examples
 ![Solar Info Dashboard Live Data](examples/solarinfodashboard/solarinfodashboard-livedata.png)
 ![Solar Info Dashboard Trends](examples/solarinfodashboard/solarinfodashboard-trends.png)
-
-**Example Raspberry Pi Pico Telemetry View**  
+---
 ![Pico Telemetry View](examples/picotelemetryview/picotelemetryview.png)
 
 ---
