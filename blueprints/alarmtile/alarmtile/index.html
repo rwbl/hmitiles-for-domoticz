@@ -12,12 +12,18 @@
 </head>
 <body>
 
-	<!-- Inside the header block of index.html -->
+	<!-- Inside the header block of your sub-pages (e.g., alarmtile/index.html) -->
 	<header class="hmi-header-container">
 		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<!-- Left Side: Main Menu & Title -->
 			<div style="display: flex; align-items: center; gap: 15px;">
 				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
 				<h2>Alarm Tile</h2>
+			</div>
+			
+			<!-- Right Side: Clean dynamic navigation hook back to your master grid -->
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index ➔</button>
 			</div>
 		</div>
 	</header>

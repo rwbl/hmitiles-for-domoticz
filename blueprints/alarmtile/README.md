@@ -1,6 +1,8 @@
 ### 🚨 Universal Alarm Tile Blueprint (Multi-Directional 5-Level Engine)
 
-The **Alarm Tile** is a multi-purpose component driven by a completely generic background engine loop. By defining a directional tracking type (`up` or `down`), the same tile skeleton can handle ascending hazard spikes (e.g., Air Quality, Temperature), ascending production milestones (e.g., Solar Generation), or descending utility drops (e.g., Battery SOC drainage).
+The **Alarm Tile** is a multi-purpose component driven by a completely generic background engine loop. 
+By defining a directional tracking type (`up` or `down`), the same tile skeleton can handle ascending hazard spikes (e.g., Air Quality, Temperature), 
+ascending production milestones (e.g., Solar Generation), or descending utility drops (e.g., Battery SOC drainage).
 
 #### ✨ Configuration Parameters (HTML Data Attributes)
 

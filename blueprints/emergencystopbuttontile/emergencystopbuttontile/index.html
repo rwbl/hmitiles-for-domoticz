@@ -12,15 +12,22 @@
 </head>
 <body>
 
-	<!-- Inside the header block of index.html -->
+	<!-- Inside the header block of your sub-pages (e.g., alarmtile/index.html) -->
 	<header class="hmi-header-container">
 		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<!-- Left Side: Main Menu & Title -->
 			<div style="display: flex; align-items: center; gap: 15px;">
 				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
-				<h2>Emergency Stop Button</h2>
+				<h2>Emergency Stop</h2>
+			</div>
+			
+			<!-- Right Side: Clean dynamic navigation hook back to your master grid -->
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index ➔</button>
 			</div>
 		</div>
 	</header>
+
 
     <!-- Master outer panel containing your grid -->
 	<!-- Set the device idx according devices list -->
@@ -28,18 +35,24 @@
         
         <!-- 
 			TILE 1 ROW 1 COL 1: EMERGENCY STOP BUTTON (Reusing Switch Infrastructure)
+			- data-alarm-type="up" means if the value matches or goes above our level, it triggers.
+			- data-level-critical="1" triggers critical state when the switch is ON (1).
+			- data-text-normal="E-STOP" keeps your static text when the system is healthy (0).
 		-->
-		<div class="hmi-pack-card" data-type="switch" data-device-idx="6" data-action="On" data-on-text="TRIP" data-off-text="TRIP" data-alarm="critical">
+		<div class="hmi-pack-card" data-type="switch" data-device-idx="6" 
+			 data-action="On" data-on-text="TRIP" data-off-text="TRIP"
+			 data-alarm-type="up"
+			 data-level-info="0"     data-text-info="E-STOP"	data-state-info="critical"
+			 data-level-critical="1" data-text-critical="E-STOP" data-state-critical="critical">
 			<div class="hmi-card-header">
-				<div class="hmi-pack-label">Safety Subsystem</div>
-				<!-- Reuses your clickable badge framework to fire the execution link instantly -->
+				<div class="hmi-pack-label">Switch/Switch/Push On Button (Safety)</div>
+				<!-- Reuses clickable badge framework -->
 				<div class="hmi-badge hmi-clickable-badge">E-STOP</div>
 			</div>
 			<div class="hmi-value-grid">
 				<div class="hmi-value-box" style="padding: 6px 0;">
 					<div class="hmi-box-data" style="text-align: center; width: 100%;">
-						<!-- Keeps text uniform and static, ensuring it matches your push layout parameters -->
-						<span class="hmi-value" data-text="static" style="font-weight: bold; letter-spacing: 1px;">EMERGENCY STOP</span>
+						<span class="hmi-value" style="font-weight: bold; letter-spacing: 1px;">EMERGENCY STOP</span>
 					</div>
 				</div>
 			</div>

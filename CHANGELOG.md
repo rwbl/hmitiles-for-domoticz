@@ -8,8 +8,9 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 
 ## 20260616 - BETA
 #### Added
-- **Examples**: New folder `examples` with SolarInfoPanel, PicoServoControl, PicoTelemetryView. The folder `blueprints` contains HMITile examples (must read for how-to-use).
+- **Folder examples**: New folder `examples` with SolarInfoPanel, PicoServoControl, PicoTelemetryView. The folder `blueprints` contains HMITile examples (must read for how-to-use).
 - **4-Switches-Panel** (`blueprints`): 4 switches panel (vertical aligned).
+- **Alarm** (`blueprints`): Alarm concept with 5 Tier Slots: `critical`, `high`, `medium`, `low`, `info`, and `normal` (for the baseline fallback text).
 - **Emergency Stop Button** (`blueprints`): E-Stop (Emergency Stop) using existing Push On Button architecture.
 - **HMITiles Workbench** (`blueprints`): Added example number input with min 0.
 - **Indicator Matrix** (`blueprints`): High-Performance Grid Indicator 3x3 Matrix.
@@ -24,7 +25,7 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 - **CSS Styles** (`core`): Horizontal rules; Additional classes related to new or updated tiles.
 
 #### Changed
-- **Blueprints**: Folder naming without prefix numbering for easier maintenance.
+- **Folder blueprints**: Blueprint sub-folders naming without prefix numbering for easier maintenance.
 - **HMITiles Workbench** (`blueprints`): Reworked the index simulator template with matched virtual device IDXs and cross-referenced multi-variable datasets to support full offline rendering tests.
 
 ## 20260604
