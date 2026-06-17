@@ -13,7 +13,7 @@ it with a beautiful, organized, 2-column flexbox grid index built entirely out o
 ---
 
 ## Screenshot
-![HMITiles Index](tools/hmitilesindex/hmitilesindex.png)
+![HMITiles Index](hmitilesindex.png)
 
 ---
 
