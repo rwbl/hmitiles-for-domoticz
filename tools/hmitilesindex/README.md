@@ -1,8 +1,8 @@
 # Sorted & Grouped Custom Dashboard Index for Domoticz
 
-An elegant, high-density dashboard solution designed specifically for **Domoticz** and optimized for **HMITiles**. 
+An high-density dashboard solution designed specifically for **Domoticz** and optimized for **HMITiles**. 
 This project intercepts the default sequentially parsed, unorganized `Custom` dropdown menu in Domoticz and replaces 
-it with a beautiful, organized, 2-column flexbox grid index built entirely out of a customizable JSON file.
+it with an organized, 2-column flexbox grid index built entirely out of a customizable JSON file.
 
 ## Features
 * **Structured Custom Navigation:** Group and organize your custom dashboard sub-pages by category instead of scrolling through a long, unsorted dropdown list.
@@ -37,7 +37,8 @@ domoticz/www/templates/
 ## Step-by-Step Installation
 
 ### 1. Create the Configuration File (`hmitiles.json`)
-Create a file named `hmitiles.json` inside your `domoticz/www/templates/` directory. Use the snippet schema configuration mapping below to declare your custom categories, sub-page titles, and file paths.
+Create a file named `hmitiles.json` inside your `domoticz/www/templates/` directory. 
+Use the snippet schema configuration mapping below to declare your custom categories, sub-page titles, and file paths.
 
 ```json
 {
