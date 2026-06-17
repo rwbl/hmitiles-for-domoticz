@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HMITiles Blueprints & Examples</title>
+    <style>
+        /* =============================================================
+         * HMITILES CUSTOM DASHBOARD INDEX SYSTEM
+         * =============================================================
+         * Architectural Layout Framework to cleanly sort, group, and 
+         * map custom templates without breaking the Domoticz GUI shell.
+         * ============================================================= */
+
+        /* Global Background and Typography Matching the HMITiles Workbench Aesthetic */
+        body { 
+            background-color: #d1d1d1; 
+            margin: 0; 
+            font-family: Arial, sans-serif; 
+            color: #000; 
+        }
+        .menu-container { 
+            padding: 20px; 
+        }
+
+        /* EXPLANATION 1: THE REACTIONARY GRID SYSTEM (CSS GRID)
+         * Why we use CSS Grid instead of standard CSS Flexbox rules here:
+         * Flexbox naturally attempts to spread trailing items across all open remaining horizontal 
+         * layout rows if an odd count exists (e.g. 3 items). This caused our third panel to stretch
+         * unnaturally wide. 
+         * By shifting to 'display: grid' with 'grid-template-columns: repeat(2, 1fr)', we declare a
+         * strict, permanent 2x2 layout blueprint. If a 3rd category exists, it locks safely into 
+         * row 2, column 1, completely preventing structural row stretching. */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 16px;                             /* Holds uniform breathing space margins between boxes */
+            width: 100%;
+            max-width: 1200px;                     /* Protects your interface from warping on ultrawide panels */
+            box-sizing: border-box;
+        }
+
+        /* EXPLANATION 2: HARD HEIGHT PANEL ENFORCEMENT
+         * To achieve a highly organized dashboard look, every component group-box container is locked
+         * down to an exact, uniform height (260px). We configure them with 'display: flex' and a vertical
+         * 'flex-direction: column' alignment rule so the header remains pinned to the top, while the 
+         * page-list sector adapts to fit the rest of the available room. */
+        .group-box { 
+            height: 260px;             /* HARD FIXED HEIGHT: Guarantees balanced dashboard row blocks */
+            border: 2px solid #7d7d7d; 
+            background: #fafafa; 
+            box-sizing: border-box;
+            display: flex;             
+            flex-direction: column;
+            overflow: hidden;          /* Acts as an edge boundary to protect elements from spilling over */
+        }
+        
+        /* Fixed Header Label Band inside Category Boxes */
+        .group-title { 
+            font-size: 12px; 
+            font-weight: bold; 
+            background-color: #e4e4e4; 
+            border-bottom: 1px solid #a0a0a0; 
+            padding: 8px 10px; 
+            text-transform: uppercase; 
+            color: #333; 
+            flex-shrink: 0;            /* Safeguard prevents list data from squeezing the category headers */
+        }
+        
+        /* EXPLANATION 3: THE VIRTUAL SCROLL WINDOW MECHANISM
+         * By pairing our fixed container bounds with 'overflow-y: auto', we give the list internal 
+         * scrolling intelligence. If a single group card grows to hold 15 or 20 template pages, the inner 
+         * list dynamically deploys a scrollbar. This allows users to browse long categories smoothly 
+         * without breaking the alignment of your dashboard. */
+        .page-list { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0; 
+            overflow-y: auto;          /* Only displays active scroll indicators if elements overflow borders */
+            flex-grow: 1;              /* Automatically spans to utilize 100% of the remaining inner block space */
+        }
+        
+        /* High-Density Row Selection Primitives */
+        .page-item { 
+            border-bottom: 1px solid #e0e0e0; 
+            cursor: pointer; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 10px; 
+            transition: background 0.15s ease;
+        }
+        .page-item:last-child { 
+            border-bottom: none; 
+        }
+        .page-item:hover { 
+            background-color: #eaeaea; 
+        }
+        
+        /* Typography Elements */
+        .page-title-text { 
+            font-size: 14px; 
+            font-weight: bold; 
+            color: #111; 
+        }
+        .page-arrow { 
+            font-size: 11px; 
+            color: #337ab7; 
+            font-weight: bold; 
+            text-transform: uppercase; 
+        }
+
+        /* Footer Style Rules */
+        /* Footer Style Rules */
+        .hmi-footer {
+            margin-top: 40px;
+            color: #eaeaea;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            text-align: right; /* Aligns the branding text cleanly to the far right side */
+        }
+        .hmi-footer hr {
+            border: 0;
+            /* CHANGED HERE: Changed the line color to look clean and highly readable */
+            border-top: 1px solid #7d7d7d;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- EXPLANATION 4: COHESIVE DOMOTICZ STYLING ADAPTATION
+     Instead of writing heavy custom HTML styling layouts to replicate Domoticz's aesthetic, 
+     we hook directly into the core framework classes: 'row-fluid', 'box-header with-border', 
+     and 'box-title'. 
+     This allows our application to naturally match the look and feel of stock Domoticz menus, 
+     making sure backgrounds, borders, padding, and text align with the interface out of the box. -->
+<div class="row-fluid">
+    <div class="col-md-12">
+        <div class="box-header with-border" style="background-color: #001f3f; padding: 12px 15px; margin-bottom: 5px;">
+            <h3 class="box-title" style="color: #ffffff; font-weight: bold; font-size: 24px; margin: 0; font-family: Arial, sans-serif;">HMITiles Blueprints & Examples</h3>
+        </div>
+    </div>
+</div>
+
+<div class="menu-container">
+    <div id="navigation-hub">
+        <!-- Target container strictly bound to our 2-column CSS Grid layout rules -->
+        <div id="menu-target" class="grid-container">Loading custom pages configuration...</div>
+    </div>
+
+    <!-- EXPLANATION 7: FOOTER BRANDING EXTENSION
+         Appends a clean separation grid alignment zone at the base of the file context.
+         Using native spacing margins guarantees it never crowds your tile rows. -->
+    <footer class="hmi-footer">
+        <hr>
+        <div>HMITiles for Domoticz</div>
+    </footer>
+</div>
+
+<!-- SOLUTION FIX: Explicitly reference absolute pathing engine logic back to Domoticz web root -->
+<script src="/js/jquery.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        /* EXPLANATION 5: RE-ESTABLISHED RELATIVE LOOKUPS VIA DOMOTICZ ENGINE
+         * By shifting back to Domoticz's pre-mapped relative network paths ('templates/hmitiles.json')
+         * and leveraging jQuery, the platform safely intercepts requests inside your browser's 
+         * active location context without triggering server routing 404 security rules. */
+        $.getJSON('templates/hmitiles.json', function(data) {
+            var htmlOutput = '';
+
+            // Step 1: Parse and iterate through each structural Group defined in the dictionary
+            $.each(data.groups, function(i, group) {
+                htmlOutput += '<div class="group-box">';
+                htmlOutput += '  <div class="group-title">' + group.category + '</div>';
+                htmlOutput += '  <ul class="page-list">';
+                
+                // Step 2: Nested loop generates high-density link items inside the parent category container
+                $.each(group.pages, function(j, page) {
+                    /* Prepend templates/ to ensure correct link targeting independent of active page paths */
+                    htmlOutput += '    <li class="page-item" data-url="templates/' + page.file + '">';
+                    htmlOutput += '      <span class="page-title-text">' + page.title + '</span>';
+                    htmlOutput += '      <span class="page-arrow">Launch ➔</span>';
+                    htmlOutput += '    </li>';
+                });
+
+                htmlOutput += '  </ul>';
+                htmlOutput += '</div>';
+            });
+
+            // Inject structural layout modules straight into target selector zone
+            $('#menu-target').html(htmlOutput);
+
+            /* EXPLANATION 6: IFRAME REMOVAL AND DIRECT LOCATION LINK ROUTING
+             * Why we removed the <iframe> element block completely:
+             * Running advanced frontend components (like 'hmitiles.js') inside an iframe completely 
+             * sandboxes them. This cuts off access to the parent window's global Domoticz session data, 
+             * breaking paths and causing API '404 Not Found' crashes.
+             * Shifting navigation to 'window.location.href' changes the browser context natively. */
+            $('.page-item').on('click', function() {
+                var targetUrl = $(this).data('url');
+                window.location.href = targetUrl;
+            });
+            
+        }).fail(function() {
+            // Friendly error handler layer targeting JSON layout configurations
+            $('#menu-target').html('<span style="color:#d9534f; font-weight:bold; padding: 10px;">Error: Could not locate or parse your templates/hmitiles.json dictionary file. Verify file placement and JSON syntax correctness!</span>');
+        });
+    });
+</script>
+</body>
+</html>
