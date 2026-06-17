@@ -8,7 +8,7 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 
 ## 20260616 - BETA
 #### Added
-- **Apps**: New folder `apps` for the example applications, like SolarInfoPanel. The folder `blueprints` contains HMITile examples (must read for how-to-use).
+- **Examples**: New folder `examples` with SolarInfoPanel, PicoServoControl, PicoTelemetryView. The folder `blueprints` contains HMITile examples (must read for how-to-use).
 - **4-Switches-Panel** (`blueprints`): 4 switches panel (vertical aligned).
 - **Emergency Stop Button** (`blueprints`): E-Stop (Emergency Stop) using existing Push On Button architecture.
 - **HMITiles Workbench** (`blueprints`): Added example number input with min 0.
@@ -18,7 +18,7 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 - **Log Monitor** (`blueprints`): Added a scrollable monospace terminal tile to stream server entries. Features low-contrast keyword color-matching compliant with high-performance industry standards, channel selection dropdowns (Status, Detail, Errors), and a native server-side log purge execution pipe.
 - **Selector Switch** (`blueprints`): Implemented full-width dropdown control matrices that process and map configurations straight from user-defined local layout tags.
 - **Wind** (`blueprints`): Indicates meteorological data values.
-- **PicoServoControl** (`Apps`): Added LogMonitor tile with filter `[PicoServoControl]` to log commands.
+- **PicoServoControl** (`examples`): Added LogMonitor tile with filter `[PicoServoControl]` to log commands.
 - **Controls Routing Engine** (`core`): Extended the core listener loop to uniformly capture and execute explicit Toggle, Blinds Stop, and momentary Pulse/Push On network transmissions.
 - **Controls Routing Engine** (`core`): Injected a global configuration `DEBUG` flag switch to easily gate console diagnostic outputs across browser events.
 - **CSS Styles** (`core`): Horizontal rules; Additional classes related to new or updated tiles.

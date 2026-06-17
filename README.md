@@ -12,12 +12,12 @@ The core focus is clarity, consistency, and situational awareness—not visual s
 **Workbench (Development / Testing Area)**  
 ![Workbench](blueprints/hmitilesworkbench/hmitilesworkbench.png)
 
-**Solar Info Dashboard**  
-![Solar Info Dashboard Live Data](apps/solarinfodashboard/solarinfodashboard-livedata.png)
-![Solar Info Dashboard Trends](apps/solarinfodashboard/solarinfodashboard-trends.png)
+**Example Solar Info Dashboard**  
+![Solar Info Dashboard Live Data](examples/solarinfodashboard/solarinfodashboard-livedata.png)
+![Solar Info Dashboard Trends](examples/solarinfodashboard/solarinfodashboard-trends.png)
 
-**Raspberry Pi Pico WH Telemetry View**  
-![Pico Telemetry View](apps/picotelemetryview/picotelemetryview.png)
+**Example Raspberry Pi Pico Telemetry View**  
+![Pico Telemetry View](examples/picotelemetryview/picotelemetryview.png)
 
 ---
 
@@ -43,13 +43,13 @@ This framework bypasses typical flashy smart-home trends to strictly mirror mode
 
 ---
 
-## Included Custom Page Apps & Blueprints
+## Included Custom Page Examples & Blueprints
 (Selective)
 #### Blueprints
 * **`hmitilesworkbench`**: An interactive testing layout panel used for mocking up new modular components, validating styles, and debugging device index assignments.
 * **`valuetile`**: A basic entry-level walkthrough for establishing file pathways, creating your first tile wrapper, and establishing server handshakes.
 * and many more...
-#### Apps
+#### Examples
 * **`solarinfodashboard`**: A dense four-column process view detailing live energy flows across production, household consumption, grid balance, and battery bank state-of-charge.
 * **`picoservocontrol`**: A clean, WiFi-based microcontroller interface facilitating remote multi-axis servo positioning commands.
 * **`picotelemetryview`**: Real-time diagnostic monitoring tracking internal silicon temperature logs, virtual text data timestamps, and antenna Wi-Fi RSSI signal strength fields.
@@ -71,10 +71,10 @@ HMITiles-for-Domoticz/
 ├── core/                           	# Standard shared framework engines
 │   ├── hmitiles.css                	# Global styling for all tiles and layouts
 │   └── hmitiles.js                 	# Shared UI logic (bulk polling loop, hook dispatcher)
-├── apps/                     			# Custom page example applications
+├── examples/                     		# Custom page example applications
 │   ├── solarinfopanel/      			# Solar Info Panel with live data & trends
 │   └── ...								# More application examples
-├── blueprints/                     	# Custom page examples, tutorials, and apps
+├── blueprints/                     	# Custom page usage examples & tutorials
 │   ├── hmitilesworkbench/      		# Tile design test bed folder
 │   │   ├── index.html              	# Standalone workbench interface markup
 │   │   ├── HMITilesWorkbench.html  	# Domoticz custom page wrapper definition
