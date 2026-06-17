@@ -2,7 +2,7 @@
  * @file hmitiles.js
  * @brief Core JavaScript monitoring engine for the Domoticz-HMITiles framework.
  * @project Domoticz-HMITiles
- * @date 2026-06-02
+ * @date 2026-06-17
  * @author Robert W.B. Linn (c) 2026 MIT
  * @version 1.0.0-Beta
  * @description Manages industrial-inspired tile updates, trend lines, 
@@ -74,11 +74,11 @@ function processDevices(devices) {
 		// =========================================================================
         // MULTI-TILE INSTANCE TARGET ROUTING ENGINE
         // =========================================================================
-        // 1. Locate EVERY tile card container instance matching this specific device index
+        // Locate EVERY tile card container instance matching this specific device index
         const matchingTiles = document.querySelectorAll(`[data-device-idx="${device.idx}"]`);
         if (matchingTiles.length === 0) return; // Move to next device in your array if no HTML tile matches
 
-        // 2. Iterate through each matching tile instance independently
+        // Iterate through each matching tile instance independently
         matchingTiles.forEach(tileElement => {
 
 			// Read its custom card type configuration tag
@@ -108,7 +108,7 @@ function processDevices(devices) {
 					setupGlobalTextInputListeners(tileElement, device.idx);
 				}
 
-				return; // FIXED: Safely exits the loop pass ONLY for text-input cards!
+				return; // Safely exits the loop pass ONLY for text-input cards!
 			}
 
 			// =========================================================================
@@ -292,6 +292,9 @@ function processDevices(devices) {
 					// Use custom HTML text, otherwise fall back to native Domoticz text
 					displayStatus = customOffText ? customOffText : (device.Status || device.Data || "OFF");
 				}
+				
+				// Set rawValue used by checkAlarmThresholds
+				rawValue = isRawOn ? 1 : 0;
 			}
 
 			// =========================================================================
@@ -1142,6 +1145,19 @@ function goToDomoticzDashboard() {
     
     // Directs the top-level frame layer window path to load the native dashboard
     window.top.location.href = `${DOMOTICZ_URL}/`;
+}
+
+/**
+ * Redirects the browser viewport straight back to the custom HMITiles blueprints index grid.
+ * Keeps navigation inside the active Domoticz single-page application framework.
+ * @function goToHMITilesIndex
+ * @returns {void}
+ */
+function goToHMITilesIndex() {
+    if (DEBUG) console.log("goToHMITilesIndex: Shifting viewport window back to HMITiles Selection grid.");
+    
+    // Uses the global DOMOTICZ_URL constant to target the safe internal application hash route
+    window.top.location.href = `${DOMOTICZ_URL}/#/Custom/HMITiles`;
 }
 
 /**
