@@ -11,6 +11,10 @@ Once the data reaches the web browser, individual cards independently parse, iso
 
 ---
 
+![HMITiles LogMonitor Dashboard Overview](logmonitortile.png)
+
+---
+
 ## Component Layout Blueprint
 
 ### 1. Standard Layout Tile
