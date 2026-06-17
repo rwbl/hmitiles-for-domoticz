@@ -881,6 +881,30 @@ hr.hmi-divider-short {
 .hmi-log-line.hmi-log-warning { color: #f1a94e; }
 .hmi-log-line.hmi-log-script { color: #8bc34a; }
 
+/* =========================================================================
+   LOG MONITOR TILE - FULL PAGE WIDTH MODIFIER WITH LOCKED CONTAINMENT
+   ========================================================================= */
+
+/* Spans the tile edge-to-edge across the grid layout row */
+.hmi-log-fullpage.hmi-pack-card {
+    grid-column: 1 / -1;          /* Forces full width, taking a whole row alone */
+    width: 100% !important;       
+    box-sizing: border-box;
+}
+
+/* Locks the scrollable terminal box strictly to your standard framework height */
+.hmi-log-fullpage .hmi-log-terminal {
+    height: 140px !important;     /* Restores and locks your exact default footprint height */
+    max-height: 140px !important; /* Hard constraint: strictly forbids any vertical expansion */
+    overflow-y: auto;             /* Native scrolling safely captures any text line-wrapping */
+    overflow-x: hidden;
+}
+
+/* Removes the input element row layout completely */
+.hmi-log-fullpage .hmi-log-input-row {
+    display: none !important;     
+}
+
 
 /* =========================================================================
    HIGH-PERFORMANCE SCADA GRID INDICATOR MATRIX
@@ -959,12 +983,6 @@ hr.hmi-divider-short {
     color: #ffffff !important;
     border-color: #ffffff !important;
     animation: hmi-estop-pulse 2s infinite ease-in-out; /* Subtle pulse animation */
-}
-
-@keyframes hmi-estop-pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.85; }
-    100% { opacity: 1; }
 }
 
 /* =========================================================================

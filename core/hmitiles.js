@@ -944,11 +944,11 @@ async function fetchDomoticzServerLogs() {
     const logTiles = document.querySelectorAll('[data-type="log-monitor"]');
     if (logTiles.length === 0) return;
 
-    // Use the first tile's dropdown channel to drive the server request
-    const channelSelect = logTiles[0].querySelector('.hmi-log-channel-select');
-    const targetLogLevel = channelSelect ? channelSelect.value : "268435455";
-
-    const logUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=getlog&lastlogtime=0&loglevel=${targetLogLevel}`;
+    /* FIX: Force the network call to ALWAYS pull all raw logs from Domoticz.
+     * This ensures the browser receives the full log table array so each 
+     * individual tile has the raw entries it needs to run its own filters. */
+    const masterLogLevel = "268435455"; 
+    const logUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=getlog&lastlogtime=0&loglevel=${masterLogLevel}`;
 
     try {
         const response = await fetch(logUrl);
@@ -968,7 +968,21 @@ async function fetchDomoticzServerLogs() {
                 const limit = parseInt(tileElement.getAttribute('data-log-limit'), 10) || 5;
                 terminal.innerHTML = ""; 
 
+                // Reset base entries array to the full server response on every iteration step
                 let entries = data.result;
+
+                /* FIX LAYER 1: CLIENT-SIDE CHANNEL DROPDOWN SELECTION FILTERING
+                 * Look up the unique select element dropdown nested *inside* this specific tile matrix envelope */
+                const channelSelect = tileElement.querySelector('.hmi-log-channel-select');
+                const localLogLevel = channelSelect ? parseInt(channelSelect.value, 10) : 268435455;
+
+                // If this tile is not set to show ALL LOGS, filter by bitwise channel mask properties
+                if (localLogLevel !== 268435455) {
+                    entries = entries.filter(item => {
+                        // Domoticz categorizes log entry levels using integer bitmasks (1=status, 2=detail, 4=error)
+                        return (item.level & localLogLevel) > 0;
+                    });
+                }
                 
                 // DECLARATIVE LOCAL TEXT FILTER PIPELINE
                 const filterKeyword = tileElement.getAttribute('data-log-filter');
