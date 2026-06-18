@@ -9,79 +9,62 @@
 	
 	<!-- Link backward to the HMI tile engine -->
     <script src="../hmitiles.js" defer></script>
-
-	<script>
-		// =========================================================================
-		// LOCAL SCRIPT CONFIGURATION
-		// =========================================================================
-		// Device idx
-	    const BATTERY_SOC_IDX = 12;
-
-		// Gateway lock variable to prevent infinite loop refresh collisions
-		let lastPushedTime = "";
-
-		// =========================================================================
-		// CENTRAL ECOSYSTEM HOOK (Intercepts global hmitiles.js loop at top level)
-		// =========================================================================
-		window.onHMITileProcess = function(ignoredTileParam, device, rawValue, displayStatus) {
-			// Get the idx given by the gloabl loop as going over all domoticz devices
-			const currentIdx = parseInt(device.idx, 10);
-			// console.log("onHMITileProcess idx=", currentIdx);
-
-			// -----------------------------------------------------------------
-			// PROCESSING THE BATTER STATE OF CHARGE
-			// -----------------------------------------------------------------
-			if (currentIdx === BATTERY_SOC_IDX) {
-				const barCard = document.querySelector(`[data-device-idx="${BATTERY_SOC_IDX}"][data-type="progress-bar-tile"]`);
-				if (barCard) {
-					const barFill = barCard.querySelector('.hmi-bar-fill');
-					const valueField = barCard.querySelector('.hmi-value');
-					
-					// Extract percentage number natively from device payload string
-					const percentage = Math.min(Math.max(parseFloat(device.Data) || 0, 0), 100);
-					
-					if (barFill) barFill.style.width = `${percentage}%`;
-					if (valueField) valueField.textContent = `${Math.round(percentage)} %`;
-				}
-				return true; // Handled completely
-			}
-		}
-	</script>
-
 </head>
 <body>
 
 	<!-- Inside the header block of index.html -->
 	<header class="hmi-header-container">
 		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<!-- Left Side: Main Menu & Title -->
 			<div style="display: flex; align-items: center; gap: 15px;">
 				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
 				<h2>Progress Bar Tile</h2>
+			</div>
+			
+			<!-- Right Side: Clean dynamic navigation hook back to your master grid -->
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index ➔</button>
 			</div>
 		</div>
 	</header>
 
     <!-- Master outer panel containing your grid -->
 	<!-- Set the device idx according devices list -->
+	<!-- Badge contains the level info. No value-box used. -->
     <main class="hmi-panel">
         
         <!-- 
-			TILE 1 ROW 1 COL 1: BATTERY SOC
-			IDX 12
+			TILE 1 ROW 1 COL 1
+			BATTERY SOC
+			General/Percentage
 		-->
 		<div class="hmi-pack-card" data-device-idx="12" data-type="progress-bar-tile">
 			<div class="hmi-card-header">
-				<div class="hmi-pack-label">Battery State of Charge</div>
+				<div class="hmi-pack-label">BAT Charge State</div>
 				<div class="hmi-badge">NORMAL</div>
 			</div>
 
-			<!-- Clean, semantic layout nodes using global framework definitions -->
 			<div class="hmi-value-grid">
 				<div class="hmi-bar-container">
 					<div class="hmi-bar-fill"></div>
 				</div>
-				<div class="hmi-value-box">
-					<div class="hmi-value">-- %</div>
+			</div>
+		</div>
+
+        <!-- 
+			TILE 1 ROW 1 COL 1
+			SERVO POSITION 0-100%
+			Light/Switch,Switch,Dimmer
+		-->
+		<div class="hmi-pack-card" data-device-idx="20" data-type="progress-bar-tile">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Servo Position</div>
+				<div class="hmi-badge">NORMAL</div>
+			</div>
+
+			<div class="hmi-value-grid">
+				<div class="hmi-bar-container">
+					<div class="hmi-bar-fill"></div>
 				</div>
 			</div>
 		</div>

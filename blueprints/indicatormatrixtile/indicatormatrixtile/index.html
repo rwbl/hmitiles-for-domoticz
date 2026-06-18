@@ -12,24 +12,32 @@
 </head>
 <body>
 
-	<!-- Inside the header block of index.html -->
+	<!-- Inside the header block of your sub-pages (e.g., alarmtile/index.html) -->
 	<header class="hmi-header-container">
 		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<!-- Left Side: Main Menu & Title -->
 			<div style="display: flex; align-items: center; gap: 15px;">
 				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
 				<h2>Indicator Matrix</h2>
+			</div>
+			
+			<!-- Right Side: Clean dynamic navigation hook back to your master grid -->
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index ➔</button>
 			</div>
 		</div>
 	</header>
 
     <!-- Master outer panel containing your grid -->
+	<!-- Set the device idx according devices list -->
     <main class="hmi-panel">
         
         <!-- 
-			TILE 1 ROW 1 COL 1: 3X3 HIGH-PERFORMANCE STATUS INDICATOR MATRIX
-			Set the device idx according devices list
+			TILE 1 ROW 1 COL 1
+			3X3 HIGH-PERFORMANCE STATUS INDICATOR MATRIX
+			IDX must CSV string
 		-->
-		<div class="hmi-pack-card" data-type="indicator-matrix" data-device-idx="41 42 43 44 45 46 47 48 49">
+		<div class="hmi-pack-card" data-type="indicator-matrix" data-device-idx="41,42,43,44,45,46,47,48,49">
 			<div class="hmi-card-header">
 				<div class="hmi-pack-label">Status IND</div>
 			</div>

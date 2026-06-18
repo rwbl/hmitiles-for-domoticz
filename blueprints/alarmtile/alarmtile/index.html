@@ -33,11 +33,13 @@
     <main class="hmi-panel">
         
         <!-- 
-			TILE 1 ROW 1 COL 1: BATTERY STATUS
+			TILE 1 ROW 1 COL 1
+			BATTERY STATUS
+			Alarm type down: 100% FULL normal, 0% EMPTY critical
 		-->
 		<div class="hmi-pack-card" data-device-idx="12" 
 			data-alarm-type="down"
-			data-level-critical="0"		data-text-critical="Empty"     	data-state-critical="critical"
+			data-level-critical="0"		data-text-critical="EMPTY"     	data-state-critical="critical"
 			data-level-low="25"        	data-text-low="QUARTER"       	data-state-low="warning"
 			data-level-medium="50"    	data-text-medium="HALF"       	data-state-medium="normal"
 			data-level-high="75"       	data-text-high="3QUARTERS"    	data-state-high="normal"
@@ -57,7 +59,9 @@
 		</div>
 
         <!-- 
-			TILE 1 ROW 1 COL 2: SOLAR PRODUCTION
+			TILE 1 ROW 1 COL 2
+			SOLAR PRODUCTION
+			Alarm type up: 0% NOPROD critical, 100% PEAK normal
 		-->
 		<div class="hmi-pack-card" data-device-idx="5" 
 			data-alarm-type="up"

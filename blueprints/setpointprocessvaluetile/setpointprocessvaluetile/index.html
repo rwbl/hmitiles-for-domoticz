@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Setpoint PV Tile</title>
+    <title>Setpoint ProcessValue Tile</title>
 
     <!-- Link backward one folder level to reuse shared global common styles -->
     <link rel="stylesheet" href="../hmitiles.css">
@@ -56,7 +56,11 @@
 		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
 			<div style="display: flex; align-items: center; gap: 15px;">
 				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
-				<h2>Setpoint PV Tile</h2>
+				<h2>Setpoint ProcessValue Tile</h2>
+			</div>
+			<!-- Right Side: Clean dynamic navigation hook back to your master grid -->
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index ➔</button>
 			</div>
 		</div>
 	</header>

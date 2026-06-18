@@ -21,7 +21,7 @@
 				<h2>Emergency Stop</h2>
 			</div>
 			
-			<!-- Right Side: Clean dynamic navigation hook back to your master grid -->
+			<!-- Right Side: Navigation hook back to your master grid -->
 			<div>
 				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index ➔</button>
 			</div>
@@ -34,7 +34,8 @@
     <main class="hmi-panel">
         
         <!-- 
-			TILE 1 ROW 1 COL 1: EMERGENCY STOP BUTTON (Reusing Switch Infrastructure)
+			TILE 1 ROW 1 COL 1
+			EMERGENCY STOP BUTTON (Reusing Switch Infrastructure)
 			- data-alarm-type="up" means if the value matches or goes above our level, it triggers.
 			- data-level-critical="1" triggers critical state when the switch is ON (1).
 			- data-text-normal="E-STOP" keeps your static text when the system is healthy (0).
@@ -49,13 +50,13 @@
 				<!-- Reuses clickable badge framework -->
 				<div class="hmi-badge hmi-clickable-badge">E-STOP</div>
 			</div>
-			<div class="hmi-value-grid">
-				<div class="hmi-value-box" style="padding: 6px 0;">
-					<div class="hmi-box-data" style="text-align: center; width: 100%;">
-						<span class="hmi-value" style="font-weight: bold; letter-spacing: 1px;">EMERGENCY STOP</span>
-					</div>
-				</div>
-			</div>
+            <div class="hmi-value-grid">
+                <div class="hmi-value-box">
+                    <div class="hmi-box-data">
+                        <span class="hmi-value">EMERGENCY STOP</span>
+                    </div>
+                </div>
+            </div>
 		</div>
 
 		<footer class="hmi-footer-version">

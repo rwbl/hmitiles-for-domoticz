@@ -1,19 +1,18 @@
 /* ==========================================================================
-   Project: Domoticz-HMITiles StyleSheet Core
-   Author: Robert W.B. Linn (c) 2026 MIT
-   Version: 1.0.0-Beta
-   Description: Clean, industry-inspired layout rules for smart home HMI panels.
-   
-   TABLE OF CONTENTS:
-   -HMI PALETTE LIGHT
-   -GLOBAL LAYOUT RESET & VARIABLES
-   -MASTER CONTAINER & GRID SYSTEMS (4x3 / 4x2 MATRIX)
-   -PANEL CARD FRAME COMPONENTS (.hmi-pack-card)
-   -STATUS BADGES & INTERACTIVE CLICK CLASSIFICATIONS
-   -HARDWARE INPUT ELEMENT STYLING (SLIDERS, SETPOINT BUTTONS)
-   -PROGRESS BAR & LEVEL GAUGE COMPONENTS (.hmi-bar-fill)
-   -DYNAMIC ALARM COLOR HOOKS (NORMAL, WARNING, CRITICAL CSS MARGINS)
-   -NATIVE SVG SPARKLINE TREND GRAPH MODULES (24h TELEMETRY BLOCKS)
+	Project:	Domoticz-HMITiles StyleSheet Core
+	Brief: 		Clean, industry-inspired layout rules for smart home HMI panels.
+	Date: 		20260618
+	Author: 	Robert W.B. Linn (c) 2026 MIT
+	Content:
+				-HMI PALETTE LIGHT
+				-GLOBAL LAYOUT RESET & VARIABLES
+				-MASTER CONTAINER & GRID SYSTEMS (4x3 / 4x2 MATRIX)
+				-PANEL CARD FRAME COMPONENTS (.hmi-pack-card)
+				-STATUS BADGES & INTERACTIVE CLICK CLASSIFICATIONS
+				-HARDWARE INPUT ELEMENT STYLING (SLIDERS, SETPOINT BUTTONS)
+				-PROGRESS BAR & LEVEL GAUGE COMPONENTS (.hmi-bar-fill)
+				-DYNAMIC ALARM COLOR HOOKS (NORMAL, WARNING, CRITICAL CSS MARGINS)
+				-NATIVE SVG SPARKLINE TREND GRAPH MODULES (24h TELEMETRY BLOCKS)
    ========================================================================== */
 
 /* ==========================================================================
@@ -80,20 +79,21 @@ hr.hmi-divider-short {
    ========================================================================== */
 
 .hmi-footer-version {
-    grid-column: 1 / -1; /* Stretches across the full grid bottom width */
-    text-align: right;
+    grid-column: 1 / -1; 		/* Stretches across the full grid bottom width */
     font-family: monospace;
     font-size: 11px;
     color: #888888;
+    text-align: right;
     padding-top: 15px;
     margin-top: auto;
 }
 
 .hmi-last-update {
-	font-size: 10px; 
-	color: #aaa; 
-	text-align: right; 
-	padding: 0 10px 4px 0;
+    font-family: monospace;
+    font-size: 11px;            /* Standard small text size */
+    color: #888888;            	/* Low-contrast gray that stays out of the way */
+    text-align: right;         	/* Aligns cleanly to the right side of the card */
+    padding: 0 10px 6px 0;     	/* Balanced padding to match your tile spacing */
 }
 
 /* ==========================================================================

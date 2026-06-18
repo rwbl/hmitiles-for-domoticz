@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Input Tile</title>
+    <title>Multi-Switch Page</title>
 
     <!-- Link backward one folder level to reuse shared global common styles -->
     <link rel="stylesheet" href="../hmitiles.css">
@@ -12,51 +12,58 @@
 </head>
 <body>
 
-	<!-- Inside the header block of index.html -->
+	<!-- Inside the header block of your sub-pages (e.g., alarmtile/index.html) -->
 	<header class="hmi-header-container">
 		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<!-- Left Side: Main Menu & Title -->
 			<div style="display: flex; align-items: center; gap: 15px;">
 				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
-				<h2>Input Tile</h2>
+				<h2>Multi-Switch Page</h2>
+			</div>
+			
+			<!-- Right Side: Clean dynamic navigation hook back to your master grid -->
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index ➔</button>
 			</div>
 		</div>
 	</header>
 
     <!-- Master outer panel containing your grid -->
+	<!-- Set the device idx according devices list -->
     <main class="hmi-panel">
         
         <!-- 
-			TILE 1 ROW 1 COL 1: TEXT INPUT
-			Set the device idx according devices list
+			TILE 1 ROW 1 COL 1
+			INTERACTIVE ON/OFF TOGGLE SWITCH (Type Light/Switch / SubType Switch / SwitchType On/Off) 
 		-->
-		<div class="hmi-pack-card" data-device-idx="23" data-type="text-input">
+		<div class="hmi-pack-card" data-type="switch" data-device-idx="1">
 			<div class="hmi-card-header">
-				<div class="hmi-pack-label">System Banner Alert</div>
-				<div class="hmi-badge">SYNCED</div>
+				<div class="hmi-pack-label">Switch/Switch/On/Off (IDX 1)</div>
+				<div class="hmi-badge hmi-clickable-badge">OFF</div>
 			</div>
 			<div class="hmi-value-grid">
-				<input type="text" class="hmi-text-field" placeholder="Enter status text...">
-				<div class="hmi-action-row" style="display: flex; justify-content: flex-end; width: 100%; gap: 8px; margin-top: 4px;">
-					<button class="hmi-btn-cancel">Cancel</button>
-					<button class="hmi-btn-ok">OK</button>
+				<div class="hmi-value-box">
+					<div class="hmi-box-data">
+						<span class="hmi-value">OFF</span>
+					</div>
 				</div>
 			</div>
 		</div>
 
         <!-- 
-			TILE 1 ROW 1 COL 2: TEXT INPUT
-			Set the device idx according devices list
+			TILE 1 ROW 1 COL 2
+			INTERACTIVE ON/OFF TOGGLE SWITCH (Type Light/Switch / SubType Switch / SwitchType On/Off) 
 		-->
-		<div class="hmi-pack-card" data-device-idx="24" data-type="text-input">
+		<div class="hmi-pack-card" data-type="switch" data-device-idx="17">
 			<div class="hmi-card-header">
-				<div class="hmi-pack-label">Custom Weather Override Status</div>
-				<div class="hmi-badge">SYNCED</div>
+				<div class="hmi-pack-label">Switch/Switch/On/Off (IDX 17)</div>
+				<div class="hmi-badge hmi-clickable-badge">OFF</div>
 			</div>
-			<div class="hmi-value-grid" style="display: flex; flex-direction: column; padding: 12px; gap: 12px;">
-				<input type="text" class="hmi-text-field" placeholder="Enter custom weather string...">
-				<div class="hmi-action-row" style="display: flex; justify-content: flex-end; width: 100%; gap: 8px; margin-top: 4px;">
-					<button class="hmi-btn-cancel">Cancel</button>
-					<button class="hmi-btn-ok">OK</button>
+			<div class="hmi-value-grid">
+				<div class="hmi-value-box">
+					<div class="hmi-box-data">
+						<span class="hmi-value">OFF</span>
+					</div>
 				</div>
 			</div>
 		</div>

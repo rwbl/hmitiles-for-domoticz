@@ -12,12 +12,18 @@
 </head>
 <body>
 
-	<!-- Inside the header block of index.html -->
+	<!-- Inside the header block of your sub-pages (e.g., alarmtile/index.html) -->
 	<header class="hmi-header-container">
 		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<!-- Left Side: Main Menu & Title -->
 			<div style="display: flex; align-items: center; gap: 15px;">
 				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
 				<h2>Input Tile</h2>
+			</div>
+			
+			<!-- Right Side: Clean dynamic navigation hook back to your master grid -->
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index ➔</button>
 			</div>
 		</div>
 	</header>
@@ -27,7 +33,8 @@
     <main class="hmi-panel">
         
         <!-- 
-			TILE 1 ROW 1 COL 1: TEXT INPUT
+			TILE 1 ROW 1 COL 1
+			TEXT INPUT
 		-->
 		<div class="hmi-pack-card" data-device-idx="28" data-type="text-input">
 			<div class="hmi-card-header">
@@ -44,7 +51,8 @@
 		</div>
 
         <!-- 
-			TILE 1 ROW 1 COL 2: NUMBER INPUT
+			TILE 1 ROW 1 COL 2
+			NUMBER INPUT with min = 0
 		-->
 		<div class="hmi-pack-card" data-device-idx="29" data-type="text-input">
 			<div class="hmi-card-header">

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Single Tile</title>
+    <title>Value Tile</title>
 
     <!-- Link backward one folder level to reuse shared global common styles -->
     <link rel="stylesheet" href="../hmitiles.css">
@@ -15,20 +15,26 @@
 	<!-- Inside the header block of index.html -->
 	<header class="hmi-header-container">
 		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<!-- Left Side: Main Menu & Title -->
 			<div style="display: flex; align-items: center; gap: 15px;">
 				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
-				<h2>Single Tile</h2>
+				<h2>Value Tile</h2>
+			</div>
+			
+			<!-- Right Side: Clean dynamic navigation hook back to your master grid -->
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index ➔</button>
 			</div>
 		</div>
 	</header>
 
     <!-- Master outer panel containing your grid -->
+	<!-- Set the device idx according devices list -->
     <main class="hmi-panel">
         
         <!-- 
-			TILE 1 ROW 1 COL 1: POWER PRODUCTION
-			Set the device idx according devices list
-			IDX 5
+			TILE 1 ROW 1 COL 1
+			SOLAR PRODUCTION
 		-->
         <div class="hmi-pack-card hmi-clickable-card" data-device-idx="5" data-alarm="normal">
             <div class="hmi-card-header">
@@ -42,6 +48,11 @@
                     </div>
                 </div>
             </div>
+
+			<!-- Optional LastUpdate -->
+			<div class="hmi-last-update" data-text="static">
+				<span class="hmi-value-update" data-field="LastUpdate">YYYY-MM-DD hh:mm:ss</span>
+			</div>
         </div>
 
 		<footer class="hmi-footer-version">

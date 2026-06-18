@@ -2,7 +2,7 @@
  * @file hmitiles.js
  * @brief Core JavaScript monitoring engine for the Domoticz-HMITiles framework.
  * @project Domoticz-HMITiles
- * @date 2026-06-17
+ * @date 2026-06-18
  * @author Robert W.B. Linn (c) 2026 MIT
  * @version 1.0.0-Beta
  * @description Manages industrial-inspired tile updates, trend lines, 
@@ -52,13 +52,16 @@ function processDevices(devices) {
 	
     updateCommunicationsStatus(true);
 
+	// Loop over all devices
     devices.forEach(device => {
 		
 		if (DEBUG) console.log("processDevices idx data type", device.idx, device.Data, device.Type);
+
+		// Get the raw value from property device.Data
+		let rawValue = device.Data; 
 		
-		// Get the raw value from property data
-		let rawValue = parseFloat(device.Data) || parseFloat(device.Status) || 0; 
-        let displayStatus = device.Status || device.Data || "";
+		// Init display status
+        let displayStatus = device.Data || "";
 		
         // =========================================================================
 		// GLOBAL OVERRIDE HOOK = MUST AT VERY TOP OF THE LOOP
@@ -76,7 +79,9 @@ function processDevices(devices) {
         // =========================================================================
         // Locate EVERY tile card container instance matching this specific device index
         const matchingTiles = document.querySelectorAll(`[data-device-idx="${device.idx}"]`);
-        if (matchingTiles.length === 0) return; // Move to next device in your array if no HTML tile matches
+        
+		// Move to next device in your array if no HTML tile matches
+		if (matchingTiles.length === 0) return;
 
         // Iterate through each matching tile instance independently
         matchingTiles.forEach(tileElement => {
@@ -85,6 +90,19 @@ function processDevices(devices) {
 			const cardType = tileElement.getAttribute('data-type') || "standard";
 
 			if (DEBUG) console.log("processDevices idx=", device.idx, "cardType=", cardType);
+
+			// =========================================================================
+			// PROCESS TIMESTAMP FIRST
+			// =========================================================================
+			// This executes before any tile-specific 'return' statements can intercept it
+			const lastUpdateContainer = tileElement.querySelector('.hmi-last-update');
+
+			if (lastUpdateContainer && device.LastUpdate) {
+				const lastUpdateField = lastUpdateContainer.querySelector('.hmi-value-update');
+				if (lastUpdateField) {
+					lastUpdateField.textContent = device.LastUpdate;
+				}
+			}
 
 			// =========================================================================
 			// GENERIC GLOBAL TEXT INPUT LOGIC PIPELINE
@@ -129,15 +147,23 @@ function processDevices(devices) {
 			// =========================================================================
 			// GENERIC PROGRESS BAR & LEVEL GAUGE SYNC
 			// =========================================================================
-			const barFill = tileElement.querySelector('.hmi-bar-fill');
-			const barText = tileElement.querySelector('.hmi-bar-text');
-			if (barFill && barText) {
-				const numericValue = parseFloat(device.Data) || parseFloat(device.Status) || 0;
-				const percentage = Math.min(Math.max(numericValue, 0), 100);
-				barFill.style.width = `${percentage}%`;
-				barText.textContent = `${Math.round(percentage)}%`;
+			if (cardType === "progress-bar-tile") {
+				const barContainer = tileElement.querySelector('.hmi-bar-container');
+				const barFill = tileElement.querySelector('.hmi-bar-fill');
+				if (barContainer) {
+					// Extract only the sequential numeric digits (\d+) from the text string
+					const match = rawValue.match(/\d+/);
+					// If digits are found, parse them to a base-10 integer; otherwise fallback to 0
+					rawValue = match ? parseInt(match[0], 10) : 0;
+					displayStatus = rawValue;
+				}
+				if (barFill) {
+					const percentage = Math.min(Math.max(rawValue, 0), 100);
+					barFill.style.width = `${percentage}%`;
+					// device.Data = percentage;
+				}
 			}
-
+			
 			// =========================================================================
 			// GENERIC GLOBAL SETPOINT STEPPER & PV PIPELINE
 			// =========================================================================
@@ -149,11 +175,11 @@ function processDevices(devices) {
 				const targetUnit = tileElement.getAttribute('data-unit') || "";
 				const stepValue = parseFloat(tileElement.getAttribute('data-step') || 0.5);
 
-				// A. Extract and update the target Setpoint value
-				const currentSP = parseFloat(device.SetPoint || device.Data || 0);
+				// Extract and update the target Setpoint value
+				const currentSP = parseFloat(device.SetPoint || 0);
 				if (spField) spField.textContent = `${currentSP.toFixed(1)} ${targetUnit}`;
 
-				// B. Reach across the response array to parse out the live process value (PV)
+				// Reach across the response array to parse out the live process value (PV)
 				if (targetPVIdx) {
 					const pvDevice = devices.find(d => String(d.idx) === String(targetPVIdx));
 					if (pvDevice && pvField) {
@@ -162,7 +188,7 @@ function processDevices(devices) {
 					}
 				}
 
-				// C. Bind interactive step button listeners once on page load initialization
+				// Bind interactive step button listeners once on page load initialization
 				if (!tileElement.hasAttribute('data-listeners-bound')) {
 					tileElement.setAttribute('data-listeners-bound', 'true');
 					
@@ -198,8 +224,7 @@ function processDevices(devices) {
 					}
 				}
 
-				// checkAlarmThresholds(device.idx, rawValue);
-				return; // Handled completely
+				// return; // Handled completely
 			}
 
 			// =========================================================================
@@ -222,7 +247,7 @@ function processDevices(devices) {
 					}
 				}
 
-				// FIX: Tell the card to act like it has "static" text behavior.
+				// Tell the card to act like it has "static" text behavior.
 				// This prevents updateHMIAnalogTile from failing when it looks for valueField!
 				const valueField = tileElement.querySelector('.hmi-value');
 				if (!valueField) {
@@ -242,7 +267,7 @@ function processDevices(devices) {
 				const customOffText = tileElement.getAttribute('data-off-text');
 
 				// EXTRACT CORE STATUS INFORMATION
-				const rawStatus = String(device.Status || device.Data || "").toUpperCase();
+				const rawStatus = String(rawValue || "").toUpperCase();
 				const isDeviceOff = (rawStatus === "OFF");
 				
 				// FORCE LEVEL CORRECTION (If Domoticz says OFF, level is 0)
@@ -268,17 +293,17 @@ function processDevices(devices) {
 
 				// SET LEVEL TEXT IF LEVEL GREATER 0 to OPEN/CLOSED
 				if (currentLevel > 0) {
-					displayStatus = customOnText ? customOnText : (device.Status || device.Data || "OPEN");
+					displayStatus = customOnText ? customOnText : (device.Data || "OPEN");
 				} else {
-					displayStatus = customOffText ? customOffText : (device.Status || device.Data || "CLOSED");
+					displayStatus = customOffText ? customOffText : (device.Data || "CLOSED");
 				}
 			}
 
 			// =========================================================================
-			// LIGHT/SWITCH, SWITCH, PUMP, VALVE
+			// LIGHT/SWITCH, SWITCH
 			// =========================================================================
-			if (device.Type === "Light/Switch" || cardType === "switch" || cardType === "pump" || cardType === "valve") {
-				const rawStatus = String(device.Status || device.Data || "").toUpperCase();
+			if (device.Type === "Light/Switch" || cardType === "switch") {
+				const rawStatus = String(rawValue || "").toUpperCase();
 				const isRawOn = (rawStatus === "ON" || rawStatus === "TRUE");
 
 				// GENERIC TEXT TRANSLATION ENGINE
@@ -287,10 +312,10 @@ function processDevices(devices) {
 
 				if (isRawOn) {
 					// Use custom HTML text, otherwise fall back to native Domoticz text
-					displayStatus = customOnText ? customOnText : (device.Status || device.Data || "ON");
+					displayStatus = customOnText ? customOnText : (device.Data || "ON");
 				} else {
 					// Use custom HTML text, otherwise fall back to native Domoticz text
-					displayStatus = customOffText ? customOffText : (device.Status || device.Data || "OFF");
+					displayStatus = customOffText ? customOffText : (device.Data || "OFF");
 				}
 				
 				// Set rawValue used by checkAlarmThresholds
@@ -302,18 +327,18 @@ function processDevices(devices) {
 			// =========================================================================
 			if (device.Type === 'Wind') {
 				// Fallback to zero string if device data string is empty
-				const windRawData = device.Data || "0;N;0;0;0;0";
-				
+				rawValue = device.Data || "0;N;0;0;0;0";
 				// Core engine handler update
-				updateWindTile(tileElement, windRawData, device.Name);
-				
-				return; // Exit loop routing cleanly
+				updateWindTile(tileElement, rawValue, device.Name);
+				// Handled completely because HMI is updated using updateWindTile
+				return; 
 			}
 
 			// =========================================================================
 			// AIR QUALITY
 			// =========================================================================
 			if (device.Type === 'Air Quality') {
+				// Fallback to 0 value if device data string is empty
 				rawValue = parseInt(device.Data, 10) || 0;
 				displayStatus = `${rawValue} PPM`;
 			}
@@ -322,7 +347,7 @@ function processDevices(devices) {
 			// ANYOTHER DEVICE
 			// =========================================================================
 			if (!displayStatus) {
-				displayStatus = device.Status || device.Data || "";
+				displayStatus = rawValue || "";
 			}
 
 			console.log("processDevices idx=", device.idx, "name=", device.Name, "value=", rawValue, "status=", displayStatus, "lastUpdate=", device.LastUpdate);
@@ -338,12 +363,69 @@ function processDevices(devices) {
 			// =========================================================================
 			// AUTOMATIC ALARM THRESHOLD TRIGGER PIPELINE
 			// =========================================================================
-			// This fires automatically for EVERY device. If the card contains 
-			// data-warn or data-crit attributes, it evaluates them natively!
-			checkAlarmThresholds(device.idx, rawValue);
+            // Extract the operational threshold direction type directly from the HTML card wrapper
+            const alarmType = tileElement.getAttribute('data-alarm-type');
+            // Secure Rule: ONLY process thresholds if the user explicitly requested "up" or "down" calculations
+            if (alarmType === "up" || alarmType === "down") {
+                checkAlarmThresholds(device.idx, rawValue);
+            }
 
 		}); // This closing brace seals the multi-tile .forEach loop blocks securely!
     }); // This is your existing device array loop ending bracket
+}
+
+function checkAlarmThresholds(idx, currentValue) {
+    const card = document.querySelector(`[data-device-idx="${idx}"]`) || document.getElementById(`idx-${idx}`);
+    if (!card) return;
+
+    const alarmType = card.getAttribute('data-alarm-type') || "up";
+    const badge = card.querySelector('.hmi-badge');
+    const val = parseFloat(currentValue);
+
+    // Dynamic extraction: reads both text strings and alarm states from HTML attributes
+    const thresholds = [
+        { lvl: card.getAttribute('data-level-critical'), txt: card.getAttribute('data-text-critical'), state: card.getAttribute('data-state-critical') || "critical" },
+        { lvl: card.getAttribute('data-level-high'),     txt: card.getAttribute('data-text-high'),     state: card.getAttribute('data-state-high') || "normal" },
+        { lvl: card.getAttribute('data-level-medium'),   txt: card.getAttribute('data-text-medium'),   state: card.getAttribute('data-state-medium') || "normal" },
+        { lvl: card.getAttribute('data-level-low'),      txt: card.getAttribute('data-text-low'),      state: card.getAttribute('data-state-low') || "warning" },
+        { lvl: card.getAttribute('data-level-info'),     txt: card.getAttribute('data-text-info'),     state: card.getAttribute('data-state-info') || "warning" }
+    ];
+
+    let matchedState = "normal";
+    let matchedText = card.getAttribute('data-text-normal') || "NORMAL";
+
+    if (alarmType === "up") {
+        const activeTiers = thresholds.filter(t => t.lvl !== null).sort((a, b) => parseFloat(b.lvl) - parseFloat(a.lvl));
+        for (const tier of activeTiers) {
+            if (val >= parseFloat(tier.lvl)) {
+                matchedState = tier.state;
+                matchedText = tier.txt || "ALERT";
+                break;
+            }
+        }
+    } else if (alarmType === "down") {
+        const activeTiers = thresholds.filter(t => t.lvl !== null).sort((a, b) => parseFloat(a.lvl) - parseFloat(b.lvl));
+        for (const tier of activeTiers) {
+            if (val <= parseFloat(tier.lvl)) {
+                matchedState = tier.state;
+                matchedText = tier.txt || "ALERT";
+                break;
+            }
+        }
+    }
+
+    // Apply exact classes dynamically
+    card.setAttribute("data-alarm", matchedState);
+    if (badge) {
+        badge.textContent = matchedText.toUpperCase();
+        badge.className = "hmi-badge hmi-clickable-badge";
+        
+        if (matchedState === "critical") {
+            badge.classList.add("hmi-alarm-state");
+        } else if (matchedState === "warning") {
+            badge.classList.add("hmi-warning-state");
+        }
+    }
 }
 
 /**
@@ -466,11 +548,12 @@ function updateWindTile(card, svalue, deviceName) {
  * @param {string} data.status - The clean string text formatted for status badges.
  * @param {number} data.value - The raw numeric value floating-point calculation.
  * @returns {void}
+ * @example: updateHMIAnalogTile(tileElement, {name: device.Name, value: rawValue, status: displayStatus, lastUpdate: device.LastUpdate});
  */
 function updateHMIAnalogTile(element, data) {
     const valueField = element.querySelector('.hmi-value');
     
-    // 1. SAFELY PROCESS VALUE FIELD (Only run if it actually exists in HTML)
+    // SAFELY PROCESS VALUE FIELD (Only run if it actually exists in HTML)
     if (valueField) {
         const textBehavior = valueField.getAttribute('data-text');
 
@@ -485,13 +568,13 @@ function updateHMIAnalogTile(element, data) {
         if (DEBUG) console.log(`updateHMIAnalogTile -> Safe Skip: Tile [IDX ${element.getAttribute('data-device-idx')}] has no .hmi-value element.`);
     }
 
-    // 2. SAFELY PROCESS STATUS BADGE (Only run if it actually exists in HTML)
+    // SAFELY PROCESS STATUS BADGE (Only run if it actually exists in HTML)
     const statusBadge = element.querySelector('.hmi-clickable-badge') || element.querySelector('.hmi-badge');
     if (statusBadge) {
         statusBadge.textContent = String(data.status).toUpperCase();
     }
     
-    // 3. SAFELY PROCESS GAUGE BAR FILL ELEMENTS
+    // SAFELY PROCESS GAUGE BAR FILL ELEMENTS
     const barFill = element.querySelector('.hmi-bar-fill');
     const barText = element.querySelector('.hmi-bar-text');
     
@@ -532,7 +615,7 @@ function setupControlListeners() {
 
             const idx = parseInt(card.getAttribute('data-device-idx'), 10);
             
-            // 1. Read the explicit action from the card if defined (e.g., "Toggle", "Stop")
+            // Read the explicit action from the card if defined (e.g., "Toggle", "Stop")
             const explicitAction = card.getAttribute('data-action');
             let targetCommand;
 
@@ -540,7 +623,7 @@ function setupControlListeners() {
                 // If data-action exists (Toggle or Stop), use it directly
                 targetCommand = explicitAction;
             } else {
-                // 2. Fallback: Your original smart logic if no data-action is specified
+                // Fallback: smart logic if no data-action is specified
                 const currentStatus = badge.textContent.trim().toUpperCase();
                 const isCurrentlyOn = (currentStatus === "ON" || currentStatus === "RUNNING" || currentStatus === "OPEN" || (parseInt(currentStatus, 10) > 0));
                 targetCommand = isCurrentlyOn ? "Turn Off" : "Turn On";
@@ -748,60 +831,6 @@ function updateDashboardTimestamp() {
     document.getElementById("hmi-last-update").innerText = timeString;
 }
 
-function checkAlarmThresholds(idx, currentValue) {
-    const card = document.querySelector(`[data-device-idx="${idx}"]`) || document.getElementById(`idx-${idx}`);
-    if (!card) return;
-
-    const alarmType = card.getAttribute('data-alarm-type') || "up";
-    const badge = card.querySelector('.hmi-badge');
-    const val = parseFloat(currentValue);
-
-    // Dynamic extraction: reads both text strings and alarm states from HTML attributes
-    const thresholds = [
-        { lvl: card.getAttribute('data-level-critical'), txt: card.getAttribute('data-text-critical'), state: card.getAttribute('data-state-critical') || "critical" },
-        { lvl: card.getAttribute('data-level-high'),     txt: card.getAttribute('data-text-high'),     state: card.getAttribute('data-state-high') || "normal" },
-        { lvl: card.getAttribute('data-level-medium'),   txt: card.getAttribute('data-text-medium'),   state: card.getAttribute('data-state-medium') || "normal" },
-        { lvl: card.getAttribute('data-level-low'),      txt: card.getAttribute('data-text-low'),      state: card.getAttribute('data-state-low') || "warning" },
-        { lvl: card.getAttribute('data-level-info'),     txt: card.getAttribute('data-text-info'),     state: card.getAttribute('data-state-info') || "warning" }
-    ];
-
-    let matchedState = "normal";
-    let matchedText = card.getAttribute('data-text-normal') || "NORMAL";
-
-    if (alarmType === "up") {
-        const activeTiers = thresholds.filter(t => t.lvl !== null).sort((a, b) => parseFloat(b.lvl) - parseFloat(a.lvl));
-        for (const tier of activeTiers) {
-            if (val >= parseFloat(tier.lvl)) {
-                matchedState = tier.state;
-                matchedText = tier.txt || "ALERT";
-                break;
-            }
-        }
-    } else if (alarmType === "down") {
-        const activeTiers = thresholds.filter(t => t.lvl !== null).sort((a, b) => parseFloat(a.lvl) - parseFloat(b.lvl));
-        for (const tier of activeTiers) {
-            if (val <= parseFloat(tier.lvl)) {
-                matchedState = tier.state;
-                matchedText = tier.txt || "ALERT";
-                break;
-            }
-        }
-    }
-
-    // Apply exact classes dynamically
-    card.setAttribute("data-alarm", matchedState);
-    if (badge) {
-        badge.textContent = matchedText.toUpperCase();
-        badge.className = "hmi-badge hmi-clickable-badge";
-        
-        if (matchedState === "critical") {
-            badge.classList.add("hmi-alarm-state");
-        } else if (matchedState === "warning") {
-            badge.classList.add("hmi-warning-state");
-        }
-    }
-}
-
 /**
  * Handles the visual toggle state execution cycle and cool-down timer for your manual override data button.
  * @function toggleManualRequest
@@ -957,7 +986,7 @@ async function fetchDomoticzServerLogs() {
         
         if (data.status === "OK" && data.result) {
             
-            // 2. Loop through each individual log tile found on your layout page
+            // Loop through each individual log tile found on your layout page
             logTiles.forEach(tileElement => {
                 // Skip rendering if this specific tile is currently in a "clear log hold" state
                 if (tileElement.hasAttribute('data-log-hold')) return;
@@ -971,7 +1000,7 @@ async function fetchDomoticzServerLogs() {
                 // Reset base entries array to the full server response on every iteration step
                 let entries = data.result;
 
-                /* FIX LAYER 1: CLIENT-SIDE CHANNEL DROPDOWN SELECTION FILTERING
+                /* CLIENT-SIDE CHANNEL DROPDOWN SELECTION FILTERING
                  * Look up the unique select element dropdown nested *inside* this specific tile matrix envelope */
                 const channelSelect = tileElement.querySelector('.hmi-log-channel-select');
                 const localLogLevel = channelSelect ? parseInt(channelSelect.value, 10) : 268435455;
@@ -1064,20 +1093,39 @@ async function fetchDomoticzMatrixStatus() {
                         
                         // Execute high-performance color routing tree
                         if (statusText === "ERROR" || statusText === "ALARM" || statusText === "OFF") {
-                            cellElement.classList.add('state-error');    // Black
+                            cellElement.classList.add('state-error');    // Black panel area profile
                         } else if (statusText === "DISABLED" || statusText === "GRAY" || statusText === "NONE") {
-                            cellElement.classList.add('state-disabled'); // Gray
+                            cellElement.classList.add('state-disabled'); // High-Contrast Gray
                         } else {
-                            cellElement.classList.add('state-ok');       // White
+                            cellElement.classList.add('state-ok');       // White indicator area profile
                         }
                     } else {
-                        // Fallback: If device is missing entirely from server database, force a Gray Disabled state
+                        // FIX 1: If device is missing entirely from the database query, force the high-contrast fallback state
+                        cellElement.classList.add('state-disabled');
+                    }
+                });
+            } else {
+                // FIX 2: If network response status is empty or broken, drop ALL 9 cells to the legible fallback state
+                const csvArray = idxString.split(",");
+                csvArray.forEach((_, cellIndex) => {
+                    const cellElement = matrixTile.querySelector(`[data-cell-index="${cellIndex}"]`);
+                    if (cellElement) {
+                        cellElement.classList.remove('state-ok', 'state-error', 'state-disabled');
                         cellElement.classList.add('state-disabled');
                     }
                 });
             }
         } catch (err) {
             if (DEBUG) console.error("Matrix status synchronization exception:", err);
+            // FIX 3: Network exception handler ensures cells remain legible on connection dropouts
+            const csvArray = idxString.split(",");
+            csvArray.forEach((_, cellIndex) => {
+                const cellElement = matrixTile.querySelector(`[data-cell-index="${cellIndex}"]`);
+                if (cellElement) {
+                    cellElement.classList.remove('state-ok', 'state-error', 'state-disabled');
+                    cellElement.classList.add('state-disabled');
+                }
+            });
         }
     });
 }

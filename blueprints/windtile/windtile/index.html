@@ -15,9 +15,15 @@
 	<!-- Inside the header block of index.html -->
 	<header class="hmi-header-container">
 		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<!-- Left Side: Main Menu & Title -->
 			<div style="display: flex; align-items: center; gap: 15px;">
 				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
 				<h2>Wind Tile</h2>
+			</div>
+
+			<!-- Right Side: Navigation hook back to your master grid -->
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index ➔</button>
 			</div>
 		</div>
 	</header>
@@ -27,10 +33,10 @@
     <main class="hmi-panel">
         
         <!-- 
-			TILE 1 ROW 1 COL 1: COMPACT WIND MONITORING MATRIX
+			TILE 1 ROW 1 COL 1
+			COMPACT WIND MONITORING MATRIX
 			Parses 'data= WB;WD;WS;WG;22;24' string arrays directly
 		-->
-		<!-- WIND STANDALONE PANEL MATRIX COMPONENT -->
 		<div class="hmi-pack-card" data-type="wind" data-device-idx="30">
 			
 			<div class="hmi-card-header">
