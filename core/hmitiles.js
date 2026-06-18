@@ -60,8 +60,8 @@ function processDevices(devices) {
 		// Get the raw value from property device.Data
 		let rawValue = device.Data; 
 		
-		// Init display status
-        let displayStatus = device.Data || "";
+		// Init display status (must be empty)
+        let displayStatus = "";
 		
         // =========================================================================
 		// GLOBAL OVERRIDE HOOK = MUST AT VERY TOP OF THE LOOP
@@ -235,6 +235,29 @@ function processDevices(devices) {
 			}
 
 			// =========================================================================
+			// LIGHT/SWITCH, SWITCH
+			// =========================================================================
+			if (device.Type === "Light/Switch" || cardType === "switch") {
+				const rawStatus = String(rawValue || "").toUpperCase();
+				const isRawOn = (rawStatus === "ON" || rawStatus === "TRUE");
+
+				// GENERIC TEXT TRANSLATION ENGINE
+				const customOnText = tileElement.getAttribute('data-on-text');
+				const customOffText = tileElement.getAttribute('data-off-text');
+
+				if (isRawOn) {
+					// Use custom HTML text, otherwise fall back to native Domoticz text
+					displayStatus = customOnText ? customOnText : (device.Data || "ON");
+				} else {
+					// Use custom HTML text, otherwise fall back to native Domoticz text
+					displayStatus = customOffText ? customOffText : (device.Data || "OFF");
+				}
+				
+				// Set rawValue used by checkAlarmThresholds
+				rawValue = isRawOn ? 1 : 0;				
+			}
+			
+			// =========================================================================
 			// LIGHT/SWITCH, SELECTOR SWITCH
 			// =========================================================================
 			if (device.SwitchType === "Selector" || cardType === "selector") {
@@ -300,29 +323,6 @@ function processDevices(devices) {
 			}
 
 			// =========================================================================
-			// LIGHT/SWITCH, SWITCH
-			// =========================================================================
-			if (device.Type === "Light/Switch" || cardType === "switch") {
-				const rawStatus = String(rawValue || "").toUpperCase();
-				const isRawOn = (rawStatus === "ON" || rawStatus === "TRUE");
-
-				// GENERIC TEXT TRANSLATION ENGINE
-				const customOnText = tileElement.getAttribute('data-on-text');
-				const customOffText = tileElement.getAttribute('data-off-text');
-
-				if (isRawOn) {
-					// Use custom HTML text, otherwise fall back to native Domoticz text
-					displayStatus = customOnText ? customOnText : (device.Data || "ON");
-				} else {
-					// Use custom HTML text, otherwise fall back to native Domoticz text
-					displayStatus = customOffText ? customOffText : (device.Data || "OFF");
-				}
-				
-				// Set rawValue used by checkAlarmThresholds
-				rawValue = isRawOn ? 1 : 0;
-			}
-
-			// =========================================================================
 			// WIND (Standalone Component)
 			// =========================================================================
 			if (device.Type === 'Wind') {
@@ -347,7 +347,8 @@ function processDevices(devices) {
 			// ANYOTHER DEVICE
 			// =========================================================================
 			if (!displayStatus) {
-				displayStatus = rawValue || "";
+				// Set displaystatus empty to use the default as defined in HTML .hmi-badge
+				displayStatus = "";
 			}
 
 			console.log("processDevices idx=", device.idx, "name=", device.Name, "value=", rawValue, "status=", displayStatus, "lastUpdate=", device.LastUpdate);
@@ -372,6 +373,45 @@ function processDevices(devices) {
 
 		}); // This closing brace seals the multi-tile .forEach loop blocks securely!
     }); // This is your existing device array loop ending bracket
+}
+
+/**
+ * Updates text elements and gauge bars within a specified panel card.
+ * @function updateHMIAnalogTile
+ * @param {HTMLElement} element - The target tile container module block element.
+ * @param {Object} data - Processed visual tracking property dataset package.
+ * @param {string} data.status - The clean string text formatted for status badges.
+ * @param {number} data.value - The raw numeric value floating-point calculation.
+ * @returns {void}
+ * @example: updateHMIAnalogTile(tileElement, {name: device.Name, value: rawValue, status: displayStatus, lastUpdate: device.LastUpdate});
+ */
+function updateHMIAnalogTile(element, data) {
+  
+    // SAFELY PROCESS VALUE FIELD (Only run if it actually exists in HTML)
+    const valueField = element.querySelector('.hmi-value');
+    if (valueField) {
+		valueField.textContent = data.value; 
+    }
+
+    // SAFELY PROCESS STATUS BADGE (Only run if it actually exists in HTML)
+    const statusBadge = element.querySelector('.hmi-clickable-badge') || element.querySelector('.hmi-badge');
+    if (statusBadge) {
+		// Check if data.status is set else take what is defined in HTML
+		if (data.status != "") {
+			statusBadge.textContent = String(data.status).toUpperCase();
+		}
+    }
+    
+    // SAFELY PROCESS GAUGE BAR FILL ELEMENTS
+    const barFill = element.querySelector('.hmi-bar-fill');
+    const barText = element.querySelector('.hmi-bar-text');
+    
+    if (barFill && barText) {
+        const numericValue = parseFloat(data.value) || 0;
+        const percentage = Math.min(Math.max(numericValue, 0), 100);
+        barFill.style.width = `${percentage}%`;
+        barText.textContent = `${Math.round(percentage)}%`;
+    }
 }
 
 function checkAlarmThresholds(idx, currentValue) {
@@ -537,52 +577,6 @@ function updateWindTile(card, svalue, deviceName) {
             // alertBadge.style.display = "none";
             if (statusTextEl) statusTextEl.style.color = "";
         }
-    }
-}
-
-/**
- * Updates text elements and gauge bars within a specified panel card.
- * @function updateHMIAnalogTile
- * @param {HTMLElement} element - The target tile container module block element.
- * @param {Object} data - Processed visual tracking property dataset package.
- * @param {string} data.status - The clean string text formatted for status badges.
- * @param {number} data.value - The raw numeric value floating-point calculation.
- * @returns {void}
- * @example: updateHMIAnalogTile(tileElement, {name: device.Name, value: rawValue, status: displayStatus, lastUpdate: device.LastUpdate});
- */
-function updateHMIAnalogTile(element, data) {
-    const valueField = element.querySelector('.hmi-value');
-    
-    // SAFELY PROCESS VALUE FIELD (Only run if it actually exists in HTML)
-    if (valueField) {
-        const textBehavior = valueField.getAttribute('data-text');
-
-        if (textBehavior === "static") {
-            // Do absolutely nothing! Text remains untouched.
-        } else {
-            // Standard behavior: Use the calculated status if no option is set
-            valueField.textContent = data.status; 
-        }
-    } else {
-        // If there is no valueField (like on your selector card), we log a clean message if DEBUG is on
-        if (DEBUG) console.log(`updateHMIAnalogTile -> Safe Skip: Tile [IDX ${element.getAttribute('data-device-idx')}] has no .hmi-value element.`);
-    }
-
-    // SAFELY PROCESS STATUS BADGE (Only run if it actually exists in HTML)
-    const statusBadge = element.querySelector('.hmi-clickable-badge') || element.querySelector('.hmi-badge');
-    if (statusBadge) {
-        statusBadge.textContent = String(data.status).toUpperCase();
-    }
-    
-    // SAFELY PROCESS GAUGE BAR FILL ELEMENTS
-    const barFill = element.querySelector('.hmi-bar-fill');
-    const barText = element.querySelector('.hmi-bar-text');
-    
-    if (barFill && barText) {
-        const numericValue = parseFloat(data.value) || 0;
-        const percentage = Math.min(Math.max(numericValue, 0), 100);
-        barFill.style.width = `${percentage}%`;
-        barText.textContent = `${Math.round(percentage)}%`;
     }
 }
 
@@ -759,7 +753,7 @@ async function sendDomoticzSwitchCommand(idx, command, level = 0) {
     // Maps the command. Default is Off.
     let switchCmdValue = "Off";
 	let targetLevel = level;
-    
+ 	
     if (command === "On" || command === "Turn On") {
         switchCmdValue = "On";
     } else if (command === "Toggle") {
@@ -767,7 +761,7 @@ async function sendDomoticzSwitchCommand(idx, command, level = 0) {
     } else if (command === "Stop") {
         switchCmdValue = "Stop";
     } else if (command === "Set Level") {
-        switchCmdValue = "Set Level"; // For dimmers and selectors
+        switchCmdValue = "Set%20Level"; // For dimmers and selectors
     }
     const commandUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=switchlight&idx=${idx}&switchcmd=${switchCmdValue}&level=${targetLevel}`;
     if (DEBUG) console.log("sendDomoticzSwitchCommand=", commandUrl);

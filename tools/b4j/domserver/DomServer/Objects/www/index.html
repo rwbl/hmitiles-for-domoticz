@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alarm Tile</title>
+
+    <!-- Link backward one folder level to reuse shared global common styles -->
+    <link rel="stylesheet" href="../hmitiles.css">
+	
+	<!-- Link backward to the HMI tile engine -->
+    <script src="../hmitiles.js" defer></script>
+</head>
+<body>
+
+	<!-- Inside the header block of index.html -->
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
+				<h2>Alarm Tile</h2>
+			</div>
+		</div>
+	</header>
+
+    <!-- Master outer panel containing your grid -->
+	<!-- Set the device idx according devices list -->
+    <main class="hmi-panel">
+        
+        <!-- 
+			TILE 1 ROW 1 COL 1: BATTERY STATUS
+		-->
+		<div class="hmi-pack-card" data-device-idx="12" 
+			data-alarm-type="down"
+			data-level-critical="0"		data-text-critical="Empty"     	data-state-critical="critical"
+			data-level-low="25"        	data-text-low="QUARTER"       	data-state-low="warning"
+			data-level-medium="50"    	data-text-medium="HALF"       	data-state-medium="normal"
+			data-level-high="75"       	data-text-high="3QUARTERS"    	data-state-high="normal"
+			data-level-info="100"      	data-text-info="FULL"			data-state-info="normal"
+			data-text-normal="Normal">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">System Battery SOC</div>
+				<div class="hmi-badge">NORMAL</div>
+			</div>
+            <div class="hmi-value-grid">
+                <div class="hmi-value-box">
+                    <div class="hmi-box-data">
+                        <span class="hmi-value">--</span>
+                    </div>
+                </div>
+            </div>
+		</div>
+
+        <!-- 
+			TILE 1 ROW 1 COL 2: SOLAR PRODUCTION
+		-->
+		<div class="hmi-pack-card" data-device-idx="5" 
+			data-alarm-type="up"
+			data-level-info="0"			data-text-info="NO PROD"      	data-state-info="critical"
+			data-level-low="1000"       data-text-low="LOW"           	data-state-low="warning"
+			data-level-medium="2000"    data-text-medium="MODERATE"     data-state-medium="normal"
+			data-level-high="5000"      data-text-high="OPTIMAL"        data-state-high="normal"
+			data-level-critical="7000"	data-text-critical="PEAK"		data-state-critical="normal"
+			data-text-normal="NORMAL">	
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Solar Generation</div>
+				<div class="hmi-badge">NORMAL</div>
+			</div>
+            <div class="hmi-value-grid">
+                <div class="hmi-value-box">
+                    <div class="hmi-box-data">
+                        <span class="hmi-value">--</span>
+                    </div>
+                </div>
+            </div>
+		</div>
+
+		<footer class="hmi-footer-version">
+			<span>HMITiles for Domoticz</span>
+		</footer>
+
+    </main>
+</body>
+</html>

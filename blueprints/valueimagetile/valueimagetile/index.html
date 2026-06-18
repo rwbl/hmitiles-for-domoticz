@@ -9,97 +9,6 @@
 	
 	<!-- Link backward to the HMI tile engine -->
     <script src="../hmitiles.js" defer></script>
-
-    <script>
-		// Target device tracking maps
-		const POWER_FROM_SOLAR_IDX = 5;
-
-		/**
-		 * Hook function called directly by hmitiles.js whenever a tile is processed
-		 */
-		window.onHMITileProcess = function(ignoredTileParam, device, rawValue, displayStatus) {
-			// Only run this custom code if we are processing our specific Solar tile
-			if (parseInt(device.idx, 10) !== POWER_FROM_SOLAR_IDX) {
-				return false; // Let hmitiles.js handle all other tiles normally
-			}
-
-			// Get the idx given by the gloabl loop as going over all domoticz devices
-			const currentIdx = parseInt(device.idx, 10);
-			// console.log("onHMITileProcess idx=", currentIdx);
-
-			// -----------------------------------------------------------------
-			// CASE 1: PROCESSING THE TEMPERATURE DATA ARRAY (IDX 22)
-			// -----------------------------------------------------------------
-			if (currentIdx === POWER_FROM_SOLAR_IDX) {
-				// 1. Map our thresholds
-				const normal = 2000;
-				const warning = 1000;
-				const alarm = 500;
-
-				// 2. Parse out our current power value
-				const dataValue = parseInt(device.Data, 10) || 0;
-				
-				// 3. Find our elements inside this specific tile card
-				const valueDisplay = document.querySelector('.hmi-value-display');
-				const badge = document.querySelector('.hmi-badge');
-				const iconImg = document.querySelector('.hmi-icon-wrapper img');
-				
-				let alarmState = "normal";
-				let badgeText = "NORMAL";
-				let iconSrc = "/images/Alert48_0.png"; // Use standard on-state icon if generating high power
-
-				// 4. Threshold Logic
-				if (dataValue >= normal) {
-					alarmState = "normal";
-					badgeText = "NORMAL";
-					iconSrc = "/images/Alert48_0.png";	// Alert icon green
-				} else if (dataValue >= warning) {
-					alarmState = "warning";
-					badgeText = "WARNING";
-					iconSrc = "/images/Alert48_2.png";	// Alert icon yellow
-				} else {
-					alarmState = "alarm";
-					badgeText = "ALARM";
-					iconSrc = "/images/Alert48_4.png";	// Alert icon red
-				}
-
-				// 5. Update UI Safely
-				if (valueDisplay) {
-					valueDisplay.textContent = `${dataValue} W`;
-				}
-
-				if (badge) {
-					badge.textContent = badgeText;
-					badge.className = `hmi-badge status-${alarmState}`;
-				}
-
-				if (iconImg) {
-					iconImg.src = iconSrc;
-					iconImg.alt = badgeText;
-				}
-
-				// Apply a dynamic data attribute to the card for styling flexibility
-				const valueCard = document.querySelector(`[data-device-idx="${POWER_FROM_SOLAR_IDX}"]`);
-				if (valueCard) {
-					valueCard.setAttribute("data-alarm", alarmState);
-				}
-
-				console.log(new Date().toLocaleString(), "valueimagetile updated", dataValue);
-				// console.log(new Date().toLocaleTimeString()); 	// Output: "2:34:15 PM"
-				// console.log(new Date().toLocaleDateString()); 	// Output: "6/3/2026"
-				// console.log(new Date().toISOString());			// Output: "2026-06-03T12:34:15.000Z"
-
-				return false; // Returns false so hmitiles.js can populate text metrics standard values
-
-			}
-			
-		};
-
-		function goToDomoticzDashboard() {
-			window.location.href = "../index.html"; 
-		}
-	</script>
-
 </head>
 <body>
 
@@ -117,30 +26,52 @@
 	</header>
 
     <!-- Master outer panel containing your grid -->
+	<!-- Set the device idx according devices list -->
     <main class="hmi-panel">
         
         <!-- 
-			TILE 1 ROW 1 COL 1: CUSTOM TILE
-			Set the device idx according devices list
-			IDX 5
+			TILE 1 ROW 1 COL 1
+			ALERT IMAGE 48x48px + VALUE DATA
+			Value also shown in the badge.
+			Uses Domoticz images Alert48_0.png located in the www/images folder.
 		-->
 		<div class="hmi-pack-card" data-type="icon-tile" data-device-idx="5">
 			<!-- Header block holding title and status token -->
 			<div class="hmi-card-header">
-				<div class="hmi-pack-label">Value Image</div>
-				<div class="hmi-badge">NORMAL</div>
+				<div class="hmi-pack-label">Value Image (no badge)</div>
+				<div class="hmi-badge" style="display: none;"></div>
 			</div>
 
-			<!-- System Status Icon Row -->
-			<div class="hmi-icon-wrapper" style="display: flex; justify-content: flex-end; padding: 4px 12px 0 0;">
+			<!-- Icon Status Row -->
+			<div class="hmi-icon-wrapper">
 				<img src="/images/Alert48_0.png" alt="Status" width="48" height="48">
 			</div>
 						
-			<!-- Metric Data Value Area -->
-			<div class="hmi-value-grid" style="display: flex; justify-content: flex-end; padding: 4px 12px 12px 0;">				
-				<div class="hmi-value-box" style="text-align: right;">
-					<div class="hmi-value-display" style="font-size: 20px; font-weight: bold; color: #333333;">--</div>
-				</div>
+			<!-- Data Value -->
+            <div class="hmi-value-grid">
+                <div class="hmi-value-box">
+                    <div class="hmi-box-data">
+                        <span class="hmi-value">--</span>
+                    </div>
+                </div>
+            </div>
+		</div>
+
+        <!-- 
+			TILE 2 ROW 1 COL 2
+			ALERT IMAGE 48x48px + VALUE BADGE
+			Uses Domoticz images Alert48_4.png located in the www/images folder.
+		-->
+		<div class="hmi-pack-card" data-type="icon-tile" data-device-idx="5">
+			<!-- Header block holding title and status token -->
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Value Image (value in badge)</div>
+				<div class="hmi-badge">NORMAL</div>
+			</div>
+
+			<!-- Icon Status Row -->
+			<div class="hmi-icon-wrapper">
+				<img src="/images/Alert48_4.png" alt="Status" width="48" height="48">
 			</div>
 		</div>
 

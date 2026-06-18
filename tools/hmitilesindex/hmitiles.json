@@ -3,10 +3,10 @@
     {
       "category": "Blueprint Tiles",
       "pages": [
-        { "title": "4-Switch Panel", "file": "4switchpaneltile/index.html" },
         { "title": "Alarm", "file": "alarmtile/index.html" },
         { "title": "Emergency Stop Button", "file": "emergencystopbuttontile/index.html" },
-        { "title": "Indicator Matrix", "file": "indicatormatrixtile/index.html" },
+        { "title": "Four Switch Panel", "file": "fourswitchpaneltile/index.html" },
+        { "title": "Indicator Panel", "file": "indicatorpaneltile/index.html" },
         { "title": "Indoor Air Quality", "file": "indoorairqualitytile/index.html" },
         { "title": "Input", "file": "inputtile/index.html" },
         { "title": "Log Monitor", "file": "logmonitortile/index.html" },
@@ -14,10 +14,15 @@
         { "title": "Selector-Switch", "file": "selectorswitchtile/index.html" },
         { "title": "Setpoint ProcessValue", "file": "setpointprocessvaluetile/index.html" },
         { "title": "Thermostat", "file": "thermostattile/index.html" },
-        { "title": "Value", "file": "valuetile/index.html" },
         { "title": "Value Image", "file": "valueimagetile/index.html" },
-        { "title": "Wind", "file": "windtile/index.html" },
-        { "title": "Workbench", "file": "hmitilesworkbench/index.html" }
+        { "title": "Value", "file": "valuetile/index.html" },
+        { "title": "Wind", "file": "windtile/index.html" }
+      ]
+    },
+    {
+      "category": "Workbench",
+      "pages": [
+        { "title": "Workbench", "file": "workbench/index.html" }
       ]
     },
     {

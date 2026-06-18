@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+	File: index.html
+	Project: HMITiles-for-Domoticz
+	Brief: Display solar data in industry standard tiles using dynamic data attributes.
+	Date: 2026-06-04
+	Author: Robert W.B. Linn (c) 2026 MIT
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <title>Solar Info Dashboard</title>
+
+	<!-- Includes located in the parent folder -->
+	<link rel="stylesheet" href="../hmitiles.css">
+	<script src="../hmitiles.js" defer></script>
+</head>
+<body>
+
+	<!-- Inside the header block of index.html -->
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
+				<h2>Solar Info Dashboard</h2>
+			</div>
+			
+			<!-- Link navigation button to flip pages -->
+			<button class="hmi-exit-btn" onclick="window.location.href='trends.html'">📈 View Trends</button>
+		</div>
+	</header>
+
+    <!-- Master outer panel containing your grid -->
+	<!-- Devices onclick argument showing Domoticz Log page -->
+    <main class="hmi-panel">
+        
+        <!-- ==================== ROW 1: POWER PRODUCTION & CONSUMPTION ==================== -->
+        
+		<!-- ROW 1 COL 1: Solar Production (IDX 5) -->
+        <div class="hmi-pack-card hmi-clickable-card" data-device-idx="5" data-alarm="normal">
+            <div class="hmi-card-header">
+                <div class="hmi-pack-label">Production</div>
+                <div class="hmi-badge">NORMAL</div>
+            </div>
+            <div class="hmi-value-grid">
+                <div class="hmi-value-box">
+                    <div class="hmi-box-data">
+                        <span class="hmi-value">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+		<!-- ROW 1 COL 2: Grid Export (IDX 8) -->
+        <div class="hmi-pack-card hmi-clickable-card" data-device-idx="8">
+            <div class="hmi-card-header">
+                <div class="hmi-pack-label">Export</div>
+                <div class="hmi-badge">EXPORTING</div>
+            </div>
+            <div class="hmi-value-grid">
+                <div class="hmi-value-box">
+                    <div class="hmi-box-data">
+                        <span class="hmi-value">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+		<!-- ROW 1 COL 3: Grid Import (IDX 7) -->
+        <div class="hmi-pack-card hmi-clickable-card" data-device-idx="7">
+            <div class="hmi-card-header">
+                <div class="hmi-pack-label">Import</div>
+                <div class="hmi-badge">IMPORTING</div>
+            </div>
+            <div class="hmi-value-grid">
+                <div class="hmi-value-box">
+                    <div class="hmi-box-data">
+                        <span class="hmi-value">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+		<!-- ROW 1 COL 4: House Consumption (IDX 9) -->
+        <div class="hmi-pack-card hmi-clickable-card" data-device-idx="9">
+            <div class="hmi-card-header">
+                <div class="hmi-pack-label">Consumption</div>
+                <div class="hmi-badge">RUNNING</div>
+            </div>
+            <div class="hmi-value-grid">
+                <div class="hmi-value-box">
+                    <div class="hmi-box-data">
+                        <span class="hmi-value">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== ROW 2: BATTERY STORAGE MANAGEMENT ==================== -->
+
+		<!-- ROW 2 COL 1: Battery Charging (IDX 10) -->
+        <div class="hmi-pack-card hmi-clickable-card" data-device-idx="10">
+            <div class="hmi-card-header">
+                <div class="hmi-pack-label">BAT Charging</div>
+                <div class="hmi-badge">CHARGING</div>
+            </div>
+            <div class="hmi-value-grid">
+                <div class="hmi-value-box">
+                    <div class="hmi-box-data">
+                        <span class="hmi-value">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+		<!-- ROW 2 COL 2: Battery Discharging (IDX 11) -->
+        <div class="hmi-pack-card hmi-clickable-card" data-device-idx="11">
+            <div class="hmi-card-header">
+                <div class="hmi-pack-label">BAT Discharging</div>
+                <div class="hmi-badge">DISCHARGING</div>
+            </div>
+            <div class="hmi-value-grid">
+                <div class="hmi-value-box">
+                    <div class="hmi-box-data">
+                        <span class="hmi-value">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+		<!-- ROW 2 COL 3: Battery State of Charge (IDX 12) -->
+        <div class="hmi-pack-card hmi-clickable-card" data-device-idx="12" data-alarm="normal" data-warn-low="20" data-crit-low="10">
+            <div class="hmi-card-header">
+                <div class="hmi-pack-label">BAT State</div>
+                <div class="hmi-badge">NORMAL</div>
+            </div>
+			<div class="hmi-value-grid">
+				<div class="hmi-value-box">
+					<div class="hmi-value">--</div>
+				</div>
+			</div>
+		</div>
+	
+		<!-- ROW 2 COL 4: Last Update (IDX 13) -->
+		<div class="hmi-pack-card" data-device-idx="13">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Last Update</div>
+			</div>
+            <div class="hmi-value-grid">
+                <div class="hmi-value-box">
+                    <div class="hmi-box-data">
+                        <span class="hmi-value">--</span>
+                    </div>
+                </div>
+            </div>
+		</div>
+
+        <!-- ==================== ROW 3: SYSTEM ACTIONS ==================== -->
+
+		<!-- ROW 3 COL 1: Manual Data Request Push On Button (IDX 6) -->
+		<div class="hmi-pack-card" data-type="switch" data-device-idx="6" data-action="On" data-on-text="PUSH" data-off-text="PUSH">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Refresh</div>
+				<div class="hmi-badge hmi-clickable-badge">PUSH</div>
+			</div>
+		</div>
+
+        <!-- SPARE BAYS -->
+        <div class="hmi-pack-card hmi-card-placeholder">
+            <div class="hmi-card-header">
+                <div class="hmi-pack-label">[ SPARE BAY 10 ]</div>
+            </div>
+        </div>
+        <div class="hmi-pack-card hmi-card-placeholder">
+            <div class="hmi-card-header">
+                <div class="hmi-pack-label">[ SPARE BAY 11 ]</div>
+            </div>
+        </div>
+        <div class="hmi-pack-card hmi-card-placeholder">
+            <div class="hmi-card-header">
+                <div class="hmi-pack-label">[ SPARE BAY 12 ]</div>
+            </div>
+        </div>
+
+		<footer class="hmi-footer-version">
+			<span>HMITiles for Domoticz</span>
+		</footer>
+
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,12 @@
+﻿ModuleBookmarks0=
+ModuleBookmarks1=
+ModuleBookmarks2=
+ModuleBreakpoints0=
+ModuleBreakpoints1=
+ModuleBreakpoints2=
+ModuleClosedNodes0=
+ModuleClosedNodes1=
+ModuleClosedNodes2=
+NavigationStack=DomoticzWebSocketHandler,WebSocket_Disconnected,31,0,Main,AppStart,70,6,Main,Process_Globals,43,1,DomoticzWebSocketHandler,WebSocket_Connected,19,0,DomoticzAPIHandler,Handle,98,4,DomoticzWebSocketHandler,BroadcastLiveChange,68,0,DomoticzAPIHandler,Class_Globals,6,0,DomoticzAPIHandler,Initialize,7,0,DomoticzAPIHandler,GenerateAllMockDevices,108,0
+SelectedBuild=0
+VisibleModules=1,2
