@@ -18,19 +18,22 @@
 </head>
 <body>
 
-	<!-- Inside the header block of index.html -->
-	<header class="hmi-header-container">
-		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-
-			<div style="display: flex; align-items: center; gap: 15px;">
-				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
-				<h2>Solar Info Dashboard</h2>
-			</div>
-			
-			<!-- Link navigation button to flip pages -->
-			<button class="hmi-exit-btn" onclick="window.location.href='trends.html'">📈 View Trends</button>
+	<!-- Inside the header block of your sub-pages (e.g., alarmtile/index.html) -->
+	<header class="hmi-header-bar">
+		<!-- Left Sector Group -->
+		<div class="hmi-header-left-group">
+			<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+			<h2 class="hmi-header-title">
+				Solar Info Dashboard
+			</h2>
+		</div>
+		
+		<!-- Right Sector Group -->
+		<div class="hmi-header-right-group">
+			<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
 		</div>
 	</header>
+
 
     <!-- Master outer panel containing your grid -->
 	<!-- Devices onclick argument showing Domoticz Log page -->
@@ -165,14 +168,6 @@
 				<div class="hmi-pack-label">Refresh</div>
 				<div class="hmi-badge hmi-clickable-badge">PUSH</div>
 			</div>
-            <div class="hmi-value-grid">
-                <div class="hmi-value-box">
-                    <div class="hmi-box-data">
-						<!-- If data-text is "static", the script ignores data.status updates -->
-						<span class="hmi-value" data-text="static">Trigger</span>
-					</div>
-                </div>
-            </div>
 		</div>
 
         <!-- SPARE BAYS -->

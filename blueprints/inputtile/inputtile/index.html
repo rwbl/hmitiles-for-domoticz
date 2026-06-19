@@ -13,18 +13,18 @@
 <body>
 
 	<!-- Inside the header block of your sub-pages (e.g., alarmtile/index.html) -->
-	<header class="hmi-header-container">
-		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-			<!-- Left Side: Main Menu & Title -->
-			<div style="display: flex; align-items: center; gap: 15px;">
-				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
-				<h2>Input Tile</h2>
-			</div>
-			
-			<!-- Right Side: Clean dynamic navigation hook back to your master grid -->
-			<div>
-				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index ➔</button>
-			</div>
+	<header class="hmi-header-bar">
+		<!-- Left Sector Group -->
+		<div class="hmi-header-left-group">
+			<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+			<h2 class="hmi-header-title">
+				Input Tile
+			</h2>
+		</div>
+		
+		<!-- Right Sector Group -->
+		<div class="hmi-header-right-group">
+			<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
 		</div>
 	</header>
 
@@ -36,13 +36,13 @@
 			TILE 1 ROW 1 COL 1
 			TEXT INPUT
 		-->
-		<div class="hmi-pack-card" data-device-idx="28" data-type="text-input">
+		<div class="hmi-pack-card" data-device-idx="28" data-type="input-tile">
 			<div class="hmi-card-header">
-				<div class="hmi-pack-label">System Alert (IDX 28)</div>
+				<div class="hmi-pack-label">Text Input</div>
 				<div class="hmi-badge">SYNCED</div>
 			</div>
 			<div class="hmi-value-grid">
-				<input type="text" class="hmi-text-field" placeholder="Enter text...">
+				<input type="text" class="hmi-input-field" placeholder="Enter text...">
 				<div class="hmi-action-row">
 					<button class="hmi-btn-cancel">Cancel</button>
 					<button class="hmi-btn-ok">OK</button>
@@ -54,13 +54,13 @@
 			TILE 1 ROW 1 COL 2
 			NUMBER INPUT with min = 0
 		-->
-		<div class="hmi-pack-card" data-device-idx="29" data-type="text-input">
+		<div class="hmi-pack-card" data-device-idx="29" data-type="input-tile">
 			<div class="hmi-card-header">
-				<div class="hmi-pack-label">Water Meter Reading (IDX 29)</div>
+				<div class="hmi-pack-label">Number Input</div>
 				<div class="hmi-badge">SYNCED</div>
 			</div>
-			<div class="hmi-value-grid" style="display: flex; flex-direction: column; padding: 12px; gap: 12px;">
-				<input type="number" class="hmi-text-field" placeholder="0" min="0">
+			<div class="hmi-value-grid">
+				<input type="number" class="hmi-input-field" placeholder="0" min="0">
 				<div class="hmi-action-row">
 					<button class="hmi-btn-cancel">Cancel</button>
 					<button class="hmi-btn-ok">OK</button>

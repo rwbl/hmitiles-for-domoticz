@@ -5,7 +5,6 @@
       "pages": [
         { "title": "Alarm", "file": "alarmtile/index.html" },
         { "title": "Emergency Stop Button", "file": "emergencystopbuttontile/index.html" },
-        { "title": "Four Switch Panel", "file": "fourswitchpaneltile/index.html" },
         { "title": "Indicator Panel", "file": "indicatorpaneltile/index.html" },
         { "title": "Indoor Air Quality", "file": "indoorairqualitytile/index.html" },
         { "title": "Input", "file": "inputtile/index.html" },
@@ -13,6 +12,7 @@
         { "title": "Progressbar", "file": "progressbartile/index.html" },
         { "title": "Selector-Switch", "file": "selectorswitchtile/index.html" },
         { "title": "Setpoint ProcessValue", "file": "setpointprocessvaluetile/index.html" },
+        { "title": "Switch Panel", "file": "switchpaneltile/index.html" },
         { "title": "Thermostat", "file": "thermostattile/index.html" },
         { "title": "Value Image", "file": "valueimagetile/index.html" },
         { "title": "Value", "file": "valuetile/index.html" },

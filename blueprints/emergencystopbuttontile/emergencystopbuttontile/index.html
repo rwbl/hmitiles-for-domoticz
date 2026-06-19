@@ -13,18 +13,18 @@
 <body>
 
 	<!-- Inside the header block of your sub-pages (e.g., alarmtile/index.html) -->
-	<header class="hmi-header-container">
-		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-			<!-- Left Side: Main Menu & Title -->
-			<div style="display: flex; align-items: center; gap: 15px;">
-				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
-				<h2>Emergency Stop</h2>
-			</div>
-			
-			<!-- Right Side: Navigation hook back to your master grid -->
-			<div>
-				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index ➔</button>
-			</div>
+	<header class="hmi-header-bar">
+		<!-- Left Sector Group -->
+		<div class="hmi-header-left-group">
+			<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+			<h2 class="hmi-header-title">
+				Emergency Stop
+			</h2>
+		</div>
+		
+		<!-- Right Sector Group -->
+		<div class="hmi-header-right-group">
+			<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
 		</div>
 	</header>
 
@@ -44,20 +44,23 @@
 			 data-action="On" data-on-text="TRIP" data-off-text="TRIP"
 			 data-alarm-type="up"
 			 data-level-info="0"     data-text-info="E-STOP"	data-state-info="critical"
-			 data-level-critical="1" data-text-critical="E-STOP" data-state-critical="critical">
+			 data-level-critical="1" data-text-critical="E-STOP" data-state-critical="critical"
+			 data-text-normal="E-STOP">
 			<div class="hmi-card-header">
-				<div class="hmi-pack-label">Switch/Switch/Push On Button (Safety)</div>
-				<!-- Reuses clickable badge framework -->
+				<div class="hmi-pack-label">Switch/Switch/Push On Button</div>
 				<div class="hmi-badge hmi-clickable-badge">E-STOP</div>
 			</div>
             <div class="hmi-value-grid">
                 <div class="hmi-value-box">
                     <div class="hmi-box-data">
-						<!-- No class to use the text defined --->
+						<!-- No class set to be able to use the text defined --->
                         <span class="">EMERGENCY STOP</span>
                     </div>
                 </div>
             </div>
+			<div class="hmi-last-update" data-text="static">
+				<span class="hmi-value-update" data-field="LastUpdate">YYYY-MM-DD hh:mm:ss</span>
+			</div>
 		</div>
 
 		<footer class="hmi-footer-version">

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Domoticz Log Monitor</title>
+    <title>Log Monitor Tile</title>
 
     <!-- Link backward one folder level to reuse shared global common styles -->
     <link rel="stylesheet" href="../hmitiles.css">
@@ -13,18 +13,18 @@
 <body>
 
 	<!-- Inside the header block of your sub-pages (e.g., alarmtile/index.html) -->
-	<header class="hmi-header-container">
-		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-			<!-- Left Side: Main Menu & Title -->
-			<div style="display: flex; align-items: center; gap: 15px;">
-				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
-				<h2>Domoticz Log Monitor</h2>
-			</div>
-			
-			<!-- Right Side: Clean dynamic navigation hook back to your master grid -->
-			<div>
-				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index ➔</button>
-			</div>
+	<header class="hmi-header-bar">
+		<!-- Left Sector Group -->
+		<div class="hmi-header-left-group">
+			<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+			<h2 class="hmi-header-title">
+				Log Monitor Tile
+			</h2>
+		</div>
+		
+		<!-- Right Sector Group -->
+		<div class="hmi-header-right-group">
+			<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
 		</div>
 	</header>
 
@@ -35,7 +35,7 @@
         
         <!-- 
 			TILE 1 ROW 1 COL 1
-			MONOSPACE SYSTEM LOG TILE WITH DYNAMIC CHANNEL SELECTOR NO FILTER
+			MONOSPACE SYSTEM LOG TILE WITH DYNAMIC CHANNEL SELECTOR, NO FILTER
 			NO IDX
 		-->
 		<div class="hmi-pack-card" data-type="log-monitor" data-log-limit="8" data-log-prefix="[HMI Dashboard]" data-log-filter="">
@@ -62,7 +62,7 @@
 
         <!-- 
 			TILE 2 ROW 1 COL 2
-			MONOSPACE SYSTEM LOG TILE WITH DYNAMIC CHANNEL SELECTOR AND FILTER
+			MONOSPACE SYSTEM LOG TILE WITH DYNAMIC CHANNEL SELECTOR, FILTER
 			NO IDX
 		-->
 		<div class="hmi-pack-card" data-type="log-monitor" data-log-limit="8" data-log-prefix="[HMI Dashboard]" data-log-filter="MYTEST">
@@ -127,7 +127,7 @@
 
 		<!-- 
 			TILE 5 ROW 2 COL 1
-			HMITILES COMPONENT: LOG MONITOR EXTENSION
+			LOG MONITOR FULL PAGE WIDTH
 			Added the .hmi-log-fullpage class to strip inputs and maximize vertical/horizontal viewports 
 		-->
 		<div class="hmi-pack-card hmi-log-fullpage" data-type="log-monitor" data-log-limit="8" data-log-prefix="[HMI Dashboard]" data-log-filter="">

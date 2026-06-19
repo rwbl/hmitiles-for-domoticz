@@ -12,18 +12,22 @@
 </head>
 <body>
 
-	<!-- Inside the header block of index.html -->
-	<header class="hmi-header-container">
-		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-			<div style="display: flex; align-items: center; gap: 15px;">
-				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
-				<h2>Value Image Tile</h2>
-			</div>
-			<div>
-				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index ➔</button>
-			</div>
+	<!-- Inside the header block of your sub-pages (e.g., alarmtile/index.html) -->
+	<header class="hmi-header-bar">
+		<!-- Left Sector Group -->
+		<div class="hmi-header-left-group">
+			<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+			<h2 class="hmi-header-title">
+				Value Image Tile
+			</h2>
+		</div>
+		
+		<!-- Right Sector Group -->
+		<div class="hmi-header-right-group">
+			<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
 		</div>
 	</header>
+
 
     <!-- Master outer panel containing your grid -->
 	<!-- Set the device idx according devices list -->

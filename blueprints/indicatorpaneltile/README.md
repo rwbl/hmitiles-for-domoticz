@@ -1,12 +1,17 @@
-# Domoticz Indicator Panel Data Flow and Status Guide
+# Indicator Panel Data Flow and Status Guide
 
-This guide explains how the High-Performance Grid Indicator Matrix retrieves real-time data from a live Domoticz backend server and maps it to the user interface.
+This guide explains how the High-Performance Grid Indicator Panel retrieves real-time data from a live Domoticz backend server and maps it to the user interface.
+
+---
+
+![Indicator Panel Tile](indicatorpaneltile.png)
 
 ---
 
 ## 1. The Structure of the Domoticz API Response
 
-When the script fires `param=getdevices&rid=41,42,43...`, Domoticz returns a single JSON payload. Inside that payload is a `result` array containing data objects for each requested device index. 
+When the script fires `param=getdevices&rid=41,42,43...`, Domoticz returns a single JSON payload. 
+Inside that payload is a `result` array containing data objects for each requested device index. 
 
 Here is what the raw data looks like for a real device:
 

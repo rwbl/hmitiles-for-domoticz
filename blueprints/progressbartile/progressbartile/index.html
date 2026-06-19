@@ -12,19 +12,19 @@
 </head>
 <body>
 
-	<!-- Inside the header block of index.html -->
-	<header class="hmi-header-container">
-		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-			<!-- Left Side: Main Menu & Title -->
-			<div style="display: flex; align-items: center; gap: 15px;">
-				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
-				<h2>Progress Bar Tile</h2>
-			</div>
-			
-			<!-- Right Side: Clean dynamic navigation hook back to your master grid -->
-			<div>
-				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index ➔</button>
-			</div>
+	<!-- Inside the header block of your sub-pages (e.g., alarmtile/index.html) -->
+	<header class="hmi-header-bar">
+		<!-- Left Sector Group -->
+		<div class="hmi-header-left-group">
+			<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+			<h2 class="hmi-header-title">
+				Progress Bar Tile
+			</h2>
+		</div>
+		
+		<!-- Right Sector Group -->
+		<div class="hmi-header-right-group">
+			<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
 		</div>
 	</header>
 
@@ -35,12 +35,31 @@
         
         <!-- 
 			TILE 1 ROW 1 COL 1
-			BATTERY SOC
+			BATTERY SOC WITH BADGE SHOWING VALUE
 			General/Percentage
 		-->
-		<div class="hmi-pack-card" data-device-idx="12" data-type="progress-bar-tile">
+		<div class="hmi-pack-card" data-device-idx="12" data-type="progressbar-tile">
 			<div class="hmi-card-header">
 				<div class="hmi-pack-label">BAT Charge State</div>
+				<div class="hmi-badge">NORMAL</div>
+			</div>
+
+			<div class="hmi-value-grid">
+				<div class="hmi-bar-container">
+					<div class="hmi-bar-fill"></div>
+				</div>
+			</div>
+
+		</div>
+
+        <!-- 
+			TILE 2 ROW 1 COL 2
+			SERVO POSITION 0-100% WITH BADGE SHOWING VALUE
+			Light/Switch,Switch,Dimmer
+		-->
+		<div class="hmi-pack-card" data-device-idx="20" data-type="progressbar-tile">
+			<div class="hmi-card-header">
+				<div class="hmi-pack-label">Servo Position</div>
 				<div class="hmi-badge">NORMAL</div>
 			</div>
 
@@ -52,14 +71,14 @@
 		</div>
 
         <!-- 
-			TILE 1 ROW 1 COL 1
-			SERVO POSITION 0-100%
+			TILE 3 ROW 1 COL 3
+			SERVO POSITION 0-100% WITH NO BADGE, VALUE FIELD
 			Light/Switch,Switch,Dimmer
 		-->
-		<div class="hmi-pack-card" data-device-idx="20" data-type="progress-bar-tile">
+		<div class="hmi-pack-card" data-device-idx="20" data-type="progressbar-tile">
 			<div class="hmi-card-header">
 				<div class="hmi-pack-label">Servo Position</div>
-				<div class="hmi-badge">NORMAL</div>
+				<div class="hmi-badge" style="display: none;"></div>
 			</div>
 
 			<div class="hmi-value-grid">
@@ -67,6 +86,14 @@
 					<div class="hmi-bar-fill"></div>
 				</div>
 			</div>
+
+            <div class="hmi-value-grid">
+                <div class="hmi-value-box">
+                    <div class="hmi-box-data">
+                        <span class="hmi-value">--</span>
+                    </div>
+                </div>
+            </div>
 		</div>
 
 		<footer class="hmi-footer-version">

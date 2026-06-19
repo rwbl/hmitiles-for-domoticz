@@ -9,59 +9,22 @@
 	
 	<!-- Link backward to the HMI tile engine -->
     <script src="../hmitiles.js" defer></script>
-
-	<script>
-		// =========================================================================
-		// LOCAL SCRIPT CONFIGURATION
-		// =========================================================================
-		// Device idx
-	    const BATTERY_SOC_IDX = 12;
-
-		// Gateway lock variable to prevent infinite loop refresh collisions
-		let lastPushedTime = "";
-
-		// =========================================================================
-		// CENTRAL ECOSYSTEM HOOK (Intercepts global hmitiles.js loop at top level)
-		// =========================================================================
-		window.onHMITileProcess = function(ignoredTileParam, device, rawValue, displayStatus) {
-			// Get the idx given by the gloabl loop as going over all domoticz devices
-			const currentIdx = parseInt(device.idx, 10);
-			// console.log("onHMITileProcess idx=", currentIdx);
-
-			// -----------------------------------------------------------------
-			// PROCESSING THE BATTER STATE OF CHARGE
-			// -----------------------------------------------------------------
-			if (currentIdx === BATTERY_SOC_IDX) {
-				const barCard = document.querySelector(`[data-device-idx="${BATTERY_SOC_IDX}"][data-type="progress-bar-tile"]`);
-				if (barCard) {
-					const barFill = barCard.querySelector('.hmi-bar-fill');
-					const valueField = barCard.querySelector('.hmi-value');
-					
-					// Extract percentage number natively from device payload string
-					const percentage = Math.min(Math.max(parseFloat(device.Data) || 0, 0), 100);
-					
-					if (barFill) barFill.style.width = `${percentage}%`;
-					if (valueField) valueField.textContent = `${Math.round(percentage)} %`;
-				}
-				return true; // Handled completely
-			}
-		}
-	</script>
-
 </head>
 <body>
 
-	<!-- Inside the header block of index.html -->
-	<header class="hmi-header-container">
-		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-			<div style="display: flex; align-items: center; gap: 15px;">
-				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
-				<h2>Setpoint ProcessValue Tile</h2>
-			</div>
-			<!-- Right Side: Clean dynamic navigation hook back to your master grid -->
-			<div>
-				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index ➔</button>
-			</div>
+	<!-- Inside the header block of your sub-pages (e.g., alarmtile/index.html) -->
+	<header class="hmi-header-bar">
+		<!-- Left Sector Group -->
+		<div class="hmi-header-left-group">
+			<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+			<h2 class="hmi-header-title">
+				Setpoint-ProcessValue Tile
+			</h2>
+		</div>
+		
+		<!-- Right Sector Group -->
+		<div class="hmi-header-right-group">
+			<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
 		</div>
 	</header>
 
@@ -74,10 +37,15 @@
 			IDX 2 = Type Setpoint, SubType Setpoint
 			IDX 22 = Type Temperature, SubType LaCrosse
 		-->
-		<div class="hmi-pack-card" data-device-idx="2" data-type="setpoint-stepper-tile" data-pv-idx="22" data-unit="°C" data-step="0.5">
+		<div class="hmi-pack-card" 
+			data-device-idx="2" 
+			data-type="setpoint-processvalue-tile" 
+			data-pv-idx="22" 
+			data-unit="°C" 
+			data-step="0.5">
 			<div class="hmi-card-header">
-				<div class="hmi-pack-label">Climate Zone Alpha</div>
-				<div class="hmi-badge">HEATING</div>
+				<div class="hmi-pack-label">Thermostat</div>
+				<div class="hmi-badge"></div>
 			</div>
 			
 			<div class="hmi-value-grid">

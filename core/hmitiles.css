@@ -75,6 +75,37 @@ hr.hmi-divider-short {
 }
 
 /* ==========================================================================
+   HEADER
+   ========================================================================== */
+
+/* Header Layout Structure */
+.hmi-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px 15px;
+    box-sizing: border-box;
+}
+
+/* Flex group wrapper for the left items */
+.hmi-header-left-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Dedicated micro-typography standard for page headers */
+.hmi-header-title {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    font-size: 22px;
+    font-weight: bold;
+    color: #000;
+}
+
+
+/* ==========================================================================
    FOOTER
    ========================================================================== */
 
@@ -143,11 +174,12 @@ hr.hmi-divider-short {
     color: #ffffff;
 }
 
-/* Top row inside a card (Label + Progress Bar + Status Badge) */
+/* Top row inside a card (Label + Status Badge) */
 .hmi-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+	width: 100%;
 }
 
 .hmi-pack-label {
@@ -200,7 +232,7 @@ hr.hmi-divider-short {
 
 /* Core metric display typography parameters (Balanced Industrial Scaling) */
 .hmi-value {
-    font-size: 16px;           /* FIXED: Scaled down from 20px/22px to a crisp, professional 16px */
+    font-size: 16px;           /* Scaled down from 20px/22px to a crisp, professional 16px */
     font-weight: bold;         /* Keeps bold numeric weight for instant scanning */
     letter-spacing: 0.5px;     /* Adds subtle space between characters for easy scanning */
     color: #222222;            
@@ -260,40 +292,6 @@ hr.hmi-divider-short {
 /* Active click execution feedback */
 .hmi-clickable-badge:active {
     background-color: #000000; /* Flat black */
-}
-
-/* ==========================================================================
-   BAR COMPONENTS (.hmi-bar)
-   ========================================================================== */
-
-/* Grayscale Progress Bar */
-.hmi-bar-container {
-    background-color: var(--hmi-bg-bar-track);
-    border: 1px solid var(--hmi-border-dark);
-    width: 100px;
-    height: 18px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.hmi-bar-fill {
-    background-color: var(--hmi-bg-card);
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 90%; /* Dynamically adjusted by JS */
-    z-index: 1;
-}
-
-.hmi-bar-text {
-    position: relative;
-    z-index: 2;
-    color: #ffffff; /* White text on dark bar track */
-    font-size: 11px;
-    font-weight: bold;
 }
 
 /* ==========================================================================
@@ -680,7 +678,7 @@ hr.hmi-divider-short {
    ========================================================================= */
 
 /* Main content grid area spacing */
-.hmi-pack-card[data-type="progress-bar-tile"] .hmi-value-grid {
+.hmi-pack-card[data-type="progressbar"] .hmi-value-grid {
     display: flex;
     flex-direction: column;
     padding: 12px;
@@ -690,7 +688,7 @@ hr.hmi-divider-short {
 /* Outer boundary track element */
 .hmi-bar-container {
     width: 100%;
-    height: 12px;
+    height: 18px;
     background-color: #eeeeee; /* Light grey tracks keep interface background quiet */
     border: 1px solid #cccccc;
     border-radius: 4px;
@@ -705,6 +703,14 @@ hr.hmi-divider-short {
     height: 100%;
     background-color: #777777; /* Neutral, high-performance gray process indicator */
     transition: width 0.4s ease-in-out; /* Smooth slide animations on data data refreshes */
+}
+
+.hmi-bar-text {
+    position: relative;
+    z-index: 2;
+    color: #ffffff; 				/* White text on dark bar track */
+    font-size: 11px;
+    font-weight: bold;
 }
 
 /* =========================================================================

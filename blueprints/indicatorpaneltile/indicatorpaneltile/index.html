@@ -2,31 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Indicator Matrix</title>
+    <title>Indoor Air Quality Tile</title>
 
     <!-- Link backward one folder level to reuse shared global common styles -->
     <link rel="stylesheet" href="../hmitiles.css">
 	
-	<!-- Link backward to the HMI tile engine -->
+	<!-- Link backward one folder level to the HMI tile engine -->
     <script src="../hmitiles.js" defer></script>
 </head>
 <body>
 
 	<!-- Inside the header block of your sub-pages (e.g., alarmtile/index.html) -->
-	<header class="hmi-header-container">
-		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-			<!-- Left Side: Main Menu & Title -->
-			<div style="display: flex; align-items: center; gap: 15px;">
-				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">◀ Main Menu</button>
-				<h2>Indicator Matrix</h2>
-			</div>
-			
-			<!-- Right Side: Clean dynamic navigation hook back to your master grid -->
-			<div>
-				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index ➔</button>
-			</div>
+	<header class="hmi-header-bar">
+		<!-- Left Sector Group -->
+		<div class="hmi-header-left-group">
+			<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+			<h2 class="hmi-header-title">
+				Indoor Air Quality Tile
+			</h2>
+		</div>
+		
+		<!-- Right Sector Group -->
+		<div class="hmi-header-right-group">
+			<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
 		</div>
 	</header>
+
 
     <!-- Master outer panel containing your grid -->
 	<!-- Set the device idx according devices list -->
@@ -34,25 +35,27 @@
         
         <!-- 
 			TILE 1 ROW 1 COL 1
-			3X3 HIGH-PERFORMANCE STATUS INDICATOR MATRIX
-			IDX must CSV string
+			AIR QUALITY / CO2 AUTOMATIC ALARM TILE
+			MULTI-TIER ALARM TILE BLUEPRINT (5-LEVEL GENERIC SEVERITY MATRIX)
 		-->
-		<div class="hmi-pack-card" data-type="indicator-matrix" data-device-idx="41,42,43,44,45,46,47,48,49">
+		<div class="hmi-pack-card" data-device-idx="31" 
+			data-alarm-type="up"
+			data-level-info="0"        data-text-info="EXCELLENT"	data-state-info="normal"
+			data-level-low="700"       data-text-low="GOOD"         data-state-low="normal"
+			data-level-medium="900"    data-text-medium="FAIR"      data-state-medium="normal"
+			data-level-high="1100"     data-text-high="MEDIOCRE"    data-state-high="warning"
+			data-level-critical="1600" data-text-critical="BAD"     data-state-critical="critical"
+			data-text-normal="NORMAL">
 			<div class="hmi-card-header">
-				<div class="hmi-pack-label">Status IND</div>
+				<div class="hmi-pack-label">Air Quality Monitor</div>
+				<div class="hmi-badge hmi-clickable-badge">EXCELLENT</div>
 			</div>
-			
-			<!-- Clean, rigid 3x3 layout block frame -->
-			<div class="hmi-matrix-grid">
-				<div class="hmi-matrix-cell" data-cell-index="0">P1</div>
-				<div class="hmi-matrix-cell" data-cell-index="1">P2</div>
-				<div class="hmi-matrix-cell" data-cell-index="2">P3</div>
-				<div class="hmi-matrix-cell" data-cell-index="3">F4</div>
-				<div class="hmi-matrix-cell" data-cell-index="4">F5</div>
-				<div class="hmi-matrix-cell" data-cell-index="5">F6</div>
-				<div class="hmi-matrix-cell" data-cell-index="6">F7</div>
-				<div class="hmi-matrix-cell" data-cell-index="7">F8</div>
-				<div class="hmi-matrix-cell" data-cell-index="8">F9</div>
+			<div class="hmi-value-grid">
+				<div class="hmi-value-box">
+					<div class="hmi-box-data">
+						<span class="hmi-value">--</span>
+					</div>
+				</div>
 			</div>
 		</div>
 
