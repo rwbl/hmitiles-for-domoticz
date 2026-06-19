@@ -6,9 +6,9 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 
 # Changelog
 
-## 20260616 - BETA
+## 20260619 - BETA
 #### Added
-- **4-Switches-Panel** (`blueprints`): 4 switches panel (vertical aligned).
+- **SwitchesPanel** (`blueprints`): Define a panel with N switches (vertical aligned).
 - **Alarm** (`blueprints`): Alarm concept with 5 Tier Slots: `critical`, `high`, `medium`, `low`, `info`, and `normal` (for the baseline fallback text).
 - **Emergency Stop Button** (`blueprints`): E-Stop (Emergency Stop) using existing Push On Button architecture.
 - **HMITiles Workbench** (`blueprints`): Added example number input with min 0.
