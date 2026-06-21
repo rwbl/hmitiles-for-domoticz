@@ -6,11 +6,11 @@ This blueprint demonstrates how to build an interactive dual-variable control ti
 
 ## Screenshots
 
-![Setpoint PV Tile](setpoint-pv-tile.png)
+![Setpoint ProcessValue Tile](setpointprocessvaluetile.png)
 
 ---
 
-## High-Performance HMI Design Rules (ISA-101)
+## High-Performance HMI Design Rules
 * **Co-Located Visual Analytics**: Operators can instantly verify if a setpoint modification drives the physical hardware process state change effectively without switching between separate text logs or sensor grid dashboards.
 * **Typographic Contrast Hierarchy**: The critical numerical metrics remain bold and high-contrast, while secondary static operational field markers (`Actual (PV):`) use a muted charcoal layout presentation to minimize screen fatigue.
 
@@ -19,36 +19,47 @@ This blueprint demonstrates how to build an interactive dual-variable control ti
 ## Step 1: Interface Component Layout Markup
 
 Add this responsive industrial component frame into your custom layout dashboard page file:
-
+The IDX values are placeholder.
 ```html
-<div class="hmi-pack-card" data-device-idx="1" data-type="setpoint-stepper-tile" data-pv-idx="2" data-unit="°C" data-step="0.5">
-    <div class="hmi-card-header">
-        <div class="hmi-pack-label">Climate Zone Alpha</div>
-        <div class="hmi-badge">HEATING</div>
-    </div>
-    
-    <div class="hmi-value-grid">
-        <!-- ROW 1: Interactive Target Setpoint Stepper Control (SP) -->
-        <div class="hmi-stepper-row">
-            <button class="hmi-btn-step hmi-btn-down">-</button>
-            <div class="hmi-sp-value hmi-value" style="font-size: 16px; width: 80px; text-align: center;">--</div>
-            <button class="hmi-btn-step hmi-btn-up">+</button>
-        </div>
-        
-        <!-- ROW 2: Read-Only Actual Hardware Sensor Feedback (PV) -->
-        <div class="hmi-pv-row">
-            <span class="hmi-column-label" style="margin-bottom: 0;">Actual (PV):</span>
-            <div class="hmi-value-box" style="width: auto; min-width: 80px;">
-                <div class="hmi-pv-value hmi-value" style="font-size: 16px;">--</div>
-            </div>
-        </div>
-    </div>
+<!-- 
+	TILE N ROW N COL N
+	THERMOSTAT (SP) + TEMPERATURE (PV)
+	IDX 2 = Type Setpoint, SubType Setpoint
+	IDX 22 = Type Temperature, SubType LaCrosse
+-->
+<div class="hmi-pack-card" 
+	data-device-idx="2" 
+	data-type="setpoint-processvalue-tile" 
+	data-pv-idx="22" 
+	data-unit="°C" 
+	data-step="0.5">
+	<div class="hmi-card-header">
+		<div class="hmi-pack-label">Thermostat</div>
+		<div class="hmi-badge"></div>
+	</div>
+	
+	<div class="hmi-value-grid">
+		<!-- STEP 1 ROW: Interactive Target Setpoint Stepper (SP) -->
+		<div class="hmi-stepper-row">
+			<button class="hmi-btn-step hmi-btn-down">-</button>
+			<div class="hmi-sp-value hmi-value" style="font-size: 16px; width: 60px; text-align: center;">--</div>
+			<button class="hmi-btn-step hmi-btn-up">+</button>
+		</div>
+		
+		<!-- STEP 2 ROW: Read-Only Actual Feedback Tracker (PV) -->
+		<div class="hmi-pv-row">
+			<span class="hmi-column-label" style="margin-bottom: 0;">Actual (PV):</span>
+			<div class="hmi-value-box" style="width: auto; min-width: 80px;">
+				<div class="hmi-pv-value hmi-value" style="font-size: 16px;">--</div>
+			</div>
+		</div>
+	</div>
 </div>
 ```
 
 ---
 
-## Step 2: Global Stylesheet Definition (`hmitiles.css`)
+See latest in core/hmitiles.css.
 
 Ensure these style class blocks are appended into your global framework CSS file to eliminate layout hardcoding dependencies:
 
