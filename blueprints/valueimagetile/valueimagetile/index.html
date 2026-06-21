@@ -35,8 +35,8 @@
         
         <!-- 
 			TILE 1 ROW 1 COL 1
-			ALERT IMAGE 48x48px + VALUE DATA
-			Value also shown in the badge.
+			ALERT IMAGE 48x48px + NO BADGE + VALUE FIELD
+			Icon info state (gray), value in value field.
 			Uses Domoticz images Alert48_0.png located in the www/images folder.
 		-->
 		<div class="hmi-pack-card" data-type="icon-tile" data-device-idx="5">
@@ -64,13 +64,14 @@
         <!-- 
 			TILE 2 ROW 1 COL 2
 			ALERT IMAGE 48x48px + VALUE BADGE
+			Icon alert state (red), value in badge.
 			Uses Domoticz images Alert48_4.png located in the www/images folder.
 		-->
 		<div class="hmi-pack-card" data-type="icon-tile" data-device-idx="5">
 			<!-- Header block holding title and status token -->
 			<div class="hmi-card-header">
 				<div class="hmi-pack-label">Value Image (value in badge)</div>
-				<div class="hmi-badge">NORMAL</div>
+				<div class="hmi-badge">ALERT</div>
 			</div>
 
 			<!-- Icon Status Row -->
