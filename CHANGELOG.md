@@ -37,8 +37,10 @@ This release eliminates inline script blocks from layout files, centralizes even
 * **Zero Script Footprint**: Reworked all isolated blueprint layout templates to match the new v2.0 CSS tokens and `data-type` properties. All layout blueprints are now purely standard HTML text snippets with zero JavaScript code bloat.
 
 **Previews**
-![Workbench (selection only)](workbench-beta.png)
+![Workbench](workbench-beta.png)
+(selection only)
 ![Solar-Dashboard](solardashboard-beta.png)
+(real data)
 
 ## 20260619 (1.5.0)
 #### Added
