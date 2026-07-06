@@ -39,6 +39,9 @@ This release eliminates inline script blocks from layout files, centralizes even
 **Previews**
 ![Workbench](workbench-beta.png)
 (selection only)
+
+---
+
 ![Solar-Dashboard](solardashboard-beta.png)
 (real data)
 
