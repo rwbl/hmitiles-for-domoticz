@@ -4,9 +4,43 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 
 ---
 
-# Changelog
+## 20260706 - (2.0.0-BETA)
+Major framework rewrite. Work in progress. Pre-release staging phase.
 
-## 20260619 - BETA
+### Summary
+Engine completely re-engineered from the ground up to achieve a purely declarative, decoupled architecture.  
+This release eliminates inline script blocks from layout files, centralizes event lifecycle boundaries, updates structural typography for high-density industrial environments, and expands HTML-driven template configurations.
+
+### Architectural Breakdown
+
+#### 1. Core JavaScript Engine Overhaul
+* **Declarative Routing**: Completely migrated tile rendering logic to an HTML-driven `data-type` property loop. The core loop now automatically initializes layout templates, eliminating the previous tight coupling between raw Domoticz properties and UI element nodes.
+* **Global Event Delegation**: Completely isolated interactive event boundaries into an independent control-binding pipeline (`bindControls`). All control gestures (`click`, `change`, `keypress`, `input`) are attached exactly once onto the permanent document root context, ensuring interaction tracks are completely immune to network synchronization redraws.
+* **Unified Pre-Parser Layer**: Integrated a centralized hardware utility dictionary to process single-value devices, evaluate array-shifted metrics matrices generically, and automatically handle inconsistent Domoticz casing rules or query variables safely behind the scenes.
+* **Natively Integrated Sparklines**: Shifted the historical 24-hour rolling trend engine directly into the core code. Charts are now initialized cleanly via `data-type="chart"`, using a generic object-key extractor to calculate and draw responsive vectors with zero layout overhead.
+* **Expanded Core Component Catalog**: Native support fully established for `info`, `value`, `input`, `switch`, `selector`, `dimmer`, `slider`, `progressbar`, `setpoint`, `setpointprocessvalue`, and `chart` card modules.
+
+#### 2. Core Stylesheet & Typography Refinements
+* **Refactored Box Layouts**: Migrated all old structural container components to the standardized `.hmi-pack-tile` element schema. 
+* **Industrial Color Calibration**: Updated background gradients, button fills, and borders to improve compliance with high-performance control deck industry standards.
+* **Local Offline Fonts**: Integrated a crisp, high-contrast, squared typography layer using locally-hosted assets. The entire UI is now 100% self-contained and immune to internet outages.
+
+#### 3. Simplified Threshold & Alarm Engine
+* **Declarative Threat Matrix**: Wiped out complex conditional checking scripts by introducing two lightweight HTML configuration mappings: `data-state-map` and `data-alarm-map`. 
+* **Universal Severity Evaluator**: Multi-tier alarm state escalations (upward spikes or downward drops, e.g., low battery levels) are handled uniformly inside a single engine tracking pass.
+
+#### 4. High-Density Multi-Column Value Grid
+* **Unified Sizing Framework**: Merged standalone value tiles into a multi-column layout tracking grid matrix, allowing a single card shell to display up to 7 telemetry data columns dynamically.
+* **Dynamic Grid Balance**: Introduced automatic spatial cushioning and fallback placeholder properties to prevent visual layout shifts during data ticks.
+
+#### 5. Declarative Blueprints Library
+* **Zero Script Footprint**: Reworked all isolated blueprint layout templates to match the new v2.0 CSS tokens and `data-type` properties. All layout blueprints are now purely standard HTML text snippets with zero JavaScript code bloat.
+
+**Preview (selective from the workbench)**
+![Workbench](workbench-beta.png)
+![Solar-Dashboard](solardashboard-beta.png)
+
+## 20260619 (1.5.0)
 #### Added
 - **SwitchesPanel** (`blueprints`): Define a panel with N switches (vertical aligned).
 - **Alarm** (`blueprints`): Alarm concept with 5 Tier Slots: `critical`, `high`, `medium`, `low`, `info`, and `normal` (for the baseline fallback text).
@@ -29,7 +63,7 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 - **Folder blueprints**: Blueprint sub-folders naming without prefix numbering for easier maintenance.
 - **HMITiles Workbench** (`blueprints`): Reworked the index simulator template with matched virtual device IDXs and cross-referenced multi-variable datasets to support full offline rendering tests.
 
-## 20260604
+## 20260604 (1.0.0)
 #### Added
 - **Initial Public Release**: Official launch of the HMITiles Custom Pages Framework for Domoticz. Published the documentation and architecture announcement thread on the [Domoticz Community Forum](https://domoticz.com).
 
