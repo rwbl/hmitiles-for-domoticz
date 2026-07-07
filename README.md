@@ -1,7 +1,7 @@
 # HMITiles Custom Pages Framework for Domoticz
 
 > [!WARNING]
-> **MAJOR UPDATE COMING SOON**: We are currently finalizing **v2.0.0-BETA**, a massive, ground-up rewrite introducing a purely declarative, script-free HTML architecture. Check out the latest breaking changes and migration details in the [CHANGELOG.md](./CHANGELOG.md).
+> **MAJOR UPDATE COMING SOON**: Currently finalizing **v2.0.0-BETA**, a massive, ground-up rewrite introducing a purely declarative, script-free HTML architecture. Check out the latest breaking changes and migration details in the [CHANGELOG.md](./CHANGELOG.md).
 
 **HMITiles for Domoticz** is a lightweight, decoupled HTML/CSS/JS framework designed to visualize and control your smart home devices using structured, high-density tiles.
 
