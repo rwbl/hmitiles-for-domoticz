@@ -1,0 +1,187 @@
+/* =========================================================================
+	HMITILES v2.0 DARK THEME - PRODUCTION MANUAL SKIN
+   ========================================================================= */
+
+.theme-dark {
+    /* Main Background & Card Canvas */
+    --hmi-bg-main: #1a1d24 !important;
+    --hmi-bg-tile: #23262e !important;
+    --hmi-border-tile: #2d313c !important;
+}
+
+/* =========================================================================
+	MICRO-TYPOGRAPHY GLOBAL HEADERS MATRIX
+	Forces all native text headings to pure high-contrast white instantly!
+   ========================================================================= */
+   
+.theme-dark h1,
+.theme-dark h2,
+.theme-dark h3,
+.theme-dark h4,
+.theme-dark h5,
+.theme-dark h6,
+.theme-dark .h1, /* Includes class-based utility overrides for safety */
+.theme-dark .h2,
+.theme-dark .h3 {
+    color: #ffffff !important;
+}
+
+/* =========================================================================
+	PRIMARY DATA VALUES (FORCES NUMBERS & STRING STATES TO PURE WHITE)
+   ========================================================================= */
+
+.theme-dark .hmi-multivalue-col .hmi-multi-number,
+.theme-dark .hmi-multivalue-row .hmi-multi-number,
+.theme-dark .hmi-multi-number,
+.theme-dark .hmi-value,
+.theme-dark .hmi-box-data {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+/* =========================================================================
+	SYSTEM METRIC LABELS (FORCES STATE & HEADERS TO SILVER)
+   ========================================================================= */
+
+.theme-dark .hmi-multivalue-col .hmi-multi-header,
+.theme-dark .hmi-multivalue-row .hmi-multi-header,
+.theme-dark .hmi-multi-header,
+.theme-dark .hmi-box-label,
+.theme-dark .hmi-stat-label {
+    color: #b2c1d4 !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+}
+
+/* =========================================================================
+	MEASUREMENT UNITS
+   ========================================================================= */
+
+.theme-dark .hmi-multivalue-col .hmi-multi-unit,
+.theme-dark .hmi-multi-unit,
+.theme-dark .hmi-box-unit {
+    color: #cbd5e0 !important;
+}
+
+/* =========================================================================
+	CARD CHASSIS HEADERS & BASELINE FOOTERS 
+   ========================================================================= */
+
+/* The universal child selector (*) with !important forces all nested single-value 
+   strings, numbers, timestamps, and headers to stay bright on hover! */
+.theme-dark .hmi-pack-tile:hover * {
+    color: #000000 !important;
+}
+
+.theme-dark .hmi-clickable-tile:hover button.active,
+.theme-dark .hmi-clickable-tile:hover .active {
+    background-color: #29b6f6 !important;
+    color: #ffffff !important;
+}
+
+.theme-dark .hmi-pack-label {
+    color: #29b6f6 !important; /* Signature Domoticz electric blue text titles */
+    font-weight: 700 !important;
+}
+
+/* Step 1: Change tile title text color to pure white ONLY when hovered in dark theme */
+.theme-dark .hmi-pack-tile:hover .hmi-pack-label {
+    color: #29b6f6 !important; /* Signature Domoticz electric blue text titles */
+    font-weight: 700 !important;
+}
+
+.theme-dark .hmi-last-update,
+.theme-dark .hmi-last-value {
+    color: #64748b !important;
+}
+
+.theme-dark .hmi-multivalue-col {
+    border-right: 1px solid #3f4454 !important;
+}
+
+/* =========================================================================
+	INTERACTIVE COMPONENT CALIBRATION (DOMOTICZ BLUE STANDARD)
+   ========================================================================= */
+   
+.theme-dark .hmi-btn-interactive,
+.theme-dark .hmi-switch-button-row button,
+.theme-dark .hmi-stepper-row button,
+.theme-dark .hmi-log-clear-btn {
+    background-color: #313644 !important;      /* Deep slate-gray for inactive controls */
+    border: 1px solid #42495b !important;       /* Crisp, clean boundary line frames */
+    color: #cbd5e0 !important;                  /* Balanced gray text for non-selected options */
+    font-weight: 600 !important;
+}
+
+/* True active command selections */
+.theme-dark .active,
+.theme-dark .hmi-active-state,
+.theme-dark .hmi-btn-interactive.active,
+.theme-dark .hmi-switch-button-row button.active,
+.theme-dark .hmi-stepper-row button.active,
+.theme-dark .state-ok {
+    background-color: #29b6f6 !important;      /* Authentic Domoticz Electric Sky Blue */
+    color: #ffffff !important;
+    border-color: #039be5 !important;
+}
+
+.theme-dark .hmi-selector-dropdown,
+.theme-dark select {
+    background-color: #ffffff !important;
+    color: #111111 !important;
+}
+
+/* =========================================================================
+	CRITICAL ALARM STATE FIX (FORCES CONTRAST TEXT TO BLACK)
+	NO CHANGES
+   ======================================================================== */
+
+/* =========================================================================
+	EMERGENCY STOP button
+   ========================================================================= */
+	
+.theme-dark #hmi-estop-active-btn .hmi-badge {
+    color: #ffffff !important;	/* Button text pure white when safe */
+}
+
+/* =========================================================================
+	180° SVG GAUGE
+	NO CHANGES BUT FREEZE POINTER (SEE END OF THIS FILE)
+   ========================================================================= */
+
+/* =========================================================================
+	AUTOMATED SEGMENT COLOR-SHIFT MATRIX
+   ========================================================================= */
+
+/* SEGMENT 1: NORMAL STATE -> Authentic Domoticz Electric Blue Sky */
+.theme-dark [data-alarm="normal"] .hmi-gauge-fill {
+    stroke: #29b6f6 !important;
+}
+.theme-dark [data-alarm="normal"] .hmi-gauge-state-text {
+    color: #29b6f6 !important;
+}
+
+/* SEGMENT 2: WARNING STATE -> Alert Safety Amber/Yellow */
+.theme-dark [data-alarm="warning"] .hmi-gauge-fill {
+    stroke: #ffb300 !important;
+}
+.theme-dark [data-alarm="warning"] .hmi-gauge-state-text {
+    color: #ffb300 !important;
+}
+
+/* SEGMENT 3: CRITICAL STATE -> Safety Protection Red Alert */
+.theme-dark [data-alarm="critical"] .hmi-gauge-fill {
+    stroke: #ef4444 !important;
+}
+.theme-dark [data-alarm="critical"] .hmi-gauge-state-text {
+    color: #ef4444 !important;
+}
+
+/* =========================================================================
+	FREEZE GAUGE AND TREND TILES COMPLETELY, BLOCKING ALL HOVER CHANGES 
+   ========================================================================= */
+
+.theme-dark .hmi-pack-tile[data-type="gauge"]:hover,
+.theme-dark .hmi-pack-tile[data-type="trend"]:hover {
+    pointer-events: none !important;
+}

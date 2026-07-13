@@ -4,42 +4,44 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 
 ---
 
-## 20260713 - (2.0.0-BETA)
-Major framework rewrite. Work in progress. Pre-release staging phase.
+## v2.0.0 - (2026-07-13)
+**Major framework core engineering rewrite.**
 
 ### Summary
-Engine completely re-engineered from the ground up to achieve a purely declarative, decoupled architecture.  
-This release eliminates inline script blocks from layout files, centralizes event lifecycle boundaries, updates structural typography for high-density industrial environments, and expands HTML-driven template configurations.
+Engine completely re-engineered from the ground up to achieve a purely declarative, decoupled, low-cognitive-load architecture. 
+This release eliminates inline script blocks from layout files, centralizes event lifecycle boundaries, updates structural typography for high-density industrial environments, 
+introduces a unified multi-column data model, and launches an experimental standalone dark theme workspace profile.
 
 ### Architectural Breakdown
 
 #### 1. Core JavaScript Engine Overhaul
-* **Declarative Routing**: Completely migrated tile rendering logic to an HTML-driven `data-type` property loop. The core loop now automatically initializes layout templates, eliminating the previous tight coupling between raw Domoticz properties and UI element nodes.
-* **Global Event Delegation**: Completely isolated interactive event boundaries into an independent control-binding pipeline (`bindControls`). All control gestures (`click`, `change`, `keypress`, `input`) are attached exactly once onto the permanent document root context, ensuring interaction tracks are completely immune to network synchronization redraws.
-* **Unified Pre-Parser Layer**: Integrated a centralized hardware utility dictionary to process single-value devices, evaluate array-shifted metrics matrices generically, and automatically handle inconsistent Domoticz casing rules or query variables safely behind the scenes.
-* **Natively Integrated Sparklines**: Shifted the historical 24-hour rolling trend engine directly into the core code. Charts are now initialized cleanly via `data-type="chart"`, using a generic object-key extractor to calculate and draw responsive vectors with zero layout overhead.
-* **Expanded Core Component Catalog**: Native support fully established for `info`, `value`, `input`, `switch`, `selector`, `dimmer`, `slider`, `progressbar`, `setpoint`, `setpointprocessvalue`, and `chart` card modules.
+* **Declarative Routing**: Completely migrated tile rendering logic to an HTML-driven `data-type` property loop. The core engine loop now automatically initializes layout templates, eliminating the previous tight coupling between raw Domoticz properties and UI element nodes.
+* **Global Event Delegation**: Isolated interactive event boundaries into an independent control-binding pipeline (`bindControls`). All control gestures (`click`, `change`, `keypress`, `input`) are attached exactly once onto the permanent document root context, ensuring interaction tracks are completely immune to network synchronization redraws.
+* **Unified Pre-Parser Layer**: Integrated a centralized hardware utility dictionary inside `hmitiles-preparser.js` to process single-value devices via local `parseSingleValue()` hooks, evaluate array-shifted metrics matrices generically, and automatically handle inconsistent Domoticz casing rules or query variables safely behind the scenes.
+* **Natively Integrated Sparklines**: Shifted the historical 24-hour rolling trend engine directly into the core code. Charts are initialized cleanly via `data-type="trend"`, automatically processing data ranges natively to draw responsive SVG line paths with zero visual layout overhead.
+* **Expanded Core Component Catalog**: Native support fully established for `info`, `value`, `input`, `switch`, `selector`, `dimmer`, `slider`, `gauge`, `trend`, `progressbar`, `setpoint`, `setpointprocessvalue`, and `chart` card modules.
 * **Dynamic Float Precision Guard**: Enhanced the data preparation pipeline with a string-locked floating-point extraction utility (`formatPrecisionValue`) ensuring ultra-high resolution metrics (such as precision `0.0000 kWh` solar accumulation counters) retain trailing decimals without collapsing.
 
 #### 2. Core Stylesheet & Typography Refinements
 * **Refactored Box Layouts**: Migrated all old structural container components to the standardized `.hmi-pack-tile` element schema. 
-* **Industrial Color Calibration**: Updated background gradients, button fills, and borders to improve compliance with high-performance control deck industry standards.
-* **Local Offline Fonts**: Integrated a crisp, high-contrast, squared typography layer using locally-hosted assets. The entire UI is now 100% self-contained and immune to internet outages.
+* **Industrial Color Calibration**: Updated background gradients, button fills, and borders to ensure total compliance with high-performance cockpit industry standards (ISA-101).
+* **Local Offline Fonts**: Integrated a crisp, high-contrast typography layer using locally hosted assets. The entire UI is now 100% self-contained and immune to internet outages.
 
 #### 3. Simplified Threshold & Alarm Engine
-* **Declarative Threat Matrix**: Wiped out complex conditional checking scripts by introducing two lightweight HTML configuration mappings: `data-state-map` and `data-alarm-direction`. 
-* **Universal Severity Evaluator**: Multi-tier alarm state escalations (upward spikes or downward drops, e.g., low battery levels) are handled uniformly inside a single engine tracking pass based on Alert device 5 alarm levels.
-* **Multi-Value Multi-Target Indexing**: Upgraded the evaluator to dynamically target distinct data track columns within arrays. The parser now uses leading index digits to isolate checks (e.g., assessing a battery's state of charge directly inside a composite charging payload string).
+* **Declarative Threat Matrix**: Wiped out complex conditional checking scripts by introducing a lightweight, single-attribute HTML configuration mapping: `data-state-map` paired with an explicit `data-alarm-direction`. 
+* **Universal Severity Evaluator**: Multi-tier alarm state escalations (upward spikes or downward battery drains) are handled uniformly inside a single engine tracking pass that maps directly onto Domoticz's native 5-level alarm scale (`gray`, `green`, `yellow`, `orange`, `red`).
+* **Adaptive Array Length Scaling**: Built a dynamic router into `processTileStateAndAlarm()` that evaluates the explicit length of the threshold rule string array. Shorter 2-state inputs (e.g., Water Leaks) switch dynamically between Level 0 and Level 4 to enforce high-contrast emergency awareness instantly.
 * **Defensive Edge-Clamping Logic**: Fixed range-boundary logic loops by initializing state values with an explicit boundary fallback ceiling. This halts code lockouts and prevents `CONDITION: 0` glitches when sensor data surpasses maximum threshold parameters.
 
 #### 4. Unified Multi-Column & Single-Value Concept
-* **Unified Sizing Framework**: Merged standalone value tiles into a multi-column layout tracking grid matrix, allowing a single card shell to display up to 7 telemetry data columns dynamically.
-* **Dynamic Grid Balance**: Introduced automatic spatial cushioning and fallback placeholder properties to prevent visual layout shifts during data ticks.
-* **Single-Value Normalization Pipeline**: Enhanced the data-labels attribute loop to process standard single-value devices natively. Defining only a single column layout map converts the payload into a clean, uniform multi-column grid matrix model (`${value};${state}`), treating single data points identically to heavy arrays.
+* **Unified Sizing Framework**: Merged standalone value tiles into a multi-column layout tracking grid matrix, allowing a single card shell to display up to 7 telemetry data columns dynamically using explicit `data-labels` maps.
+* **Dynamic Grid Balance**: Introduced automatic spatial cushioning (`flex-basis: 100% !important`) on individual `.hmi-multivalue-col` nodes. This forces symmetrical widths across data cells, preventing empty unit values from causing visual column collisions or clipping.
+* **Single-Value Normalization Pipeline**: Enhanced the `data-labels` attribute loop to process standard single-value devices natively. Defining only a single column layout map converts the payload into a clean, uniform multi-column grid matrix model (`${value};${state}`), treating single data points identically to heavy arrays.
 * **Legacy Bypass Fail-Safe**: Integrated a fallback rule where any card omitting advanced attributes completely avoids data modification. Raw Domoticz device logs pass straight to the view layer untouched, preserving 100% backward compatibility for legacy text tiles.
 
-#### 5. Declarative Blueprints Library
-* **Zero Script Footprint**: Reworked all isolated blueprint layout templates to match the new v2.0 CSS tokens and `data-type` properties. All layout blueprints are now purely standard HTML text snippets with zero JavaScript code bloat.
+#### 5. Experimental Dark Theme Architecture
+* **Decoupled Styling Channel**: Launched a standalone `hmitiles-dark.css` sheet allowing clear dark-slate (`#1a1d24` / `#23262e`) canvas maps to mount cleanly onto elements without bloating light-mode source structures.
+* **Interactive Hover Protection**: Integrated an explicit `pointer-events: none !important;` layout shield for specialized components. This freezes SVG arcs, vector needle pathways, and background fills during mouse movements, completely stopping light-mode text-color leaks.
 
 **Previews**
 ![Workbench](workbench.png)
@@ -53,9 +55,6 @@ This release eliminates inline script blocks from layout files, centralizes even
 ---
 
 ![Theme-Dark Experimental](theme-dark.png)
-
----
-
 ## 20260619 (1.5.0)
 #### Added
 - **SwitchesPanel** (`blueprints`): Define a panel with N switches (vertical aligned).

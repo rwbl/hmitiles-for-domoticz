@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Hide buttons use style="display: none; height: 0" -->
+
+<head>
+    <meta charset="UTF-8">
+    <title>HMITiles Log Monitor</title>
+
+    <!-- Link backward to reuse shared global common styles -->
+    <link rel="stylesheet" href="/templates/core/hmitiles.css">
+	
+	<!-- Link backward to the HMI tile engine -->
+	<!-- Ensure type="module" is declared so the browser resolves the import statement -->
+	<script type="module" src="/templates/core/hmitiles.js"></script>
+</head>
+
+<body>
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+				<h2>HMITiles Log Monitor</h2>
+			</div>
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
+			</div>
+		</div>
+	</header>
+
+	<main class="hmi-panel">
+	
+        <!-- 
+			LOGMONITOR
+			Monospace system log tile with dynamic channel selector, no filter
+			No idx
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="logmonitor" 
+			data-log-limit="8" 
+			data-log-prefix="[HMI Tiles]" 
+			data-log-filter="">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Domoticz Server Log</div>
+				<select class="hmi-log-channel-select">
+					<option value="268435455">ALL LOGS</option>
+					<option value="1">STATUS</option>
+					<option value="2">DETAIL</option>
+					<option value="4">ERRORS</option>
+				</select>
+			</div>
+			
+			<div class="hmi-log-terminal">
+				<div class="hmi-log-line">Initializing log system link...</div>
+			</div>
+
+			<div class="hmi-log-input-row">
+				<input type="text" class="hmi-log-input" placeholder="Type custom log message..." maxlength="100">
+				<button class="hmi-log-send-btn">SEND</button>
+				<button class="hmi-log-clear-btn">CLEAR</button>
+			</div>
+		</div>
+
+        <!-- 
+			LOGMONITOR
+			Monospace system log tile with dynamic channel selector, filter
+			No idx
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="logmonitor" 
+			data-log-limit="8" 
+			data-log-prefix="[HMI Tiles]" 
+			data-log-filter="MYTEST">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Domoticz Server Log Filter MYTEST</div>
+				<select class="hmi-log-channel-select">
+					<option value="268435455">ALL LOGS</option>
+					<option value="1">STATUS</option>
+					<option value="2">DETAIL</option>
+					<option value="4">ERRORS</option>
+				</select>
+			</div>
+			
+			<div class="hmi-log-terminal">
+				<div class="hmi-log-line">Initializing log system link...</div>
+			</div>
+
+			<div class="hmi-log-input-row">
+				<input type="text" class="hmi-log-input" placeholder="Type custom log message..." maxlength="100">
+				<button class="hmi-log-send-btn">SEND</button>
+				<button class="hmi-log-clear-btn">CLEAR</button>
+			</div>
+		</div>
+
+        <!-- 
+			LOGMONITOR
+			Monospace system log tile with no input row and option errors
+			No idx
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="logmonitor" 
+			data-log-limit="8" 
+			data-log-prefix="[HMI Tiles]" 
+			data-log-filter="">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Domoticz Server Log</div>
+				<select class="hmi-log-channel-select">
+					<option value="268435455">ALL LOGS</option>
+					<option value="1">STATUS</option>
+					<option value="2">DETAIL</option>
+					<option value="4" selected="selected">ERRORS</option>
+				</select>
+			</div>
+			
+			<div class="hmi-log-terminal">
+				<div class="hmi-log-line">Initializing log system link...</div>
+			</div>
+
+			<div class="hmi-log-input-row">
+				<input type="text" class="hmi-log-input" placeholder="Type custom log message..." maxlength="100">
+				<button class="hmi-log-send-btn">SEND</button>
+				<button class="hmi-log-clear-btn">CLEAR</button>
+			</div>
+		</div>
+
+	</main>
+
+</body>
+</html>

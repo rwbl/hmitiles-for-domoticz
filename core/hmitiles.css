@@ -1,13 +1,13 @@
 /* ==========================================================================
-	Project:	Domoticz-HMITiles StyleSheet Core
+	File:		hmitiles.css
 	Brief: 		Clean, industry-inspired layout rules for smart home HMI panels.
-	Date: 		20260618
+	Date: 		2026-07-12
 	Author: 	Robert W.B. Linn (c) 2026 MIT
 	Content:
 				-HMI PALETTE LIGHT
 				-GLOBAL LAYOUT RESET & VARIABLES
 				-MASTER CONTAINER & GRID SYSTEMS (4x3 / 4x2 MATRIX)
-				-PANEL CARD FRAME COMPONENTS (.hmi-pack-card)
+				-PANEL TILE FRAME COMPONENTS (.hmi-pack-tile)
 				-STATUS BADGES & INTERACTIVE CLICK CLASSIFICATIONS
 				-HARDWARE INPUT ELEMENT STYLING (SLIDERS, SETPOINT BUTTONS)
 				-PROGRESS BAR & LEVEL GAUGE COMPONENTS (.hmi-bar-fill)
@@ -18,9 +18,10 @@
 /* ==========================================================================
    HMI PALETTE LIGHT
    ========================================================================== */
+
 :root {
     --hmi-bg-main: #d4d4d4;       /* Main panel/screen canvas background */
-    --hmi-bg-card: #e0e0e0;       /* Card/Section grouping background */
+    --hmi-bg-tile: #e0e0e0;       /* Tile/Section grouping background */
     --hmi-bg-field: #f2f2f2;      /* Inset value display box background */
     --hmi-bg-bar-track: #8a8a8a;  /* Dark gray for progress bar track */
     --hmi-bg-bar-fill: #e0e0e0;   /* Light gray overlay fill */
@@ -32,6 +33,7 @@
     /* Typography */
     --hmi-text-main: #000000;     /* Sharp, readable black for numbers/data */
     --hmi-text-muted: #555555;    /* Medium gray for structural units/labels */
+    --tile-divider: #e0e0e0;
     
     /* Conditional Alarms (Used sparingly) */
     --hmi-alarm-hi: #ffaa00;      /* Amber warning */
@@ -41,6 +43,7 @@
 /* ==========================================================================
    GLOBAL LAYOUT RESET & VARIABLES (body)
    ========================================================================== */
+
 body {
     background-color: var(--hmi-bg-main);
     color: var(--hmi-text-main);
@@ -53,25 +56,24 @@ body {
    HOR RULES
    ========================================================================== */
 
-/* High-Performance Symmetrical Thematic Break */
 hr {
-    border: none;                /* Strip default browser 3D beveled shadows */
-    height: 1px;                 /* Absolute, crisp 1-pixel line thickness */
-    background-color: var(--hmi-border-dark); /* Reuses your exact dark grid border color */
-    margin: 12px 0;              /* Balanced vertical breathing room spacing */
-    width: 100%;                 /* Spans the full inner width of the tile */
+    border: none;                				/* Strip default browser 3D beveled shadows */
+    height: 1px;                 				/* Absolute, crisp 1-pixel line thickness */
+    background-color: var(--hmi-border-dark); 	/* Reuses exact dark grid border color */
+    margin: 12px 0;              				/* Balanced vertical breathing room spacing */
+    width: 100%;                 				/* Spans the full inner width of the tile */
 }
 
 hr.hmi-divider-dashed {
     border: none;
     border-top: 1px dashed #444444;
-    background-color: transparent; /* Required when switching to a border stroke */
+    background-color: transparent; 				/* Required when switching to a border stroke */
     height: 0;
 }
 
 hr.hmi-divider-short {
     width: 80%;
-    margin: 12px auto; /* Centers the short rule line horizontally automatically */
+    margin: 12px auto; 							/* Centers the short rule line horizontally automatically */
 }
 
 /* ==========================================================================
@@ -104,7 +106,6 @@ hr.hmi-divider-short {
     color: #000;
 }
 
-
 /* ==========================================================================
    FOOTER
    ========================================================================== */
@@ -120,62 +121,112 @@ hr.hmi-divider-short {
 }
 
 .hmi-last-update {
+    position: absolute;			/* REMOVES from layout flow so it doesn't push elements up */
+    bottom: 4px;              	/* Locked tight to the bottom edge of the gray card */
+    right: 8px;               	/* Locked tight to the right edge */
     font-family: monospace;
-    font-size: 11px;            /* Standard small text size */
-    color: #888888;            	/* Low-contrast gray that stays out of the way */
-    text-align: right;         	/* Aligns cleanly to the right side of the card */
-    padding: 0 10px 6px 0;     	/* Balanced padding to match your tile spacing */
+    font-size: 11px;
+    color: #888888;
+    text-align: right;
+    line-height: 1;
+    padding: 0;               	/* Remove old padding to prevent coordinate shifting */
+    margin: 0;
+}
+
+/* Pulls the optional tracking value text straight to the bottom-left edge */
+.hmi-last-value {
+    position: absolute;
+    bottom: 5px;
+    left: 10px;
+	font-family: monospace;
+    font-size: 11px;
+    color: #888888;
+    text-align: right;
+    line-height: 1;
+    padding: 0;               /* Remove old padding to prevent coordinate shifting */
+    margin: 0;
 }
 
 /* ==========================================================================
    MASTER CONTAINER & GRID SYSTEMS (4x3 / 4x2 MATRIX) (.hmi-panel)
    ========================================================================== */
 
-/* Master Container matching your panel layout */
+/* Master Container matching panel layout */
 .hmi-panel {
     background-color: var(--hmi-bg-main);
     border: 2px solid var(--hmi-border-dark);
     padding: 10px;
-    width: 100%;	/* 320px; Adjust as needed for your grid layout */
-    box-sizing: border-box; /* Enforces padding to stay inside the outer borders */
+    width: 100%;				/* 320px; Adjust as needed for grid layout */
+    box-sizing: border-box; 	/* Enforces padding to stay inside the outer borders */
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
 /* ==========================================================================
-   PANEL CARD FRAME COMPONENTS (.hmi-pack-card)
+   PANEL TILE FRAME COMPONENTS (.hmi-pack-tile)
    ========================================================================== */
 
-/* Outer Card Container (e.g., PACK 1, PACK 2) */
-.hmi-pack-card {
-    background-color: var(--hmi-bg-card);
+/* Outer Tile Container (e.g., PACK 1, PACK 2) */
+.hmi-pack-tile {
+	position: relative;  
+    background-color: var(--hmi-bg-tile);
     border: 1px solid var(--hmi-border-dark);
     padding: 8px;
     display: flex;
     flex-direction: column;
     gap: 8px;
+	padding: 8px 8px 12px 8px !important; /* top right bottom left */
 }
 
-/* Card desaturated Alarm States */
-.hmi-pack-card[data-alarm="warning"] {
-    border-color: #d1a119 !important; /* Muted Amber */
-}
-.hmi-pack-card[data-alarm="warning"] .hmi-badge {
-    background-color: #d1a119 !important;
-    color: #ffffff;
+/* ==========================================================================
+   UNIFIED ALARM SEVERITY MATRIX
+   ========================================================================== */
+
+/* LEVEL 0: NORMAL BASELINE SYSTEM OPERATION */
+.hmi-pack-tile[data-alarm="gray"] {
+    border-left: 4px solid #6b7280 !important; /* Matte Slate Gray */
+    background-color: transparent;
 }
 
-.hmi-pack-card[data-alarm="critical"] {
-    border-color: #b33c3c !important; /* Desaturated Red */
-}
-.hmi-pack-card[data-alarm="critical"] .hmi-badge {
-    background-color: #b33c3c !important;
-    color: #ffffff;
+/* LEVEL 1: INFORMATIONAL / RUNNING STEADY */
+.hmi-pack-tile[data-alarm="green"] {
+    border-left: 4px solid #15803d !important; /* Matte Forest Green */
+    background-color: transparent;
 }
 
-/* Top row inside a card (Label + Status Badge) */
-.hmi-card-header {
+/* LEVEL 2: DEVIATION / PRE-WARNING STATE */
+.hmi-pack-tile[data-alarm="yellow"] {
+    border-left: 4px solid #ffb300 !important; /* Matte Yellow/Amber */
+    background-color: #fffdf0 !important;      /* Soft alert ambient tint background */
+}
+
+/* LEVEL 3: MAIN SYSTEM WARNING */
+.hmi-pack-tile[data-alarm="orange"] {
+    border-left: 4px solid #ea580c !important; /* Matte Industrial Rust Orange */
+    background-color: #fffdf0 !important;
+}
+
+/* LEVEL 4: CRITICAL CRASH / EQUIPMENT FAULT TRIP */
+.hmi-pack-tile[data-alarm="red"] {
+    border-left: 4px solid #b22222 !important; /* Uniform 4px Firebrick Crimson Red */
+    background-color: #fdf2f2 !important;      /* Soft danger ambient tint background */
+}
+
+/* Forces all structural gauges to inherit your soft ambient alert backgrounds 
+   automatically, keeping cockpit colors perfectly synchronized! */
+.hmi-pack-tile[data-alarm="yellow"],
+.hmi-pack-tile[data-alarm="orange"],
+.hmi-pack-tile[data-alarm="red"] {
+    background-color: inherit !important;
+}
+
+/* ==========================================================================
+   TILE
+   ========================================================================== */
+
+/* Top row inside a tile (Label + Status Badge) */
+.hmi-tile-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -183,21 +234,22 @@ hr.hmi-divider-short {
 }
 
 .hmi-pack-label {
+	font-family: Arial, Helvetica, "Liberation Sans", sans-serif !important;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 15px;
 }
 
 /* Core structure for the text input tile value space */
-.hmi-pack-card[data-type="text-input"] .hmi-value-grid {
+.hmi-pack-tile[data-type="textinput"] .hmi-value-grid {
     display: flex;
     flex-direction: column;
     padding: 12px;
     gap: 12px;
 }
 
-/* Inner Card Container (e.g., PACK 1, PACK 2) */
-.hmi-pack-innercard {
-    background-color: var(--hmi-bg-card);
+/* Inner Tile Container (e.g., PACK 1, PACK 2) */
+.hmi-pack-innertile {
+    background-color: var(--hmi-bg-tile);
     border: 1px solid var(--hmi-border-dark);
     padding: 8px;
     display: flex;
@@ -220,6 +272,155 @@ hr.hmi-divider-short {
     text-transform: uppercase;
 }
 
+/* Clickable Action Badges */
+/* Default inactive "off" state (all switches in nominal flow) */
+.hmi-clickable-badge {
+    cursor: pointer;
+    transition: background-color 0.1s ease, color 0.1s ease;
+    user-select: none; 				/* Prevents accidental blue highlighting when double-clicked */
+    /* Stripped !important off the base rules so they can be overridden on state change */
+    background-color: #999999; 		/* Muted, visually quiet industrial gray */
+    color: #ffffff;             	/* Clean white text identifier */
+    font-weight: normal;
+    padding: 2px 8px;          		/* Balanced default touch footprint padding */
+    border: 1px solid #777777;
+    text-align: center;
+}
+
+/* ---------------------------------------------------------------------
+   Dynamic active "on" state override (driven by system)
+   --------------------------------------------------------------------- */
+/* Prioritize the active styles using !important so they successfully override the resting color */
+.state-ok .hmi-clickable-badge,
+.hmi-pack-innertile.state-ok .hmi-clickable-badge,
+.hmi-clickable-badge.hmi-active-state {
+    background-color: #444444 !important; /* Bold, high-contrast dark charcoal slate */
+    color: #ffffff !important;             /* Clear crisp white text */
+    border: 1px solid #222222 !important;
+    font-weight: bold !important;
+}
+
+/* Neutral, high-contrast hover feedback */
+.hmi-clickable-badge:hover {
+    background-color: #333333 !important; /* Darker charcoal */
+    color: #ffffff !important;
+}
+
+/* Active click execution feedback */
+.hmi-clickable-badge:active {
+    background-color: #000000 !important; /* Flat black override */
+    color: #ffffff !important;
+}
+
+/* ==========================================================================
+   UNIVERSAL HIGH-PERFORMANCE BUTTON PIPELINE (GLOBAL)
+   ========================================================================== */
+
+/* Generic full-width industrial touch command button footprint */
+.hmi-btn-interactive {
+    cursor: pointer;
+    user-select: none;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 1px;
+    text-transform: uppercase;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+    transition: background-color 0.1s ease, color 0.1s ease;
+    
+    /* DEFAULT INACTIVE STATE (Visually quiet nominal gray) */
+    background-color: #999999; 
+    color: #ffffff;             
+    border: 1px solid #777777;
+}
+
+/* DYNAMIC ACTIVE STATE OVERRIDE (High contrast bold slate gray) */
+.hmi-btn-interactive.hmi-active-state {
+    background-color: #444444 !important; 
+    color: #ffffff !important;             
+    border: 1px solid #222222 !important;
+}
+
+/* Interaction feedback behaviors */
+.hmi-btn-interactive:hover {
+    background-color: #333333 !important; 
+    color: #ffffff !important;
+}
+
+.hmi-btn-interactive:active {
+    background-color: #000000 !important; 
+    color: #ffffff !important;
+}
+
+/* EMERGENCY STOP BUTTON */
+
+.hmi-btn-estop {
+    width: 100%;
+    background-color: #2a2a2a;         /* Boring uniform charcoal baseline when safe */
+    color: #e2e8f0;
+    border: 2px solid var(--hmi-border-dark);
+    padding: 14px;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 14px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: all 0.15s ease;
+}
+
+.hmi-btn-estop:hover {
+    background-color: #383838;
+    border-color: #555555;
+}
+
+/* Tripped Active Alert State - Unmissable Desaturated Industrial Red */
+.hmi-btn-estop.active {
+    background-color: #b33c3c !important; 
+    color: #ffffff !important;
+    border-color: #ffffff !important;
+    animation: hmi-estop-pulse 2s infinite ease-in-out; /* Subtle pulse animation */
+}
+
+/* 2-Button safety interlock system accents (clean & optimized) */
+
+/* When the TRIPPED button cell receives the active class from the engine, 
+   instantly override its background with high-contrast alert red */
+#hmi-estop-active-btn .hmi-badge.hmi-active-state {
+    color: #ffffff !important;
+    background: linear-gradient(to bottom, #ff3b30 0%, #d32f2f 100%) !important;
+    border-color: #b71c1c !important;
+    border-bottom-color: #7f0000 !important;
+    box-shadow: 0 0 8px rgba(211, 47, 47, 0.4);
+}
+
+/* Dynamically colors the whole parent tile background/border soft pink 
+   ONLY when the TRIPPED button is active, for optimal cognitive load alert tracking */
+   /*
+.hmi-pack-tile:has(#hmi-estop-active-btn .hmi-active-state) {
+    background-color: #fdf2f2 !important;
+    border-color: #f05252 !important;
+}
+*/
+
+/* ==========================================================================
+   VALUE-BOX
+   ========================================================================== */
+
+/* Core metric display typography parameters (Balanced Industrial Scaling) */
+.hmi-value {
+	font-family: Arial, Helvetica, "Liberation Sans", sans-serif !important;
+    font-size: 22px;           /* Scaled down from 20px/22px to a crisp, professional 16px */
+    font-weight: bold;         /* Keeps bold numeric weight for instant scanning */
+    letter-spacing: 0.5px;     /* Adds subtle space between characters for easy scanning */
+    color: #222222;            
+    text-align: right;         
+    display: block;            
+    line-height: 1.4;          /* Ensures perfect vertical centering inside the text field */
+}
+
 /* The box wrapping the variable text node */
 .hmi-value-box {
     width: 100%;               /* Forces full horizontal expansion */
@@ -230,23 +431,81 @@ hr.hmi-divider-short {
     box-sizing: border-box;    /* Ensures perfect width calculations */
 }
 
-/* Core metric display typography parameters (Balanced Industrial Scaling) */
-.hmi-value {
-    font-size: 16px;           /* Scaled down from 20px/22px to a crisp, professional 16px */
-    font-weight: bold;         /* Keeps bold numeric weight for instant scanning */
-    letter-spacing: 0.5px;     /* Adds subtle space between characters for easy scanning */
-    color: #222222;            
-    text-align: right;         
-    display: block;            
-    line-height: 1.4;          /* Ensures perfect vertical centering inside the text field */
-}
-
 /* Container box handling the layout placement inside the tile row */
 .hmi-value-grid {
     display: flex;
     justify-content: flex-end; 
+    align-items: flex-start;
+    padding: 4px 12px;         /* Tighter padding inside the tile */
+}
+
+/* =========================================================================
+   MULTI-VALUE
+   ========================================================================= */
+
+/* Forces all value columns to march side-by-side horizontally */
+.hmi-multivalue-row {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    padding: 8px 12px;         /* Tighter padding inside the tile */
+    width: 100%;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    box-sizing: border-box;
+}
+
+/* Individual layout column cells */
+.hmi-multivalue-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    flex-basis: 100%;
+    text-align: center;
+    gap: 1px;
+    min-width: 0;
+}
+
+/* Automatically adds a clean 1px divider between your inner data columns 
+   without breaking the outer box-sizing or border widths of the card! */
+.hmi-multivalue-col + .hmi-multivalue-col {
+    border-left: 1px solid #e5e5e5 !important;
+}
+
+/* Typography components - Clean, compact industrial sizes */
+.hmi-multi-header { 
+    font-size: 11px; 
+    font-weight: bold; 
+    color: #666666; 
+    text-transform: uppercase; 
+    white-space: nowrap;
+}
+
+.hmi-multi-number { 
+	font-family: Arial, Helvetica, "Liberation Sans", sans-serif !important;
+    font-size: 22px;          /* Clean, quiet size allows 5-6 columns to lock across without splitting */
+    font-weight: bold; 
+    color: #111111; 
+    line-height: 1.2;
+}
+
+.hmi-multi-unit { 
+	font-family: Arial, Helvetica, "Liberation Sans", sans-serif !important;
+    font-size: 11px; 
+    color: #777777; 
+}
+
+/* =========================================================================
+   MULTIVALUE INFO BOX TOP-ALIGNMENT BALANCER
+   ========================================================================= */
+
+/* Forces the info text box container to align its top boundary perfectly with value boxes */
+.hmi-value-grid .hmi-data-text-box {
+    width: 100%;
+    margin-top: 0 !important;   /* Wipes out any invisible vertical offset pushes */
+    padding-top: 0 !important;  /* Normalizes the top start line */
+    display: block;             /* Ensures it acts as a clean structural block container */
 }
 
 .hmi-box-label {
@@ -268,123 +527,67 @@ hr.hmi-divider-short {
 }
 
 /* Alarm Overlays — Only change the border definition! */
-.hmi-pack-card.alarm-prio1 {
+.hmi-pack-tile.alarm-prio1 {
     border: 2px solid var(--hmi-alarm-hihi) !important; /* Critical Red for structural breaches */
 }
 
-.hmi-pack-card.alarm-prio2 {
+.hmi-pack-tile.alarm-prio2 {
     border: 2px solid var(--hmi-alarm-hi) !important;  /* Warning Amber for high thresholds */
 }
 
-/* Clickable Action Badges */
-.hmi-clickable-badge {
-    cursor: pointer;
-    transition: background-color 0.1s ease, color 0.1s ease;
-    user-select: none; /* Prevents accidental blue highlighting when double-clicked */
-}
-
-/* Neutral, high-contrast hover feedback */
-.hmi-clickable-badge:hover {
-    background-color: #333333; /* Darker charcoal */
-    color: #ffffff;
-}
-
-/* Active click execution feedback */
-.hmi-clickable-badge:active {
-    background-color: #000000; /* Flat black */
-}
-
 /* ==========================================================================
-   TEXT COMPONENTS (.hmi-info-text-box)
+   TEXT COMPONENTS (.hmi-info-text)
    ========================================================================== */
 
 /* --- Crisp Industrial Text Display Block --- */
-.hmi-info-text-box {
+.hmi-info-text {
     font-family: var(--hmi-font-main, sans-serif);
-    font-size: 12px;
-    line-height: 1.6;
-    color: #444444;
+    color: #777777;            	/* Muted slate gray to minimize cognitive noise */
+    font-size: 12px;           	/* Compact typography size for secondary notes */
+    display: block;            	/* Forces block layout boundaries for line breaks */
+    margin-top: 6px;           	/* Spatial breathing room below elements */
+    line-height: 1.4;          	/* Optimized line height for crisp readability */
+    font-family: sans-serif;   	/* Standard industrial clean font profile stack */
     text-align: left;
-    white-space: normal; /* Ensures long sentences wrap naturally onto new lines */
+    white-space: normal; 		/* Ensures long sentences wrap naturally onto new lines */
 }
 
-/* ==========================================================================
-   TEMP COMPONENTS (.hmi-temp)
-   ========================================================================== */
-
-.hmi-box-temp-data {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;          /* Adds clean spacing between items */
-    padding: 5px 0;
-}
-
-.hmi-temp-btn-simple {
-    background-color: #e0e0e0;
-    border: 1px solid #999999;
-    color: #333333;
-    padding: 2px 10px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    margin: 0 5px;
-    border-radius: 3px;
-}
-
-/* Individual Thermostat adjustment buttons */
-.hmi-temp-btn {
-    background-color: #e0e0e0;
-    border: 1px solid #999999;
-    color: #333333;
-    width: 30px;        /* Forces buttons to be a perfect square */
-    height: 30px;       
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
-}
-
-/* Quick visual response when clicking buttons */
-.hmi-temp-btn:active {
-    background-color: #cccccc;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
-}
-
-/* ==========================================================================
-   HARDWARE INPUT ELEMENT STYLING (SLIDERS, SETPOINT BUTTONS)
-   ========================================================================== */
-
-/* Ensure the temperature text size stands out */
-.hmi-setpoint {
-    font-size: 20px;
-    font-weight: bold;
-    color: #000000;
-}
-
+/* =========================================================================
+   DIMMER SLIDER 
+   ========================================================================= */
+/* The tracking container - we make it match exact .hmi-value-box metrics */
 .layout-slider {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
     width: 100%;
-    padding: 5px 10px;
+    box-sizing: border-box !important;
+    
+    /* Set background to transparent to allow the slider track to float natively on the card */
+    background-color: transparent !important; 
+    border: none !important; 
+    box-shadow: none !important;
+    
+    /* Keep balanced spacing so top alignment lines remain pristine */
+    padding: 0 0 !important; 
 }
 
+/* The tracking bar range input element */
 /* The tracking bar background */
 .hmi-slider {
     -webkit-appearance: none;
     appearance: none;
-    width: 130px;
-    height: 6px;
+    width: 100%;      
+    height: 20px;
     background: #cccccc;
     border: 1px solid #999999;
     border-radius: 3px;
     outline: none;
+    box-sizing: border-box;
+    /* Strips away native browser text-baseline rules pushing the container down */
+    margin: 0 !important; 
+    line-height: 1 !important;
+    display: block !important;
 }
 
 /* The square slider handler button */
@@ -392,7 +595,7 @@ hr.hmi-divider-short {
     -webkit-appearance: none;
     appearance: none;
     width: 16px;
-    height: 16px;
+    height: 26px;
     background: #f0f0f0;
     border: 1px solid #666666;
     border-radius: 3px;
@@ -410,30 +613,21 @@ hr.hmi-divider-short {
     box-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
-.hmi-dimmer-text {
-    font-size: 18px;
-    font-weight: bold;
-    min-width: 30px;
-    text-align: right;
-}
-
 /* ==========================================================================
    PROGRESS BAR & LEVEL GAUGE COMPONENTS (.hmi-bar-fill)
    ========================================================================== */
 
-/* --- SCADA N-COLUMN GRID ADDITIONS --- */
-
-/* This turns your master panel into an automated grid */
+/* This turns master panel into an automated grid */
 .hmi-panel {
     display: grid !important; /* Overrides flexbox layout safely */
     grid-template-columns: repeat(4, 1fr); /* Creates 4 equal-width columns */
     width: 100% !important; /* Allows the dashboard to use the full screen width */
-    max-width: 1400px; /* Prevents cards from getting unnaturally wide */
+    max-width: 1400px; /* Prevents tiles from getting unnaturally wide */
     margin: 0 auto; /* Centers the whole grid desk on the screen */
 }
 
 /* Empty Placeholder Bay Style for layout alignment */
-.hmi-card-placeholder {
+.hmi-tile-placeholder {
     background-color: transparent !important;
     border: 1px dashed var(--hmi-border-dark) !important;
     box-shadow: none !important;
@@ -455,50 +649,13 @@ hr.hmi-divider-short {
 }
 
 /* Clickable elements hover highlight styles */
-.hmi-clickable-card {
+.hmi-clickable-tile {
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.1s ease;
 }
-.hmi-clickable-card:hover {
+.hmi-clickable-tile:hover {
     background-color: #f0f0f0;
     transform: scale(1.01);
-}
-
-/* ==========================================================================
-   DYNAMIC ALARM COLOR HOOKS (NORMAL, WARNING, CRITICAL CSS MARGINS)
-   ========================================================================== */
-
-/* Color Mappings */
-/* Normal Operation (Muted Gray tone) */
-.hmi-pack-card[data-alarm="normal"] {
-    border-left: 5px solid #808080;
-}
-
-/* Warning State (Muted Yellow or Dark Amber) */
-.hmi-pack-card[data-alarm="warning"] {
-    border-left: 5px solid #d4af37;
-    background-color: #fffdf0;
-}
-.hmi-pack-card[data-alarm="warning"] .hmi-badge {
-    background-color: #d4af37;
-    color: #ffffff;
-}
-
-/* Critical State (High Priority Dark Red tone) */
-.hmi-pack-card[data-alarm="critical"] {
-    border-left: 5px solid #b22222;
-    background-color: #fdf2f2;
-}
-.hmi-pack-card[data-alarm="critical"] .hmi-badge {
-    background-color: #b22222;
-    color: #ffffff;
-    animation: hmi-blink 1s infinite alternate; /* Dynamic alarm flash alert */
-}
-
-/* Warning Blink Animation Loop */
-@keyframes hmi-blink {
-    from { opacity: 1; }
-    to { opacity: 0.4; }
 }
 
 /* Timestamp header tracking window box design */
@@ -515,28 +672,29 @@ hr.hmi-divider-short {
    INDUSTRIAL SCADA CLOCK GRID PLACEMENT
    ========================================================================== */
 
-/* Force the clock card to always sit perfectly at the top right of your grid layout */
-.hmi-header-clock-card {
+/* Force the clock tile to always sit perfectly at the top right of grid layout */
+.hmi-header-clock-tile {
     grid-column: 4;      /* Forces it into the 4th column */
     grid-row: 1;         /* Forces it into the 1st row */
-    background-color: var(--hmi-bg-card);
+    background-color: var(--hmi-bg-tile);
     border: 1px dashed var(--hmi-border-dark);
 }
 
-.hmi-header-clock-card .hmi-value {
+.hmi-header-clock-tile .hmi-value {
     color: #b03030;      /* Muted SCADA alert crimson draws attention to freshness */
     font-size: 15px;
 }
 
 /* ==========================================================================
-   NATIVE SVG SPARKLINE TREND GRAPH MODULES (24h TELEMETRY BLOCKS)
+   NATIVE SVG SPARKLINE CHART GRAPH MODULES (24hr TREND TELEMETRY BLOCKS)
    ========================================================================== */
 
-/* Main trend card cell layout box container */
+/* Main trend tile cell layout box container */
 .hmi-sparkline-container {
     width: 100%;
+	height: auto;
     display: flex;
-    flex-direction: column; /* Stacks the graph on top of the text stats */
+    flex-direction: column;
     gap: 8px;
     background: #f7f7f7;
     border-radius: 4px;
@@ -547,23 +705,34 @@ hr.hmi-divider-short {
 /* Sizing wrapper bounding the vector viewbox layer dimensions */
 .hmi-sparkline-svg-wrapper {
     width: 100%;
-    height: 100px; /* Gives the graph a nice fixed area */
+	flex-grow: 1 !important;
+    height: 100%; /* Gives the graph a nice fixed area */
+	min-height: 100px;
     overflow: hidden;
 }
 
 /* Native vector graphic element canvas target settings */
+/*
 .hmi-sparkline-svg {
     width: 100%;
-    height: 100%;
-    display: block; 
+    height: 95%;
+}
+*/
+
+/* Primary Line Style (Line 1 - e.g. Battery Charge / Solar Yield) */
+.hmi-trend-line {
+    fill: none !important;
+    stroke: #777777 !important;    /* Clean standard framework line theme color */
+    stroke-width: 1.5 !important;
+    stroke-linecap: round !important;
+    stroke-linejoin: round !important;
 }
 
-/* Clean slate-gray historic telemetry path tracking line */
-.hmi-trend-line {
-    fill: none;
-    stroke: #4a4a4a; /* Soft industrial slate gray */
-    stroke-width: 2.0;
-    stroke-linecap: round;
+/* Secondary Line Style (Line 2 - e.g. Battery Discharge / Network Usage) */
+.hmi-trend-line-secondary {
+    stroke: #ffb300 !important;    /* Warm distinct amber/gold accent secondary path line */
+    stroke-width: 1.5 !important;
+    stroke-dasharray: 3, 3 !important; /* Dotted notation creates instant layout hierarchy */
 }
 
 /* Base structural layout for the Min/Max text under the graph */
@@ -578,16 +747,29 @@ hr.hmi-divider-short {
 }
 
 /* Monospace label tag flags for MIN and MAX prefixes */
-.hmi-stat-label {
+.hmi-chart-stat-label {
     color: #888888;
 }
 
-/* Overrides to stretch the sparklines across the full card width */
+.hmi-chart-scale-label {
+    position: absolute !important;
+    left: 6px !important;
+    font-family: monospace !important;
+    font-size: 8px !important;
+    font-weight: bold !important;
+    color: #999999 !important;
+    opacity: 0.8 !important;
+    line-height: 1 !important;
+    z-index: 5 !important;
+    pointer-events: none !important; /* Permits click events to pass through cleanly */
+}
+
+/* Overrides to stretch the sparklines across the full tile width */
 .hmi-panel .hmi-value-grid {
     width: 100% !important;
     max-width: 100% !important;
     display: block !important;
-    padding: 0 !important;
+    padding: 0 0 8px 0 !important;
     box-sizing: border-box;
 }
 
@@ -626,7 +808,7 @@ hr.hmi-divider-short {
    ========================================================================== */
 
 /* Core structure for the text input tile value space */
-.hmi-pack-card[data-type="text-input"] .hmi-value-grid {
+.hmi-pack-tile[data-type="textinput"] .hmi-value-grid {
     display: flex;
     flex-direction: column;
     padding: 12px;
@@ -634,10 +816,10 @@ hr.hmi-divider-short {
 }
 
 /* Full-width, high-performance industrial text entry field */
-.hmi-text-field {
+.hmi-input-field {
     width: 100%;
     padding: 6px 8px;
-    font-size: 14px;
+    font-size: 16px;
     border: 1px solid #cccccc;
     border-radius: 4px;
     color: #333333;
@@ -656,12 +838,12 @@ hr.hmi-divider-short {
 }
 
 /* EDITING STATE: Turns the standard badge amber when typing */
-.hmi-pack-card[data-alarm="editing"] .hmi-badge {
-    background-color: #d1a119 !important; /* Your custom muted amber */
+.hmi-pack-tile[data-alarm="editing"] .hmi-badge {
+    background-color: #d1a119 !important; /* custom muted amber */
     color: #ffffff !important;
 }
 
-/* Note: SAVED and SYNCED states use your standard .hmi-badge layout color properties */
+/* Note: SAVED and SYNCED states use standard .hmi-badge layout color properties */
 
 /* ==========================================================================
    ICONs
@@ -678,7 +860,7 @@ hr.hmi-divider-short {
    ========================================================================= */
 
 /* Main content grid area spacing */
-.hmi-pack-card[data-type="progressbar"] .hmi-value-grid {
+.hmi-pack-tile[data-type="progressbar"] .hmi-value-grid {
     display: flex;
     flex-direction: column;
     padding: 12px;
@@ -688,7 +870,7 @@ hr.hmi-divider-short {
 /* Outer boundary track element */
 .hmi-bar-container {
     width: 100%;
-    height: 18px;
+    height: 20px;
     background-color: #eeeeee; /* Light grey tracks keep interface background quiet */
     border: 1px solid #cccccc;
     border-radius: 4px;
@@ -717,18 +899,6 @@ hr.hmi-divider-short {
    GENERIC DUAL-VARIABLE SETPOINT & PROCESS VALUE TILE
    ========================================================================= */
 
-/* =========================================================================
-   GENERIC SETPOINT STEPPER WITH PROCESS VALUE (PV) DISPLAY
-   ========================================================================= */
-
-/* Main content grid area spacing */
-.hmi-pack-card[data-type="setpoint-stepper-tile"] .hmi-value-grid {
-    display: flex;
-    flex-direction: column;
-    padding: 12px;
-    gap: 10px;
-}
-
 /* Horizontal configuration layout block for the stepper buttons row */
 .hmi-stepper-row {
     display: flex;
@@ -736,62 +906,125 @@ hr.hmi-divider-short {
     justify-content: center;
     width: 100%;
     gap: 12px;
-    background-color: #f5f5f5; /* Inherits your soft off-white background */
+    background-color: #f5f5f5; /* Inherits soft off-white background */
     border: 1px solid #dcdcdc; 
     border-radius: 4px;
     padding: 4px;
     box-sizing: border-box;
 }
 
-/* Stepper action buttons typography and borders */
-.hmi-btn-step {
-    padding: 2px 10px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    background: #e0e0e0;
-    border: 1px solid #bbbbbb;
-    color: #333333;
-    border-radius: 4px;
-    user-select: none;
-    transition: background 0.1s ease;
+/* Main content grid area spacing - CALIBRATED COMPACT SPACING */
+.hmi-pack-tile[data-type="setpoint"] .hmi-value-grid,
+.hmi-pack-tile[data-type="setpointprocessvalue"] .hmi-value-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;       
+    justify-content: center !important;
+    padding: 4px 12px !important;       /* Tightened top/bottom padding to collapse excess stack height */
+    gap: 2px !important;                /* Reduced gap from 10px to 2px for a highly compact fit */
 }
 
-.hmi-btn-step:active {
-    background: #cccccc;
+/* Wraps setpoint controls in a matching structural container box */
+.hmi-pack-tile[data-type="setpoint"] .hmi-stepper-row,
+.hmi-pack-tile[data-type="setpointprocessvalue"] .hmi-stepper-row {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 280px;            
+    margin: 2px auto !important;        /* Reduced margin from 6px to 2px to stop elements from pushing away */
+    padding: 6px 12px !important;
+    box-sizing: border-box !important;
+    background-color: #e5e5e5 !important; 
+    border: 1px solid #b3b3b3 !important;   
+    border-radius: 4px !important;
 }
 
-/* Embedded layout structure for the Actual process tracker box */
-.hmi-pv-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
+/* =========================================================================
+   THE EQUAL-WIDTH STEPPER BUTTON FIX
+   ========================================================================= */
+.hmi-stepper-row button.hmi-btn-minus,
+.hmi-stepper-row button.hmi-btn-plus {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 28px !important;             
+    height: 28px !important;            
+    padding: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    font-weight: bold !important;
+    font-size: 16px !important;
+    cursor: pointer !important;
+}
+
+.hmi-stepper-row .hmi-value {
+    display: inline-block !important;
+    text-align: center !important;
+    min-width: 60px !important;         
+    font-weight: bold !important;
+    margin: 0 4px !important;
+}
+
+/* =========================================================================
+   COMBO ROW GRID ALIGNMENT OVERRIDES
+   ========================================================================= */
+.hmi-pack-tile[data-type="setpointprocessvalue"] .hmi-multivalue-row {
+    display: flex !important;
+    justify-content: center !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.hmi-pack-tile[data-type="setpointprocessvalue"] .hmi-multivalue-col {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 auto !important;
 }
 
 /* ==========================================================================
    SELECTOR
    ========================================================================== */
 
-/* Force the grid row to use the full available card width */
-.hmi-pack-card[data-type="selector"] .hmi-value-grid {
+/* Force the grid row to use the full available tile width */
+.hmi-pack-tile[data-type="selector"] .hmi-value-grid {
     width: 100%;
 }
 
 /* Force the internal data wrapper to expand */
-.hmi-pack-card[data-type="selector"] .hmi-box-data {
+.hmi-pack-tile[data-type="selector"] .hmi-box-data {
     width: 100%;
     display: flex;
 }
 
-/* Spread the dropdown box over the complete tile width */
 .hmi-selector-dropdown {
     width: 100%;
-    padding: 6px 10px;
-    box-sizing: border-box;
-    font-family: inherit; /* Inherit your retro monospace font */
-    font-size: 1rem;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #222222;
+    border: 1px solid #b3b3b3 !important;	/* Darkened border matches the button frame styles */
+    border-radius: 4px;
+    outline: none;
     cursor: pointer;
+    box-sizing: border-box;
+
+    /* SHIFTS FROM TEXT FIELD LOOK TO TACTILE DROPDOWN BUTTON APPEARANCE */
+    background: linear-gradient(to bottom, #ffffff 0%, #eaeaea 100%) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Hover tracker enhancements for the dropdown wrapper */
+.hmi-selector-dropdown:hover {
+    border-color: #999999 !important;
+    background: linear-gradient(to bottom, #fdfdfd 0%, #dfdfdf 100%) !important;
 }
 
 /* ==========================================================================
@@ -892,15 +1125,15 @@ hr.hmi-divider-short {
    ========================================================================= */
 
 /* Spans the tile edge-to-edge across the grid layout row */
-.hmi-log-fullpage.hmi-pack-card {
+.hmi-log-fullpage.hmi-pack-tile {
     grid-column: 1 / -1;          /* Forces full width, taking a whole row alone */
     width: 100% !important;       
     box-sizing: border-box;
 }
 
-/* Locks the scrollable terminal box strictly to your standard framework height */
+/* Locks the scrollable terminal box strictly to standard framework height */
 .hmi-log-fullpage .hmi-log-terminal {
-    height: 140px !important;     /* Restores and locks your exact default footprint height */
+    height: 140px !important;     /* Restores and locks exact default footprint height */
     max-height: 140px !important; /* Hard constraint: strictly forbids any vertical expansion */
     overflow-y: auto;             /* Native scrolling safely captures any text line-wrapping */
     overflow-x: hidden;
@@ -911,224 +1144,196 @@ hr.hmi-divider-short {
     display: none !important;     
 }
 
-
 /* =========================================================================
-   HIGH-PERFORMANCE SCADA GRID INDICATOR MATRIX
+   MULTI-SWITCH-PANEL
    ========================================================================= */
 
-/* The 3x3 container block */
-.hmi-matrix-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 identical locked column widths */
-    grid-template-rows: repeat(3, 34px);   /* Fixed height for cell rows */
-    gap: 1px;                              /* Clean thin grid lines separator */
-    background-color: #333333;             /* Reuses your dark grid border color variable */
+/* The outer row container holding switch group column blocks */
+.hmi-switch-button-row {
+    display: flex;
+    justify-content: space-between;
     width: 100%;
+    background-color: transparent;
+    border: none;
+    padding: 0;
     box-sizing: border-box;
+	/* CRITICAL POSITIONING REPAIR LAYER: */
+    /* Opens up a clean, dedicated 14px layout clearance window at the bottom 
+       so absolute-positioned timestamps can anchor securely without being clipped */
+    margin-bottom: 14px !important; 
 }
 
-/* Base industrial grid cell footprint */
-.hmi-matrix-cell {
+/* Force each cell block to split the row width equally and stack items vertically */
+.hmi-switch-button-row .hmi-switch-col-cell {
     display: flex;
-    align-items: center;
+    flex-direction: column; /* Locks the layout to a straight vertical stack! */
+    align-items: center;    /* Centers text and buttons horizontally in the cell */
     justify-content: center;
-    font-family: inherit;
-    font-weight: bold;
-    font-size: 13px;
-    letter-spacing: 0.5px;
-    transition: background-color 0.15s ease;
+    flex-grow: 1;
+    flex-basis: 0;
+    min-width: 0;
+    margin: 0 !important;
+    padding: 10px 4px !important;
+    box-sizing: border-box;
+    gap: 6px;               /* Clean spatial breathing room between text and button */
 }
 
-/*   COMPLIANT OPERATIONAL STATE COLORS */
-
-/* State OK (Active / Normal Operating Target): High readability crisp white */
-.hmi-matrix-cell.state-ok {
-    background-color: #e2e8f0; 
-    color: #1a1a1a; 
+/* Replicates the crisp gray border divider lines between separate cells */
+.hmi-switch-button-row .hmi-switch-col-cell:not(:last-child) {
+    border-right: 1px solid #e5e5e5 !important;
 }
 
-/* State ERROR (Alarm Condition / Tripped): Heavy low-contrast dark charcoal black */
-.hmi-matrix-cell.state-error {
-    background-color: #22252a; 
-    color: #ffffff; 
+/* Ensure the cell title stays neatly centered on a single line */
+.hmi-switch-button-row .hmi-switch-col-cell .hmi-pack-label {
+    text-align: center;
+    margin: 0;
+    white-space: nowrap; /* Stops words from wrapping or splitting awkwardly */
 }
 
-/* State DISABLED (Bypassed / Inactive): Low fatigue neutral medium slate gray */
-.hmi-matrix-cell.state-disabled {
-    background-color: #555c66; 
-    color: #8892a0; 
+/* Adjust the button widths inside the cells to match standard look */
+.hmi-switch-button-row .hmi-switch-col-cell .hmi-clickable-badge {
+    width: 70%;
+    text-align: center;
+    margin: 0;
+    float: none; /* Wipes out old layout alignment overrides */
 }
 
 /* =========================================================================
-   HIGH-PERFORMANCE EMERGENCY STOP COMPONENT
+   COMPACT DYNAMIC 180° SVG GAUGE COMPONENT LAYOUT
    ========================================================================= */
-
-.hmi-btn-estop {
+.hmi-gauge-view-box {
+    position: relative;
     width: 100%;
-    background-color: #2a2a2a;         /* Boring uniform charcoal baseline when safe */
-    color: #e2e8f0;
-    border: 2px solid var(--hmi-border-dark);
-    padding: 14px;
-    font-family: inherit;
-    font-weight: bold;
-    font-size: 14px;
-    letter-spacing: 1px;
-    cursor: pointer;
-    box-sizing: border-box;
-    transition: all 0.15s ease;
+    height: 75px;
+    margin: 4px auto;
 }
 
-.hmi-btn-estop:hover {
-    background-color: #383838;
-    border-color: #555555;
+.hmi-gauge-track-bg {
+    fill: none !important;
+    stroke: #eeeeee !important;    /* Clean dark gray background arc track channel line (313644) */
+    stroke-width: 10 !important;
+    stroke-linecap: round !important;
 }
 
-/* Tripped Active Alert State - Unmissable Desaturated Industrial Red */
-.hmi-btn-estop.active {
-    background-color: #b33c3c !important; 
-    color: #ffffff !important;
-    border-color: #ffffff !important;
-    animation: hmi-estop-pulse 2s infinite ease-in-out; /* Subtle pulse animation */
+.hmi-gauge-fill {
+    fill: none !important;
+    stroke: #77777777 !important;    /* Standard: Quiet gray baseline operational arc (64748b)*/
+    stroke-width: 10 !important;
+    stroke-linecap: round !important;
+    stroke-dasharray: 126 !important;
+    stroke-dashoffset: calc(var(--gauge-offset) * 1px) !important;
+    transition: stroke-dashoffset 0.35s ease;
 }
+
+/* Centers the standard layout elements squarely over the SVG paths */
+.hmi-gauge-center-readout {
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 50% !important;
+    transform: translate(-50%, 0) !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    z-index: 10 !important;        
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+}
+
+/* Declarative automated chassis alarm borders */
+[data-alarm="yellow"] .hmi-gauge-fill { stroke: #ffb300 !important; }
+.hmi-pack-tile[data-alarm="yellow"] { border-left: 4px solid #ffb300 !important; }
+
+[data-alarm="red"] .hmi-gauge-fill { stroke: #ef4444 !important; }
+.hmi-pack-tile[data-alarm="red"] { border-left: 4px solid #dc2626 !important; }
 
 /* =========================================================================
-   HMITILES: WIND MATRIX PANEL
+   TECHNICAL ANALOG INSTRUMENTATION NEEDLE GAUGE
    ========================================================================= */
 
-.hmi-wind-grid {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 12px 10px 4px 10px; 
+/* The Square-Cap Override: Enforces clean, flat geometric edge lines */
+.hmi-needle-gauge-track,
+.hmi-needle-gauge-fill {
+    stroke-linecap: butt !important;  /* Straight flat cuts that fit the needle perfectly */
 }
 
-.hmi-wind-columns {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-    width: 100%;
-    text-align: center;
+/* The Analog Pointer Needle - Focused vector layout line */
+.hmi-gauge-needle {
+    stroke: #111111 !important;         /* Deep high-contrast black pointer indicator */
+    stroke-width: 2 !important;
+    stroke-linecap: round !important;   /* Keeps the needle tip itself smooth */
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important; /* Damped hardware response physics */
 }
 
-.hmi-wind-col {
-    display: flex;
-    flex-direction: column;
+/* Center Pin Mechanical Hub Anchor Cap */
+.hmi-gauge-center-cap {
+    fill: #111111 !important;           /* Solid dark core mechanical pin button */
+    stroke: #ffffff !important;         /* Sharp silver protective trim accent ring */
+    stroke-width: 0.5 !important;
 }
 
-.hmi-wind-col-split {
-    display: flex;
-    flex-direction: column;
-    border-right: 1px solid #eee;
-}
-
-.hmi-wind-label {
-    font-size: 11px;
-    color: #666;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-/* Wrapper line container to hold the bold value cleanly */
-.hmi-wind-val-line {
-    font-weight: bold;
-    color: #111;
-    margin-top: 4px;
-}
-
-/* Base typography utility for engineering units sitting on line 2 */
-.hmi-wind-subvalue {
-    font-size: 11px;
-    color: #777;
-    margin-top: 1px;
-}
-
-/* Color Accent Variations matching your dashboard palette */
-.gust-color {
-    color: #d35400;
-}
-
-.chill-color {
-    color: #2980b9;
-}
-
-.hmi-wind-status-bar {
-    border-top: 1px solid #eee;
-    margin-top: 12px;
-    padding-top: 8px;
-    text-align: center;
-    font-size: 12px;
-    font-weight: 600;
-    color: #333;
-}
-
-.hmi-wind-bf-desc {
-    color: #222; 
-    font-weight: bold;
-    text-transform: uppercase;
+/* Bottom-Right Sub-Footer Combined Data Label Text */
+.hmi-gauge-footer-value {
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    color: #111111 !important;          /* Sits cleanly matching look of the update timestamps */
     margin-right: 6px;
 }
 
-.hmi-wind-divider {
-    color: #bbb;
-    font-weight: normal;
-    margin-right: 6px;
-}
+/* Chromatic Alarm System Overrides for the Needle and Center Cap Core */
+[data-alarm="yellow"] .hmi-gauge-needle { stroke: #ffb300 !important; }
+[data-alarm="yellow"] .hmi-gauge-center-cap { fill: #ffb300 !important; }
 
-.hmi-wind-direction {
-    color: #555;
-}
+[data-alarm="red"] .hmi-gauge-needle { stroke: #ef4444 !important; }
+[data-alarm="red"] .hmi-gauge-center-cap { fill: #ef4444 !important; }
 
 /* =========================================================================
-   INDOOR AIR QUALITY / CO2 MATRIX
+   WIND COMPASS ROSE
    ========================================================================= */
-.hmi-iaq-grid {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+
+.hmi-compass-view-box {
+    position: relative;
     width: 100%;
-    box-sizing: border-box;
-    padding: 16px 12px 12px 12px;
+    height: 75px;                  /* Matches the exact visual height of the needle gauge boxes */
+    margin: 4px auto;
 }
 
-/* Big central numbers hierarchy tracking */
-.hmi-iaq-val-line {
-    font-size: 32px;
-    font-weight: 800;
-    color: #111;
-    line-height: 1.1;
+/* THE CONTRAST FIX: Strengthened from #dddddd to #b3b3b3 so it pops on light gray grids */
+.hmi-compass-dial-ring {
+    fill: none !important;
+    stroke: #b3b3b3 !important;    /* Muted industrial gray ensures clean visibility */
+    stroke-width: 0.75 !important;
+    stroke-dasharray: 2, 2 !important; /* Elegant dotted track eliminates visual clutter */
 }
 
-.hmi-iaq-subvalue {
-    font-size: 11px;
-    color: #666;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-top: 2px;
-    margin-bottom: 12px;
+/* Orientation Tick Guide Marks */
+.hmi-compass-tick {
+    stroke: #777777 !important;    /* Dark gray anchor lines provide excellent alignment tracks */
+    stroke-width: 1 !important;
+    stroke-linecap: round !important;
 }
 
-/* Health Severity Rating Tracker Status Bar */
-.hmi-iaq-status-bar {
-    width: 100%;
-    border-top: 1px solid #eee;
-    padding-top: 10px;
-    text-align: center;
-    font-size: 14px;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #222;
+/* Dynamic Cardinal Letter Indicator Labels (N, E, S, W text nodes) */
+.hmi-compass-text-label {
+    font-weight: 600 !important;
+    font-size: 16px !important;     /* Compact micro-typography keeps layout clean */
+    fill: #777777 !important;       /* Clean matching gray letter text markers */
+    text-anchor: middle !important;
+    dominant-baseline: middle !important;
 }
 
-/* High-Performance Status Alert Badges (Neutral, Caution, Emergency) */
-.hmi-badge.iaq-excellent { background-color: #27ae60; color: #fff; } /* Green */
-.hmi-badge.iaq-good      { background-color: #2ecc71; color: #fff; } /* Light Green */
-.hmi-badge.iaq-fair      { background-color: #f39c12; color: #fff; } /* Amber */
-.hmi-badge.iaq-mediocre  { background-color: #e67e22; color: #fff; } /* Orange */
-.hmi-badge.iaq-bad       { background-color: #c0392b; color: #fff; } /* Red Crimson */
+/* Active North Indicator Arrow Pointer Apex Apex */
+.hmi-compass-needle-north {
+    fill: #777777 !important;       /* True baseline quiet dark gray fill */
+    stroke: #111111 !important;     /* Sharp crisp high-contrast border line guide */
+    stroke-width: 1 !important;
+}
+
+/* Passive South Indicator Counter-Weight Tail */
+.hmi-compass-needle-south {
+    fill: #ffffff !important;       /* Solid crisp white provides excellent contrasting weight balance */
+    stroke: #777777 !important;
+    stroke-width: 0.75 !important;
+}
 
 /* ==========================================================================
    END

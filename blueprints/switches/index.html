@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HMITiles Switches</title>
+    <link rel="stylesheet" href="/templates/core/hmitiles.css">
+    <script type="module" src="/templates/core/hmitiles.js" defer></script>
+
+<body>
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+				<h2>HMITiles Switches</h2>
+			</div>
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
+			</div>
+		</div>
+	</header>
+
+    <main class="hmi-panel">
+
+		<!-- 
+			SWITCH
+			Domoticz Type Light/Switch / SubType Switch / SwitchType On/Off
+			Horizontal selector button row panel (like the 4-switch panel).
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Switch (ON/OFF)</div></div>
+			<div class="hmi-switch-button-row">
+				<!-- LEVEL Off -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Off">
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- LEVEL On -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="On">
+					<div class="hmi-badge hmi-clickable-badge">ON</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 
+			SWITCH
+			Domoticz Type Light/Switch / SubType Switch / SwitchType On/Off
+			Horizontal selector button row panel (like the 4-switch panel).
+			Show state of a machine STAND-BY or RUNNING.
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Machine Status Control</div></div>
+			<div class="hmi-switch-button-row">
+				<!-- LEVEL Off -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="37" data-action="Off">
+					<div class="hmi-badge hmi-clickable-badge">STAND-BY</div>
+				</div>
+
+				<!-- LEVEL On -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="37" data-action="On">
+					<div class="hmi-badge hmi-clickable-badge">RUNNING</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 
+			SELECTOR (DROPDOWN)
+			Domoticz Type Light/Switch / SubType Selector Switch
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="selector" 
+			data-device-idx="7">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Selector (Dropdown)</div></div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			SELECTOR (BUTTONS)
+			Domoticz Type Light/Switch / SubType Selector Switch
+			Horizontal selector button row panel (like the 4-switch panel).
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Selector (Buttons)</div></div>
+			<div class="hmi-switch-button-row">
+				
+				<!-- LEVEL 0: OFF -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="8" data-level="0" data-on-text="OFF" data-off-text="OFF">
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- LEVEL 10: HOME -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="8" data-level="10" data-on-text="HOME" data-off-text="HOME">
+					<div class="hmi-badge hmi-clickable-badge">HOME</div>
+				</div>
+
+				<!-- LEVEL 20: AWAY -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="8" data-level="20" data-on-text="AWAY" data-off-text="AWAY">
+					<div class="hmi-badge hmi-clickable-badge">AWAY</div>
+				</div>
+
+				<!-- LEVEL 30: NIGHT -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="8" data-level="30" data-on-text="NIGHT" data-off-text="NIGHT">
+					<div class="hmi-badge hmi-clickable-badge">NIGHT</div>
+				</div>
+
+			</div>
+		</div>
+
+		<!-- 
+			SWITCH
+			Type Light/Switch / SubType Switch / SwitchType On/Off
+			Emergency stop actions reset and trigged (reusing switch infrastructure).
+			To set the last-update, the data-device-idx must be set in the hmi-pack-tile.
+		-->
+		<div class="hmi-pack-tile" data-device-idx="9">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">EMERGENCY-STOP</div></div>
+			<div class="hmi-switch-button-row">
+				<!-- A single, full-width inner tile block.
+					 The background script simply toggles the text inside the badge:
+					 Normal Mode:  badge says "RESET / OK" and drops the active class
+					 Tripped Mode: badge says "TRIPPED" and gains the hmi-active-state class -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" 
+					 data-type="switch" 
+					 data-device-idx="9" 
+					 data-action="Toggle" 
+					 id="hmi-estop-active-btn" 
+					 style="width: 100%;">
+					<div class="hmi-badge hmi-clickable-badge hmi-active-state">TRIPPED</div>
+				</div>
+			</div>
+			<div class="hmi-last-update" data-field="LastUpdate">YYYY-MM-DD hh:mm:ss</div>
+		</div>
+		<!-- 
+			SWITCH
+			Domoticz Type Light/Switch / SubType Switch / SwitchType On/Off
+			2-SWITCH HORIZONTAL PANEL
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">2-Switch Horizontal Panel</div></div>
+			<!-- Outer horizontal container wrapper -->
+			<div class="hmi-switch-button-row">
+				
+				<!-- SWITCH 1 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle">
+					<div class="hmi-pack-label">Switch 1</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- SWITCH 2 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
+					<div class="hmi-pack-label">Switch 2</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+			</div>
+		</div>
+
+		<!-- 
+			SWITCH
+			Domoticz Type Light/Switch / SubType Switch / SwitchType On/Off
+			2-SWITCH VERTICAL PANEL
+			Generic vertical multi-onoff-switch panel with 2 number of switches.
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">2-Switch Vertical Panel</div></div>
+			<div class="hmi-value-grid">
+
+				<!-- SWITCH 1 (IDX N) -->
+				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="5" data-action="Toggle">
+					<div class="hmi-tile-header">
+						<div class="hmi-pack-label">Switch 1</div>
+						<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					</div>
+				</div>
+				<!-- SWITCH 2 (IDX N) -->
+				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="6" data-action="Toggle">
+					<div class="hmi-tile-header">
+						<div class="hmi-pack-label">Switch 2</div>
+						<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<!-- 
+			SWITCH
+			Domoticz Type Light/Switch / SubType Switch / SwitchType On/Off
+			3-SWITCH HORIZONTAL PANEL
+			Generic horizontal multi-onoff-switch panel with flexible number of switches.
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">3-Switch Horizontal Panel</div></div>
+			<!-- Outer horizontal container wrapper -->
+			<div class="hmi-switch-button-row">
+				
+				<!-- SWITCH 1 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle">
+					<div class="hmi-pack-label">Switch 1</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- SWITCH 2 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
+					<div class="hmi-pack-label">Switch 2</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- SWITCH 3 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle">
+					<div class="hmi-pack-label">Switch 3</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 
+			SWITCH
+			Domoticz Type Light/Switch / SubType Switch / SwitchType On/Off
+			4-SWITCH HORIZONTAL PANEL
+			Generic horizontal multi-onoff-switch panel with flexible number of switches.
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">4-Switch Horizontal Panel</div></div>
+			
+			<!-- Outer horizontal container wrapper -->
+			<div class="hmi-switch-button-row">
+				
+				<!-- SWITCH 1 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle">
+					<div class="hmi-pack-label">Switch 1</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- SWITCH 2 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
+					<div class="hmi-pack-label">Switch 2</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- SWITCH 3 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle">
+					<div class="hmi-pack-label">Switch 3</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- SWITCH 4 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
+					<div class="hmi-pack-label">Switch 4</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+			</div>
+		</div>
+
+		<!-- 
+			SWITCH
+			Domoticz Type Light/Switch / SubType Switch / SwitchType On/Off
+			4-SWITCH VERTICAL PANEL
+			Generic vertical multi-onoff-switch panel with 1-4 number of switches.
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">4-Switch Vertical Panel</div></div>
+			<div class="hmi-value-grid">
+
+				<!-- SWITCH 1 (IDX N) -->
+				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="5" data-action="Toggle">
+					<div class="hmi-tile-header">
+						<div class="hmi-pack-label">Switch 1</div>
+						<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					</div>
+				</div>
+				<!-- SWITCH 2 (IDX N) -->
+				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="6" data-action="Toggle">
+					<div class="hmi-tile-header">
+						<div class="hmi-pack-label">Switch 2</div>
+						<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					</div>
+				</div>
+
+				<!-- SWITCH 3 (IDX N) -->
+				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="5" data-action="Toggle">
+					<div class="hmi-tile-header">
+						<div class="hmi-pack-label">Switch 3</div>
+						<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					</div>
+				</div>
+
+				<!-- SWITCH 4 (IDX N) -->
+				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="6" data-action="Toggle">
+					<div class="hmi-tile-header">
+						<div class="hmi-pack-label">Switch 4</div>
+						<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<!-- 
+			SWITCH
+			Domoticz Type Light/Switch / SubType Switch / SwitchType On/Off
+			8-SWITCH HORIZONTAL PANEL
+			Generic horizontal multi-onoff-switch panel with flexible number of switches.
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">8-Switch Horizontal Panel</div></div>
+			<!-- Outer horizontal container wrapper -->
+			<div class="hmi-switch-button-row">
+				
+				<!-- SWITCH 1 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
+					<div class="hmi-pack-label">P1</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- SWITCH 2 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="7" data-action="Toggle">
+					<div class="hmi-pack-label">P2</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- SWITCH 3 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
+					<div class="hmi-pack-label">P3</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- SWITCH 4 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="7" data-action="Toggle">
+					<div class="hmi-pack-label">P4</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+			</div>
+			<!-- Outer horizontal container wrapper -->
+			<div class="hmi-switch-button-row">
+				
+				<!-- SWITCH 5 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle">
+					<div class="hmi-pack-label">F1</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- SWITCH 6 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
+					<div class="hmi-pack-label">F2</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- SWITCH 7 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle">
+					<div class="hmi-pack-label">F3</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- SWITCH 8 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
+					<div class="hmi-pack-label">F4</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+			</div>
+		</div>
+
+    </main>
+
+</body>
+</html>

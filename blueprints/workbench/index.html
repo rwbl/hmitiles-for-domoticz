@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+================================================================================
+HMITILES CUSTOM VIEW PROFILE - APPLICATION BLUEPRINT Blueprint
+================================================================================
+Brief:  		HMITiles Sandbox Sandbox Sandbox Workbench Workbench
+Date:  		 	2026-07-12
+Author:   		Robert W.B. Linn @ 2026 MIT
+Description:	Reference Master Sandbox Template Panel Panel
+--------------------------------------------------------------------------------
+MANDATORY ARCHITECTURAL SYSTEM LAWS (RELEASE VERSION 2.0.0):
+1. The HTML definition attribute [data-labels] is STRICTLY MANDATORY for every 
+   single tile element carrying the [data-type="value"] token classification marker.
+2. Structure Contract Format: data-labels="INDEX_BUCKET:DISPLAY_TITLE:UNIT_SUFFIX"
+3. The View Layer relies entirely on this data-labels configuration map as the 
+   final, absolute master authority for column rendering rendering math.
+================================================================================
+-->
+	
+<head>
+    <meta charset="UTF-8">
+    <title>HMITiles Workbench</title>
+
+    <!-- Link backward to reuse shared global common styles -->
+    <link rel="stylesheet" href="/templates/core/hmitiles.css">
+	
+	<!-- Link backward to the HMI tile engine -->
+	<!-- Ensure type="module" is declared so the browser resolves the import statement -->
+	<script type="module" src="/templates/core/hmitiles.js"></script>
+
+</head>
+<body>
+
+	<!-- Inside the header block of index.html -->
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<!-- Left Side: Main Menu & Title -->
+			<div style="display: flex; align-items: center; gap: 15px;">
+			<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+				<h2> HMITiles Workbench</h2>
+			</div>
+
+			<!-- Right Side: Navigation hook back to the master grid -->
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
+			</div>
+		</div>
+	</header>
+
+    <!-- Master outer panel containing the grid -->
+	<!-- Set the device idx according devices list -->
+	<!-- Each tile has comment tiletype, domoticz type, additional info -->
+    <main class="hmi-panel">
+
+		<!-- 
+			INFO
+			Domoticz Type General / SubType Text
+			TEXT / SYSTEM DOCUMENTATION 
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="info"
+			data-device-idx="1">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">HMITiles Info</div></div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			ALERT
+			Domoticz Type General / SubType Alert
+			Level = (0=gray, 1=green, 2=yellow, 3=orange, 4=red)
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="info"
+			data-device-idx="54">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Alert</div></div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+        <!-- 
+			VALUE (ALARM UP)
+			Domoticz Type Air Quality / SubType Voc
+			Multi-tier alarm (5-level generic severity matrix)
+			Display value of any kind. 
+			For tests used type Air Quality.
+			Set the exact values at which a state CHANGE should trigger 
+			when moving upwards from excellent (0 ppm) to bad (1600 ppm) air quality.
+			UPWARD EXAMPLE (Air Quality climbs to trigger alarms)
+			Maps 5 indices sequentially: Level 0 (Gray), 1 (Green), 2 (Yellow), 3 (Orange), 4 (Red)
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-device-idx="3" 
+			 data-type="value"
+			 data-labels="0:CO2 Concentration:ppm;1:State:"
+			 data-state-map="0:EXCELLENT,700:GOOD,900:FAIR,1100:MEDIOCRE,1600:BAD"
+			 data-alarm-direction="up">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Air Quality</div></div>
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-update" data-field="LastUpdate"></div>
+		</div>
+
+		<!-- 
+			VALUE (ALARM  DOWN)
+			Domoticz Type General / SubType Percentage
+			Multi-tier alarm (5-level generic severity matrix)
+			Display value of any kind. 
+			For tests used type Percentage to simulate a Battery.
+			Set the exact values at which a state CHANGE should trigger 
+			when moving downwards from full (100%) to empty (0%)!
+			DOWNWARD EXAMPLE (Battery falls to trigger alarms)
+			Maps 5 indices sequentially: Level 0 (Gray), 1 (Green), 2 (Yellow), 3 (Orange), 4 (Red)
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-device-idx="4" 
+			 data-type="value"
+			 data-labels="0:Level:%;1:State:"
+			 data-state-map="100:FULL,90:MEDIUM,50:LOW,20:EMPTY,5:CRITICAL"
+			 data-alarm-direction="down">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Battery</div></div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+        <!-- 
+			VALUE (ALERT IMAGE 48x48px + VALUE BADGE)
+			Domoticz Type Any value
+			Icon alert state (red), value in badge.
+			Uses Domoticz images Alert48_4.png located in the www/images folder.
+			Ensure to set the path to /images/imagename.png and use 48x48px size.
+		-->
+		<!-- TODO
+		<div class="hmi-pack-tile" 
+			data-type="valueimage"
+			data-device-idx="4"
+			data-unit = "">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Value (Image, Value Badge)</div>
+				<div class="hmi-badge">ALERT</div>
+			</div>
+			<div class="hmi-icon-wrapper">
+				<img src="/images/Alert48_4.png" alt="Status" width="48" height="48">
+			</div>
+		</div>
+		-->
+
+		<!-- 
+			SWITCH
+			Domoticz Type Light/Switch / SubType Switch / SwitchType On/Off
+			Horizontal selector button row panel (like the 4-switch panel).
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Switch (ON/OFF)</div>
+			</div>
+			
+			<div class="hmi-switch-button-row">
+				
+				<!-- LEVEL Off -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Off">
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- LEVEL On -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="On">
+					<div class="hmi-badge hmi-clickable-badge">ON</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 
+			SWITCH
+			Domoticz Type Light/Switch / SubType Switch / SwitchType On/Off
+			Horizontal selector button row panel (like the 4-switch panel).
+			Show state of a machine STAND-BY or RUNNING.
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Machine Status Control</div>
+			</div>
+			
+			<div class="hmi-switch-button-row">
+				
+				<!-- LEVEL Off -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="37" data-action="Off">
+					<div class="hmi-badge hmi-clickable-badge">STAND-BY</div>
+				</div>
+
+				<!-- LEVEL On -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="37" data-action="On">
+					<div class="hmi-badge hmi-clickable-badge">RUNNING</div>
+				</div>
+			</div>
+		</div>
+
+
+		<!-- 
+			SELECTOR (DROPDOWN)
+			Domoticz Type Light/Switch / SubType Selector Switch
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="selector" 
+			data-device-idx="7">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Selector (Dropdown)</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			SELECTOR (BUTTONS)
+			Domoticz Type Light/Switch / SubType Selector Switch
+			Horizontal selector button row panel (like the 4-switch panel).
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Selector (Buttons)</div>
+			</div>
+			
+			<div class="hmi-switch-button-row">
+				
+				<!-- LEVEL 0: OFF -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="8" data-level="0" data-on-text="OFF" data-off-text="OFF">
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- LEVEL 10: HOME -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="8" data-level="10" data-on-text="HOME" data-off-text="HOME">
+					<div class="hmi-badge hmi-clickable-badge">HOME</div>
+				</div>
+
+				<!-- LEVEL 20: AWAY -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="8" data-level="20" data-on-text="AWAY" data-off-text="AWAY">
+					<div class="hmi-badge hmi-clickable-badge">AWAY</div>
+				</div>
+
+				<!-- LEVEL 30: NIGHT -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="8" data-level="30" data-on-text="NIGHT" data-off-text="NIGHT">
+					<div class="hmi-badge hmi-clickable-badge">NIGHT</div>
+				</div>
+
+			</div>
+		</div>
+
+		<!-- 
+			SWITCH
+			Type Light/Switch / SubType Switch / SwitchType On/Off
+			Emergency stop actions reset and trigged (reusing switch infrastructure).
+			To set the last-update, the data-device-idx must be set in the hmi-pack-tile.
+		-->
+		<div class="hmi-pack-tile" data-device-idx="9">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">EMERGENCY-STOP</div></div>
+			<div class="hmi-switch-button-row">
+				<!-- A single, full-width inner tile block.
+					 The background script simply toggles the text inside the badge:
+					 Normal Mode:  badge says "RESET / OK" and drops the active class
+					 Tripped Mode: badge says "TRIPPED" and gains the hmi-active-state class -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" 
+					 data-type="switch" 
+					 data-device-idx="9" 
+					 data-action="Toggle" 
+					 id="hmi-estop-active-btn" 
+					 style="width: 100%;">
+					<div class="hmi-badge hmi-clickable-badge hmi-active-state">TRIPPED</div>
+				</div>
+			</div>
+			<div class="hmi-last-update" data-field="LastUpdate">YYYY-MM-DD hh:mm:ss</div>
+		</div>
+
+		<!-- 
+			SETPOINT
+			Domoticz Type Setpoint / SubType Setpoint
+			Generic single setpoint controller 
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="setpoint" 
+			data-device-idx="10"
+			data-step="0.5">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Setpoint</div></div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			SETPOINTPROCESSVALUE
+			Domoticz Type Setpoint / SubType Setpoint
+			Domoticz Type Temp / SubType LaCrosse TX3
+			Combined stepper controller with live pv in the badge
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="setpointprocessvalue" 
+			data-device-idx="10" 
+			data-device-idx-pv="11"
+			data-step="1.0">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Setpoint + ProcessValue</div></div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			PROGRESSBAR
+			Domoticz Type Any value
+			Progressbar with Value in badge
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="progressbar" 
+			data-device-idx="4" 
+			data-unit="%">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Percentage</div></div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			DIMMER
+			Domoticz Type Light/Switch / SubType Switch / SwitchType Dimmer
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="dimmer" 
+			data-device-idx="12" 
+			data-unit="%">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Slider</div></div>
+			<div class="hmi-value-grid"></div>
+		</div>
+		
+		<!-- 
+			VALUE
+			Domoticz Type Wind / SubType WGRT800 or TFA
+			6-Column layout to support data: "270;W;45;120;22.0;18.5"
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="14"
+			 data-labels="0:BEARING:°;1:DIR:Compass;2:SPEED:m/s;3:GUST:m/s;4:TEMP:°C;5:CHILL:°C">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Wind</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+		
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Temp+Hum+Baro
+			5-Column layout to support data: TEMP;HUM;HUM_STAT;BAR;BAR_FOR
+			Not used because handled by preparser in the hmitiles engine:
+			data-map="2->0=Normal,1=Comfortable,2=Dry,3=Wet;4->0=Stable,1=Sunny,2=Rainy">
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="15"
+			 data-labels="0:TEMP:°C;1:HUM:%;2:HUMSTAT:;3:BARO:hPa;4:BAROFOR:">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Temp+Hum+Baro</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Temp+Baro
+			3-Column layout to support data: "0:TEMP:°C;1:BARO:hPa;2:BAROFOR:"
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="16"
+			 data-labels="0:TEMP:°C;1:BARO:hPa;2:BAROFOR:">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Temp+Baro</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Temp+Hum
+			3-Column layout to support data: TEMP;HUM;HUM_STAT;
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			data-type="value" 
+			data-device-idx="17"
+			data-labels="0:TEMP:°C;1:HUM:%;2:HUMSTAT:">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Temp+Hum</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+		
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Baro
+			2-Column layout to support data: BAR;BAR_FOR
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="18"
+			 data-labels="0:BARO:hPa;1:BAROFOR:">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Baro</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type Rain / SubType n/a
+			2-Column layout to support data: RAINRATE;RAINCOUNTER
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="19"
+			 data-labels="0:RAINRATE:mm;1:RAINCOUNTER:mm">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Rain</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Soil Moisture
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			data-type="value" 
+			data-device-idx="20"
+			data-labels="0:MOISTURE:cb">
+		<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Moisture</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+		
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Soil Moisture
+			2-Column layout to support data: MOISTURE;STATE
+			UPWARD EXAMPLE (Moisture climbs to trigger alarms)
+			Maps 5 indices sequentially: Level 0 (Gray), 1 (Green), 2 (Yellow), 3 (Orange), 4 (Red)
+			00 - 09 = SATURATED, 10 - 19 = ADEQUATELY WET, 20 - 59 = IRRIGATION ADVICE, 60 - 99 = IRRIGATION, 100-200 = DANGEROUSLY DRY
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			data-type="value" 
+			data-device-idx="20"
+			data-labels="0:MOISTURE:cb;1:STATE:"
+			data-state-map="10:SATURATED,20:ADEQUATELY WET,60:IRRIGATION ADVICE,100:IRRIGATION,200:DANGEROUSLY DRY"
+			data-alarm-direction="up">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Moisture</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+				
+		<!-- 
+			VALUE
+			Domoticz Type UV / SubType UVN128,UV138
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			data-type="value" 
+			data-device-idx="21"
+			data-labels="0:UV Index:uvi;1:STATE:"
+			data-state-map="0:LOW,4:MEDIUM,6:HIGH,9:VERY HIGH,10:EXTREM"
+			data-alarm-direction="up">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">UV</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Leaf Wetness
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			data-type="value" 
+			data-device-idx="52"
+			data-labels="0:Wetness:">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Leaf Wetness</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+		
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType SolarRadiation
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			data-type="value" 
+			data-device-idx="53"
+			data-labels="0:Radiation:Watt/m2">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">SolarRadiation</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Fan
+			TODO
+		-->
+		<!--
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			data-type="value" 
+			data-device-idx="54"
+			data-labels="0:Fan:">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Fan</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+		-->
+		
+		<!-- 
+			VALUE
+			Domoticz Type Counter / SubType Energy
+			2-Column layout to support data: POWER;ENERGY
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="22"
+			 data-labels="0:POWER:W;1:ENERGY:Wh">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Electricity</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type Current / SubType CM113, Electrisave 
+			3-Column layout to support data: AMPERE_1;AMPERE_2;AMPERE_3
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="23"
+			 data-labels="0:AMP 1:A;1:AMP 2:A;2:AMP 3:A">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Ampere 3 Phase</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+				
+		<!-- 
+			VALUE
+			Domoticz Type P1 SMART METER / SubType Electricity
+			2-Column layout to support data: USAGE1;USAGE2;RETURN1;RETURN2;CONS;PROD
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="24"
+			 data-labels="0:USE1:Wh;1:USE2:Wh;2:RET1:Wh;3:RET2:Wh;4:CONS:W;5:PROD:W">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">P1 Smart Meter Energy</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type P1 SMART METER / SubType Electricity
+			2-Column layout to support data: USAGE1;USAGE2;RETURN1;RETURN2;CONS;PROD
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="25"
+			 data-labels="0:USE1:Wh;1:USE2:Wh;2:RET1:Wh;3:RET2:Wh;4:CONS:W;5:PROD:W">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">P1 Smart Meter Gas</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Distance
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="26"
+			 data-labels="0:Distance:cm">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Distance</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Waterflow
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			data-type="value" 
+			data-device-idx="27"
+			data-labels="0:Flow:l/min">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Waterflow</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Visibility
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="28"
+			 data-labels="0:Visibility:km">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Visibility</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Voltage
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="29"
+			 data-labels="0:Voltage:V">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Voltage</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type Usage / SubType Electric
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="30"
+			 data-labels="0:Usage:W">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Usage/Electic</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Sound Level
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="31"
+			 data-labels="0:Level:db">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Sound Level</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Pressure
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="32"
+			 data-labels="0:Pressure:Bar">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Pressure</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type Lux / SubType Lux
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="33"
+			 data-labels="0:Illuminance:Lux">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Lux</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+        <!-- 
+			VALUE
+			Domoticz Type General / SubType Custom Sensor
+			Display value of any kind. 
+			For tests used custom sensor (taking Unit rom device.Data property).
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			data-type="value" 
+			data-device-idx="2"
+			data-labels="0:VALUE:UNIT">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Custom Sensor</div></div>
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-update" data-field="LastUpdate"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type Weight / SubType BWR102
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			data-type="value" 
+			data-device-idx="35"
+			data-labels="0:Scale:kg">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Scale</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type Managed Counter / SubType Energy
+			2-Column layout to support data: COUNTER;USAGE
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="38"
+			 data-labels="0:COUNTER:Wh;1:USAGE:Wh">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Managed Counter Electricity</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+				
+		<!-- 
+			INPUT
+			Domoticz Type General / SubType Text
+			Input text
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="input"
+			data-device-idx="1"
+			data-input-type="text">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Input (Text)</div>
+				<div class="hmi-badge">SYNCED</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+		
+		<!-- 
+			INPUT
+			Domoticz Type General / SubType Text
+			Input number
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="input"
+			data-device-idx="13"
+			data-input-type="number">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Input (Number)</div>
+				<div class="hmi-badge">SYNCED</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			SWITCH
+			Domoticz Type Light/Switch / SubType Switch / SwitchType On/Off
+			4-SWITCH HORIZONTAL PANEL
+			Generic horizontal multi-onoff-switch panel with flexible number of switches.
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">4-Switch Horizontal Panel</div>
+			</div>
+			
+			<!-- Outer horizontal container wrapper -->
+			<div class="hmi-switch-button-row">
+				
+				<!-- SWITCH 1 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle">
+					<div class="hmi-pack-label">P1</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- SWITCH 2 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
+					<div class="hmi-pack-label">Switch 2</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- SWITCH 3 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle">
+					<div class="hmi-pack-label">Switch 3</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- SWITCH 4 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
+					<div class="hmi-pack-label">Switch 4</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+			</div>
+		</div>
+
+		<!-- 
+			SWITCH
+			Domoticz Type Light/Switch / SubType Switch / SwitchType On/Off
+			8-SWITCH HORIZONTAL PANEL
+			Generic horizontal multi-onoff-switch panel with flexible number of switches.
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">8-Switch Horizontal Panel</div>
+			</div>
+			
+			<!-- Outer horizontal container wrapper -->
+			<div class="hmi-switch-button-row">
+				
+				<!-- SWITCH 1 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
+					<div class="hmi-pack-label">P1</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- SWITCH 2 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="7" data-action="Toggle">
+					<div class="hmi-pack-label">P2</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- SWITCH 3 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
+					<div class="hmi-pack-label">P3</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- SWITCH 4 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="7" data-action="Toggle">
+					<div class="hmi-pack-label">P4</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+			</div>
+			<!-- Outer horizontal container wrapper -->
+			<div class="hmi-switch-button-row">
+				
+				<!-- SWITCH 5 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle">
+					<div class="hmi-pack-label">F1</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- SWITCH 6 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
+					<div class="hmi-pack-label">F2</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- SWITCH 7 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle">
+					<div class="hmi-pack-label">F3</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- SWITCH 8 -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
+					<div class="hmi-pack-label">F4</div>
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+			</div>
+		</div>
+
+
+		<!-- 
+			SWITCH
+			Domoticz Type Light/Switch / SubType Switch / SwitchType On/Off
+			4-SWITCH VERTICAL PANEL
+			Generic vertical multi-onoff-switch panel with 1-4 number of switches.
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">4-Switch Vertical Panel</div>
+			</div>
+
+			<div class="hmi-value-grid">
+
+				<!-- SWITCH 1 (IDX N) -->
+				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="5" data-action="Toggle">
+					<div class="hmi-tile-header">
+						<div class="hmi-pack-label">Switch 1</div>
+						<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					</div>
+				</div>
+				<!-- SWITCH 2 (IDX N) -->
+				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="6" data-action="Toggle">
+					<div class="hmi-tile-header">
+						<div class="hmi-pack-label">Switch 2</div>
+						<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					</div>
+				</div>
+
+				<!-- SWITCH 3 (IDX N) -->
+				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="5" data-action="Toggle">
+					<div class="hmi-tile-header">
+						<div class="hmi-pack-label">Switch 3</div>
+						<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					</div>
+				</div>
+
+				<!-- SWITCH 4 (IDX N) -->
+				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="6" data-action="Toggle">
+					<div class="hmi-tile-header">
+						<div class="hmi-pack-label">Switch 4</div>
+						<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<!-- 
+			TILE PLACEHOLDER 
+		-->
+		<div class="hmi-pack-tile hmi-tile-placeholder">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">[ SPARE TILE COMPONENT ]</div></div>
+		</div>
+		
+        <!-- 
+			LOGMONITOR
+			Monospace system log tile with dynamic channel selector, no filter
+			No idx
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="logmonitor" 
+			data-log-limit="8" 
+			data-log-prefix="[HMI Tiles]" 
+			data-log-filter="">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Domoticz Server Log</div>
+				<select class="hmi-log-channel-select">
+					<option value="268435455">ALL LOGS</option>
+					<option value="1">STATUS</option>
+					<option value="2">DETAIL</option>
+					<option value="4">ERRORS</option>
+				</select>
+			</div>
+			
+			<div class="hmi-log-terminal">
+				<div class="hmi-log-line">Initializing log system link...</div>
+			</div>
+
+			<div class="hmi-log-input-row">
+				<input type="text" class="hmi-log-input" placeholder="Type custom log message..." maxlength="100">
+				<button class="hmi-log-send-btn">SEND</button>
+				<button class="hmi-log-clear-btn">CLEAR</button>
+			</div>
+		</div>
+
+        <!-- 
+			LOGMONITOR
+			Monospace system log tile with dynamic channel selector, filter
+			No idx
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="logmonitor" 
+			data-log-limit="8" 
+			data-log-prefix="[HMI Tiles]" 
+			data-log-filter="MYTEST">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Domoticz Server Log Filter MYTEST</div>
+				<select class="hmi-log-channel-select">
+					<option value="268435455">ALL LOGS</option>
+					<option value="1">STATUS</option>
+					<option value="2">DETAIL</option>
+					<option value="4">ERRORS</option>
+				</select>
+			</div>
+			
+			<div class="hmi-log-terminal">
+				<div class="hmi-log-line">Initializing log system link...</div>
+			</div>
+
+			<div class="hmi-log-input-row">
+				<input type="text" class="hmi-log-input" placeholder="Type custom log message..." maxlength="100">
+				<button class="hmi-log-send-btn">SEND</button>
+				<button class="hmi-log-clear-btn">CLEAR</button>
+			</div>
+		</div>
+
+        <!-- 
+			LOGMONITOR
+			Monospace system log tile with no input row and option errors
+			No idx
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="logmonitor" 
+			data-log-limit="8" 
+			data-log-prefix="[HMI Tiles]" 
+			data-log-filter="">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Domoticz Server Log</div>
+				<select class="hmi-log-channel-select">
+					<option value="268435455">ALL LOGS</option>
+					<option value="1">STATUS</option>
+					<option value="2">DETAIL</option>
+					<option value="4" selected="selected">ERRORS</option>
+				</select>
+			</div>
+			
+			<div class="hmi-log-terminal">
+				<div class="hmi-log-line">Initializing log system link...</div>
+			</div>
+
+			<div class="hmi-log-input-row" style="display: none; height: 0">
+				<input type="text" class="hmi-log-input" placeholder="Type custom log message..." maxlength="100">
+				<button class="hmi-log-send-btn">SEND</button>
+				<button class="hmi-log-clear-btn">CLEAR</button>
+			</div>
+		</div>
+
+		<!-- 
+			TILE PLACEHOLDER 
+		-->
+		<div class="hmi-pack-tile hmi-tile-placeholder">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">[ SPARE TILE COMPONENT ]</div></div>
+		</div>
+
+		<div class="hmi-pack-tile" data-type="trend" data-device-idx="3">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Air Quality</div></div>
+			<!-- LEAVE BLANK: Automatically filled with dynamic SVG canvas -->
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-update"></div>
+		</div>
+
+		<div class="hmi-pack-tile" data-type="trend" data-device-idx="19">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Rain</div></div>
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-update"></div>
+		</div>
+
+		<div class="hmi-pack-tile" data-type="trend" data-device-idx="21">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">UV</div></div>
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-update"></div>
+		</div>
+
+		<!--
+			FOOTER
+		-->
+
+		<footer class="hmi-footer-version">
+			<hr>
+			<span>HMITiles for Domoticz</span>
+		</footer>
+
+    </main>
+</body>
+</html>

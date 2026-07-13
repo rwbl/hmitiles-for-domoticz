@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>HMITiles Theme Dark (Experimental)</title>
+
+    <!-- Link backward to reuse shared global common styles -->
+    <link rel="stylesheet" href="/templates/core/hmitiles.css">
+    <link rel="stylesheet" href="/templates/core/hmitiles-dark.css"> <!-- Load your override skin right here -->
+	
+	<!-- Link backward to the HMI tile engine -->
+	<!-- Ensure type="module" is declared so the browser resolves the import statement -->
+	<script type="module" src="/templates/core/hmitiles.js"></script>
+</head>
+
+
+<!-- THE TRICK: Simply add your class here to turn on the classic Domoticz look! -->
+<body class="theme-dark">
+
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+				<h2>HMITiles Theme Dark (Experimental)</h2>
+			</div>
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
+			</div>
+		</div>
+	</header>
+
+
+	<main class="hmi-panel">
+    
+        <!-- 
+			VALUE
+			Domoticz Type General / SubType Custom Sensor
+			Display value of any kind. 
+			For tests used custom sensor (taking Unit rom device.Data property).
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			data-type="value" 
+			data-device-idx="2"
+			data-labels="0:VALUE:UNIT">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Custom Sensor</div></div>
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-update" data-field="LastUpdate"></div>
+		</div>
+
+            <!-- 
+			VALUE (ALARM UP)
+			Domoticz Type Air Quality / SubType Voc
+			Multi-tier alarm (5-level generic severity matrix)
+			Display value of any kind. 
+			For tests used type Air Quality.
+			Set the exact values at which a state CHANGE should trigger 
+			when moving upwards from excellent (0 ppm) to bad (1600 ppm) air quality.
+			UPWARD EXAMPLE (Air Quality climbs to trigger alarms)
+			Maps 5 indices sequentially: Level 0 (Gray), 1 (Green), 2 (Yellow), 3 (Orange), 4 (Red)
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-device-idx="3" 
+			 data-type="value"
+			 data-labels="0:CO2 Concentration:ppm;1:State:"
+			 data-state-map="0:EXCELLENT,700:GOOD,900:FAIR,1100:MEDIOCRE,1600:BAD"
+			 data-alarm-direction="up">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Air Quality</div></div>
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-update" data-field="LastUpdate"></div>
+		</div>
+
+        <!-- 
+			VALUE
+			Domoticz Type Air Quality / SubType Voc
+			Multi-Columns CO2 and State
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			data-device-idx="3" 
+			data-type="value"
+			data-labels="0:CO2 Concentration:ppm">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Air Quality</div></div>
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-update" data-field="LastUpdate"></div>
+		</div>
+
+		<!-- AIR QUALITY GAUGE TILE -->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="gauge" 
+			 data-device-idx="3"
+			 data-max="2000"
+			 data-labels="0:CO2 Concentration:ppm;1:State:"
+			 data-state-map="0:EXCELLENT,700:GOOD,900:FAIR,1100:MEDIOCRE,1600:BAD"
+			 data-alarm-direction="up">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Air Quality Gauge</div>
+				<div class="hmi-badge"></div>
+			</div>
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-update" data-field="LastUpdate"></div>
+		</div>
+
+		<!-- 
+			SWITCH
+			Domoticz Type Light/Switch / SubType Switch / SwitchType On/Off
+			Horizontal selector button row panel (like the 4-switch panel).
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Switch (ON/OFF)</div>
+			</div>
+			
+			<div class="hmi-switch-button-row">
+				
+				<!-- LEVEL Off -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Off">
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- LEVEL On -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="On">
+					<div class="hmi-badge hmi-clickable-badge">ON</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 
+			SWITCH
+			Domoticz Type Light/Switch / SubType Switch / SwitchType On/Off
+			Horizontal selector button row panel (like the 4-switch panel).
+			Show state of a machine STAND-BY or RUNNING.
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Machine Status Control</div>
+			</div>
+			
+			<div class="hmi-switch-button-row">
+				
+				<!-- LEVEL Off -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="37" data-action="Off">
+					<div class="hmi-badge hmi-clickable-badge">STAND-BY</div>
+				</div>
+
+				<!-- LEVEL On -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="37" data-action="On">
+					<div class="hmi-badge hmi-clickable-badge">RUNNING</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 
+			SELECTOR (DROPDOWN)
+			Domoticz Type Light/Switch / SubType Selector Switch
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="selector" 
+			data-device-idx="7">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Selector (Dropdown)</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			SELECTOR (BUTTONS)
+			Domoticz Type Light/Switch / SubType Selector Switch
+			Horizontal selector button row panel (like the 4-switch panel).
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Selector (Buttons)</div>
+			</div>
+			
+			<div class="hmi-switch-button-row">
+				
+				<!-- LEVEL 0: OFF -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="8" data-level="0" data-on-text="OFF" data-off-text="OFF">
+					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				</div>
+
+				<!-- LEVEL 10: HOME -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="8" data-level="10" data-on-text="HOME" data-off-text="HOME">
+					<div class="hmi-badge hmi-clickable-badge">HOME</div>
+				</div>
+
+				<!-- LEVEL 20: AWAY -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="8" data-level="20" data-on-text="AWAY" data-off-text="AWAY">
+					<div class="hmi-badge hmi-clickable-badge">AWAY</div>
+				</div>
+
+				<!-- LEVEL 30: NIGHT -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="8" data-level="30" data-on-text="NIGHT" data-off-text="NIGHT">
+					<div class="hmi-badge hmi-clickable-badge">NIGHT</div>
+				</div>
+
+			</div>
+		</div>
+
+		<!-- 
+			SWITCH
+			Type Light/Switch / SubType Switch / SwitchType On/Off
+			Emergency stop actions reset and trigged (reusing switch infrastructure).
+			To set the last-update, the data-device-idx must be set in the hmi-pack-tile.
+		-->
+		<div class="hmi-pack-tile" data-device-idx="9">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">EMERGENCY-STOP</div></div>
+			<div class="hmi-switch-button-row">
+				<!-- A single, full-width inner tile block.
+					 The background script simply toggles the text inside the badge:
+					 Normal Mode:  badge says "RESET / OK" and drops the active class
+					 Tripped Mode: badge says "TRIPPED" and gains the hmi-active-state class -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" 
+					 data-type="switch" 
+					 data-device-idx="9" 
+					 data-action="Toggle" 
+					 id="hmi-estop-active-btn" 
+					 style="width: 100%;">
+					<div class="hmi-badge hmi-clickable-badge hmi-active-state">TRIPPED</div>
+				</div>
+			</div>
+			<div class="hmi-last-update" data-field="LastUpdate">YYYY-MM-DD hh:mm:ss</div>
+		</div>
+
+        <!-- 
+			TREND Solar Production
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" data-type="value" data-device-idx="39" data-labels="0::W">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Production</div></div>
+			<div class="hmi-value-grid"></div>
+		</div>
+		
+		<div class="hmi-pack-tile" data-type="trend" data-device-idx="39">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Production</div></div>
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-value"></div>
+			<div class="hmi-last-update"></div>
+		</div>
+
+
+	</main>
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HMITiles Trend</title>
+
+    <!-- Link backward to reuse shared global common styles -->
+    <link rel="stylesheet" href="/templates/core/hmitiles.css">
+	
+	<!-- Link backward to the HMI tile engine -->
+	<!-- Ensure type="module" is declared so the browser resolves the import statement -->
+	<script type="module" src="/templates/core/hmitiles.js"></script>
+</head>
+
+<body>
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+				<h2>HMITiles Trend</h2>
+			</div>
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
+			</div>
+		</div>
+	</header>
+
+	<main class="hmi-panel">
+	
+		<!-- AIR QUALITY SPARKLINE TILE -->
+		<div class="hmi-pack-tile" data-type="trend" data-device-idx="3">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Air Quality</div>
+			</div>
+			<!-- LEAVE BLANK: Automatically filled with dynamic SVG canvas -->
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-value"></div>
+			<div class="hmi-last-update"></div>
+		</div>
+
+		<!-- RAIN SPARKLINE TILE -->
+		<div class="hmi-pack-tile" data-type="trend" data-device-idx="19">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Rain</div>
+			</div>
+			<!-- LEAVE BLANK: Automatically filled with dynamic SVG canvas -->
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-update"></div>
+		</div>
+
+		<!-- UV SPARKLINE TILE -->
+		<div class="hmi-pack-tile" data-type="trend" data-device-idx="21">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">UV</div>
+			</div>
+			<!-- LEAVE BLANK: Automatically filled with dynamic SVG canvas -->
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-update"></div>
+		</div>
+
+		<!-- BAT SOC SPARKLINE TILE -->
+		<div class="hmi-pack-tile" data-type="trend" data-device-idx="45">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">BAT SoC</div></div>
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-value"></div>
+			<div class="hmi-last-update"></div>
+		</div>
+
+	</main>
+
+</body>
+</html>

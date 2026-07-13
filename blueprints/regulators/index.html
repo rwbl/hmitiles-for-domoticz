@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HMITiles Regulators</title>
+
+    <!-- Link backward to reuse shared global common styles -->
+    <link rel="stylesheet" href="/templates/core/hmitiles.css">
+	
+	<!-- Link backward to the HMI tile engine -->
+	<!-- Ensure type="module" is declared so the browser resolves the import statement -->
+	<script type="module" src="/templates/core/hmitiles.js"></script>
+</head>
+
+<body>
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+				<h2>HMITiles Regulators</h2>
+			</div>
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
+			</div>
+		</div>
+	</header>
+
+	<main class="hmi-panel">
+	
+		<!-- 
+			PROGRESSBAR
+			Domoticz Type Any value
+			Progressbar with Value in badge
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="progressbar" 
+			data-device-idx="4" 
+			data-unit="%">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Percentage</div></div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			DIMMER
+			Domoticz Type Light/Switch / SubType Switch / SwitchType Dimmer
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="dimmer" 
+			data-device-idx="12" 
+			data-unit="%">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Dimmer</div></div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			SLIDER
+			Domoticz Type Light/Switch / SubType Switch / SwitchType Dimmer
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="slider" 
+			data-device-idx="12" 
+			data-unit="%">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Slider</div></div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+	</main>
+
+</body>
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+	File: values/index.html
+	Brief: Display devices data in value tile.
+	Date: 2026-07-12
+	Author: Robert W.B. Linn (c) 2026 MIT
+-->
+<head>
+    <meta charset="UTF-8">
+    <title>HMITiles Values</title>
+
+    <!-- Link backward to reuse shared global common styles -->
+    <link rel="stylesheet" href="/templates/core/hmitiles.css">
+	
+	<!-- Link backward to the HMI tile engine -->
+	<!-- Ensure type="module" is declared so the browser resolves the import statement -->
+	<script type="module" src="/templates/core/hmitiles.js"></script>
+</head>
+
+<body>
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+				<h2>HMITiles Values</h2>
+			</div>
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
+			</div>
+		</div>
+	</header>
+
+	<main class="hmi-panel">
+	
+        <!-- 
+			VALUE
+			Domoticz Type General / SubType Custom Sensor
+			Display value of any kind. 
+			For tests used custom sensor (taking Unit rom device.Data property).
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			data-type="value" 
+			data-device-idx="2"
+			data-labels="0:VALUE:UNIT">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Custom Sensor</div></div>
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-update" data-field="LastUpdate"></div>
+		</div>
+
+        <!-- 
+			VALUE (ALARM UP)
+			Domoticz Type Air Quality / SubType Voc
+			Multi-tier alarm (5-level generic severity matrix)
+			Display value of any kind. 
+			For tests used type Air Quality.
+			Set the exact values at which a state CHANGE should trigger 
+			when moving upwards from excellent (0 ppm) to bad (1600 ppm) air quality.
+			UPWARD EXAMPLE (Air Quality climbs to trigger alarms)
+			Maps 5 indices sequentially: Level 0 (Gray), 1 (Green), 2 (Yellow), 3 (Orange), 4 (Red)
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-device-idx="3" 
+			 data-type="value"
+			 data-labels="0:CO2 Concentration:ppm;1:State:"
+			 data-state-map="0:EXCELLENT,700:GOOD,900:FAIR,1100:MEDIOCRE,1600:BAD"
+			 data-alarm-direction="up">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Air Quality</div></div>
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-update" data-field="LastUpdate"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Percentage
+			Multi-Columns Percentage and State
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			data-device-idx="4" 
+			data-type="value"
+			data-labels="0:Level:%;1:State:">
+			<!-- Layout contents -->
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Battery</div></div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Wind
+			Domoticz Type Wind / SubType TFA
+			Multi-Column layout to support data: "270;W;45;120;22.0;18.5"
+			Wind Bearing;Wind Direction;Wind Speed;Wind Gust;Temp;TempChill
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="14"
+			 data-labels="0:BEARING:°;1:DIR:Compass;2:SPEED:m/s;3:GUST:m/s;4:TEMP:°C;5:CHILL:°C">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Wind</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+		
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Temp+Hum+Baro
+			Multi-Column layout to support data: TEMP;HUM;HUM_STAT;BAR;BAR_FOR
+			data-map="2->0=Normal,1=Comfortable,2=Dry,3=Wet;4->0=Stable,1=Sunny,2=Rainy">
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="15"
+			 data-labels="0:TEMP:°C;1:HUM:%;2:HUMSTAT:;3:BARO:hPa;4:BAROFOR:">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Temp+Hum+Baro</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Temp+Baro
+			Multi-Column layout to support data: "0:TEMP:°C;1:BARO:hPa;2:BAROFOR:"
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="16"
+			 data-labels="0:TEMP:°C;1:BARO:hPa;2:BAROFOR:">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Temp+Baro</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Temp+Hum
+			Multi-Column layout to support data: TEMP;HUM;HUM_STAT;
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			data-type="value" 
+			data-device-idx="17"
+			data-labels="0:TEMP:°C;1:HUM:%;2:HUMSTAT:">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Temp+Hum</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+		
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Baro
+			Multi-Column layout to support data: BAR;BAR_FOR
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="18"
+			 data-labels="0:BARO:hPa;1:BAROFOR:">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Baro</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type Rain / SubType n/a
+			Multi-Column layout to support data: RAINRATE;RAINCOUNTER
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="19"
+			 data-labels="0:RAINRATE:mm;1:RAINCOUNTER:mm">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Rain</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Soil Moisture
+			2-Column layout to support data: MOISTURE;STATE
+			UPWARD EXAMPLE (Moisture climbs to trigger alarms)
+			Maps 5 indices sequentially: Level 0 (Gray), 1 (Green), 2 (Yellow), 3 (Orange), 4 (Red)
+			00 - 09 = SATURATED, 10 - 19 = ADEQUATELY WET, 20 - 59 = IRRIGATION ADVICE, 60 - 99 = IRRIGATION, 100-200 = DANGEROUSLY DRY
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			data-type="value" 
+			data-device-idx="20"
+			data-labels="0:MOISTURE:cb;1:STATE:"
+			data-state-map="10:SATURATED,20:ADEQUATELY WET,60:IRRIGATION ADVICE,100:IRRIGATION,200:DANGEROUSLY DRY"
+			data-alarm-direction="up">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Moisture</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+						
+		<!-- 
+			VALUE
+			Domoticz Type UV / SubType UVN128,UV138
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			data-type="value" 
+			data-device-idx="21"
+			data-labels="0:UV Index:uvi;1:STATE:"
+			data-state-map="0:LOW,4:MEDIUM,6:HIGH,9:VERY HIGH,10:EXTREM"
+			data-alarm-direction="up">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">UV</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type Counter / SubType Energy
+			Multi-Column layout to support data: POWER;ENERGY
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="22"
+			 data-labels="0:POWER:W;1:ENERGY:Wh">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Electricity</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type Current / SubType CM113, Electrisave 
+			Multi-Column layout to support data: AMPERE_1;AMPERE_2;AMPERE_3
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="23"
+			 data-labels="0:AMP 1:A;1:AMP 2:A;2:AMP 3:A">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Ampere 3 Phase</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+				
+		<!-- 
+			VALUE
+			Domoticz Type P1 SMART METER / SubType Electricity
+			Multi-Column layout to support data: USAGE1;USAGE2;RETURN1;RETURN2;CONS;PROD
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			data-type="value" 
+			data-device-idx="24"
+			data-labels="0:USE1:Wh;1:USE2:Wh;2:RET1:Wh;3:RET2:Wh;4:CONS:W;5:PROD:W">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">P1 Smart Meter Energy</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type P1 SMART METER / SubType Electricity
+			Multi-Column layout to support data: USAGE1;USAGE2;RETURN1;RETURN2;CONS;PROD
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="25"
+			 data-labels="0:USE1:Wh;1:USE2:Wh;2:RET1:Wh;3:RET2:Wh;4:CONS:W;5:PROD:W">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">P1 Smart Meter Gas</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Distance
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="26"
+			 data-labels="0:Distance:cm">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Distance</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Visibility
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="28"
+			 data-labels="0:Visibility:km">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Visibility</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Voltage
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="29"
+			 data-labels="0:Voltage:V">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Voltage</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type Usage / SubType Electric
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="30"
+			 data-labels="0:Usage:W">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Usage/Electic</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Sound Level
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="31"
+			 data-labels="0:Level:db">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Sound Level</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type General / SubType Pressure
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="32"
+			 data-labels="0:Pressure:Bar">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Pressure</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type Lux / SubType Lux
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="33"
+			 data-labels="0:Illuminance:Lux">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Lux</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type Weight / SubType BWR102
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			data-type="value" 
+			data-device-idx="35"
+			data-labels="0:Scale:kg">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Scale</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			VALUE
+			Domoticz Type Managed Counter / SubType Energy
+			Multi-Column layout to support data: COUNTER;USAGE
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="38"
+			 data-labels="0:COUNTER:Wh;1:USAGE:Wh">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Managed Counter Electricity</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+	</main>
+
+</body>
+</html>

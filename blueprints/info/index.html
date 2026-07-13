@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HMITiles Info</title>
+
+    <!-- Link backward to reuse shared global common styles -->
+    <link rel="stylesheet" href="/templates/core/hmitiles.css">
+	
+	<!-- Link backward to the HMI tile engine -->
+	<!-- Ensure type="module" is declared so the browser resolves the import statement -->
+	<script type="module" src="/templates/core/hmitiles.js"></script>
+</head>
+
+<body>
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+				<h2>HMITiles Info</h2>
+			</div>
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
+			</div>
+		</div>
+	</header>
+
+	<main class="hmi-panel">
+	
+		<!-- 
+			INFO
+			Domoticz Type General / SubType Text
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="info"
+			data-device-idx="1">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Text from Device</div></div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			INFO
+			No device used but text direct defined with css class hmi-info-text
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="info">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Text Direct from HTML</div></div>
+			<div class="hmi-info-text">
+				<h2>Abbreviations:</h2>PV:Production, EXP:Export,IMP:Import, LOAD:Consumption, CHG:BAT Charge, DSCH:BAT Discharge, SOC:BAT State of Charge<br>
+				Charts: 24-hour-rolling</div>
+		</div>
+
+		<div class="hmi-pack-tile" 
+			data-type="info">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Text Direct from HTML</div></div>
+			<div class="hmi-info-text">
+				<table style="border-collapse:collapse;width:100%;font-family:sans-serif;border:1px solid #ccc;">
+					<thead style="background:#f2f2f2;">
+						<tr style="border-bottom:2px solid #ccc;">
+							<th style="padding:8px;text-align:left;border:1px solid #ccc;">Abbreviation</th><th style="padding:8px;text-align:left;border:1px solid #ccc;">Meaning</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr><td style="padding:8px;font-weight:bold;border:1px solid #ccc;">PV</td><td style="padding:8px;border:1px solid #ccc;">Production</td></tr>
+						<tr><td style="padding:8px;font-weight:bold;border:1px solid #ccc;">EXP</td><td style="padding:8px;border:1px solid #ccc;">Export</td></tr>
+						<tr><td style="padding:8px;font-weight:bold;border:1px solid #ccc;">IMP</td><td style="padding:8px;border:1px solid #ccc;">Import</td></tr>
+						<tr><td style="padding:8px;font-weight:bold;border:1px solid #ccc;">LOAD</td><td style="padding:8px;border:1px solid #ccc;">Consumption</td></tr>
+						<tr><td style="padding:8px;font-weight:bold;border:1px solid #ccc;">CHG</td><td style="padding:8px;border:1px solid #ccc;">BAT Charge</td></tr>
+						<tr><td style="padding:8px;font-weight:bold;border:1px solid #ccc;">DSCH</td><td style="padding:8px;border:1px solid #ccc;">BAT Discharge</td></tr>
+						<tr><td style="padding:8px;font-weight:bold;border:1px solid #ccc;">SOC</td><td style="padding:8px;border:1px solid #ccc;">BAT State of Charge</td></tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+	</main>
+
+</body>
+</html>

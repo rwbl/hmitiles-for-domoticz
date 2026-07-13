@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HMITiles Setpoint</title>
+
+    <!-- Link backward to reuse shared global common styles -->
+    <link rel="stylesheet" href="/templates/core/hmitiles.css">
+	
+	<!-- Link backward to the HMI tile engine -->
+	<!-- Ensure type="module" is declared so the browser resolves the import statement -->
+	<script type="module" src="/templates/core/hmitiles.js"></script>
+</head>
+
+<body>
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+				<h2>HMITiles Setpoint</h2>
+			</div>
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
+			</div>
+		</div>
+	</header>
+
+	<main class="hmi-panel">
+
+		<!-- 
+			SETPOINT
+			Domoticz Type Setpoint / SubType Setpoint
+			Generic single setpoint controller with layout
+			[-][SP][+]
+			Configurable Step Increment.
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="setpoint" 
+			data-device-idx="10"
+			data-step="0.5">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Setpoint</div></div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			SETPOINTPROCESSVALUE
+			Domoticz Type Setpoint / SubType Setpoint
+			Domoticz Type Temp / SubType LaCrosse TX3
+			Combined stepper controller with layout
+			   [PV]
+			[-][SP][+]
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="setpointprocessvalue" 
+			data-device-idx="10" 
+			data-device-idx-pv="11"
+			data-step="1">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Setpoint + ProcessValue</div></div>
+			<div class="hmi-value-grid"></div>
+		</div>
+	
+	</main>
+
+</body>
+</html>

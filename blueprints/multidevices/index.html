@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+	File: multidevices/index.html
+	Brief: Display multi devices data in value tile.
+	Date: 2026-07-13
+	Author: Robert W.B. Linn (c) 2026 MIT
+	Description: The data from several devices are added as a CSV string to a text device.
+	The text device is used by a HMITile with data type "value" and data labels to define the value columns.
+	The dzVents automation script "solar-data" updates the text device data in regular intervals.
+	The text device contains a CSV string with SOC;CHARGE;DISCHARGE.
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <title>Multi Devices</title>
+
+	<!-- Includes located in the parent folder -->
+    <link rel="stylesheet" href="/templates/core/hmitiles.css">
+    <script type="module" src="/templates/core/hmitiles.js" defer></script>
+</head>
+<body>
+
+	<!-- Inside the header block of index.html -->
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+				<h2>Multi Devices</h2>
+			</div>
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
+			</div>
+		</div>
+	</header>
+
+    <!-- Master outer panel containing your grid -->
+    <main class="hmi-panel">
+        
+		<!-- 
+			ROW 1 COL 1: RawData in value grid
+			3-column-tile with data:
+			"batterychargestate", "powertobattery", "powerfrombattery"
+		-->
+		<div class="hmi-pack-tile" 
+			data-device-idx="50" 
+			data-type="value" 
+			data-labels="0:SOC:%;1:CHARGE:W;2:DISCHARGE:W">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Solar Battery</div></div>
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-update" data-field="LastUpdate"></div>
+		</div>
+
+		<!-- 
+			ROW 1 COL 2: RawData in value grid with battery level alarm
+			4-column-tile with data:
+			"batterychargestate", "alarmstate", "powertobattery", "powerfrombattery"
+			The alarm state is set by the engine and must be column 2 (index 1).
+			Battery SoC < 20 alarm state warning, if < 5 alarm state alarm.
+		-->
+		<div class="hmi-pack-tile" 
+			data-device-idx="50" 
+			data-type="value" 
+			data-labels="0:SOC:%;1:STATE:;2:CHARGE:W;3:DISCHARGE:W"
+			data-state-map="100:FULL,90:MEDIUM,50:LOW,20:EMPTY,5:CRITICAL"
+			data-alarm-direction="down">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Solar Battery</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-update" data-field="LastUpdate"></div>
+		</div>
+
+		<!-- 
+			ROW 1 COL 3: RawData in value grid
+			7-column-tile with data:
+			"powerfromsolar", "powerfromgrid", "powertogrid", "powertohouse", "powertobattery", "powerfrombattery", "batterychargestate", "powerdatestamp", "powertimestamp" 
+		-->
+		<div class="hmi-pack-tile" 
+			data-device-idx="47" 
+			data-type="value" 
+			data-labels="0:PV:W;1:EXP:W;2:IMP:W;3:LOAD:W;4:CHG:W;5:DSCH:W;6:SOC:%">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Solar Telemetry</div></div>
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-update" data-field="LastUpdate"></div>
+		</div>
+
+
+		<footer class="hmi-footer-version">
+			<hr>
+			<span>HMITiles for Domoticz</span>
+		</footer>
+
+    </main>
+
+</body>
+</html>

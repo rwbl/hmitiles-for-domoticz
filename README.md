@@ -1,7 +1,7 @@
 # HMITiles Custom Pages Framework for Domoticz
 
 > [!WARNING]
-> **MAJOR UPDATE COMING SOON**: Currently finalizing **v2.0.0-BETA**, a massive, ground-up rewrite introducing a purely declarative, script-free HTML architecture. Check out the latest breaking changes and migration details in the [CHANGELOG.md](./CHANGELOG.md).
+> **MAJOR UPDATE v2.0.0**: A massive, ground-up rewrite introducing a purely declarative, script-free HTML architecture. Check out the breaking changes and migration details in the [CHANGELOG.md](./CHANGELOG.md).
 
 **HMITiles for Domoticz** is a lightweight, decoupled HTML/CSS/JS framework designed to visualize and control your smart home devices using structured, high-density tiles.
 
@@ -11,13 +11,15 @@ The core focus is clarity, consistency, and situational awareness—not visual s
 ---
 
 ## Screenshots
-#### HMITiles Workbench (Development / Testing Area) 
-![Workbench](blueprints/hmitilesworkbench/hmitilesworkbench.png)
-#### Examples
-![Solar Info Dashboard Live Data](examples/solarinfodashboard/solarinfodashboard-livedata.png)
-![Solar Info Dashboard Trends](examples/solarinfodashboard/solarinfodashboard-trends.png)
 
-![Pico Telemetry View](examples/picotelemetryview/picotelemetryview.png)
+### HMITiles Workbench (Development / Testing Area) 
+![Workbench](blueprints/workbench/workbench.png)
+
+### HMITiles Dark-Theme (Experimental)
+![Workbench](blueprints/themedark/themedark.png)
+
+### Examples
+![Solar Dashboard Live Data](examples/solardashboard/solardashboard.png)
 
 ---
 
@@ -66,24 +68,30 @@ Selecting any blueprint directory on GitHub will automatically render its locali
 
 ## Repository Structure
 
+Your Domoticz `/www/templates/` server folder path must reflect this exact layout
+
 ```
-HMITiles-for-Domoticz/
+/www/templates/
 ├── core/                           	# Standard shared framework engines
 │   ├── hmitiles.css                	# Global styling for all tiles and layouts
-│   └── hmitiles.js                 	# Shared UI logic (bulk polling loop, hook dispatcher)
+│   ├── hmitiles-dark.css               # Global styling for all tiles and layouts dark theme (experimental)
+│   ├── hmitiles.js                 	# Shared UI logic (bulk polling loop, hook dispatcher)
+│   ├── hmitiles-preparser.js           # Core Normalization & Feature Extraction Layer
+│   └── Rajdhani Fonts					# Font used for UI styling
 ├── examples/                     		# Custom page example applications
-│   ├── solarinfopanel/      			# Solar Info Panel with live data & trends
+│   ├── solardashboard/      			# Solar Dashboard with live data & trends
 │   └── ...								# More application examples
 ├── blueprints/                     	# Custom page usage examples & tutorials
-│   ├── hmitilesworkbench/      		# Tile design test bed folder
+│   ├── workbench/      				# Tile design test bed folder
 │   │   ├── index.html              	# Standalone workbench interface markup
-│   │   ├── HMITilesWorkbench.html  	# Domoticz custom page wrapper definition
+│   │   ├── Workbench.html             	# Wrapper for the index to be called from the Domoticz custom menu
 │   │   ├── README.md               	# Detailed usage instructions
-│   │   └── hmitilesworkbench.png  	    # Layout preview graphic
-│   ├── valuetile/ 	                    # Example using value tile
-│   │   ├── ValueTile.html     	        # Domoticz custom page tab navigation file
-│   │   ├── valuetile/         	        # Core application directory
-│   │   └── index.html              	# Main blueprint page structure
+│   │   └── workbench.png  	    		# Layout preview graphic
+│   ├── values/ 	                    # Example using value tile
+│   │   ├── index.html              	# Main blueprint page structure
+│   │   ├── Values.html             	# Wrapper for the index to be called from the Domoticz custom menu
+│   │   ├── README.md               	# Detailed usage instructions
+│   │   └── values.png  	    		# Layout preview graphic (optional)
 │   └── ...								# More blueprints tiles & pages
 ├── LICENSE                         	# MIT open-source license
 └── README.md                       	# Documentation entry point manual
@@ -95,22 +103,19 @@ HMITiles-for-Domoticz/
 
 Follow these steps to deploy and run the `SingleTilePage` blueprint example directly inside your local Domoticz installation.
 
-1. **Deploy Core Framework**: Copy the files `hmitiles.css` and `hmitiles.js` from the `core/` repository folder into your Domoticz `/www/templates/` directory.
-2. **Select the Blueprint**: Navigate into the repository folder `blueprints/valuetile/`.
-3. **Deploy Custom Page Wrapper**: Copy the file `ValueTile.html` into your Domoticz `/www/templates/` directory.
-4. **Deploy Application Subfolder**: Copy the entire subfolder `valuetile/` into your Domoticz `/www/templates/` directory.
-5. **Launch Interface**: Open your Domoticz Web UI -> select the **Custom** tab -> click **ValueTile**. The custom dashboard view `ValueTile` will load immediately.
+1. **Deploy Core Framework**: Copy all files from the `core/` repository folder into your Domoticz `/www/templates/` directory keeping the folder structure.
+2. **Select the Blueprint**: Navigate into the repository folder, like `blueprints/values/`.
+3. **Deploy Custom Page Wrapper**: Copy the file `Values.html` into your Domoticz `/www/templates/` directory.
+4. **Deploy Application Subfolder**: Copy the entire subfolder `blueprints/values/` into your Domoticz `/www/templates/` directory.
+5. **Launch Interface**: Open your Domoticz Web UI -> select the **Custom** tab -> click **Values**. The custom dashboard view `Values` will load immediately.
 
-### Final Domoticz Directory Structure
-Your Domoticz `/www/templates/` server folder path must reflect this exact layout:
+Domoticz Folder Structure looks-like:
 ```
-domoticz/www/templates/
-├── hmitiles.css            # Framework shared styles
-├── hmitiles.js             # Core polling and hook loop engine
-├── ValueTile.html     		# Domoticz tab navigation wrapper file
-└── valuetile/         		# Dedicated application folder assets
-	└── index.html          # Main HTML structure and page hook scripts
+/www/templates/core/...
+/www/templates/blueprints/values/...
+Values.html
 ```
+
 ---
 
 ## Project Status
