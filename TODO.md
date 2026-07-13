@@ -2,6 +2,16 @@
 
 ---
 
+### Pre-Parser Devices
+Add more devices to the pre-parser (hmitiles-preparser.js).
+#### Status
+In progress.
+
+### Developer Documentation
+Create documentation how to develop this project further.
+#### Status
+In progress.
+
 ### Multi-State Manual Override Selector (Mode Controller)
 Industrial control often requires switching between operating modes (Auto, Manual, and Override Standby) for devices like ventilation fans, irrigation systems, or pool pumps.
 Standard switches are binary (On/Off). 
