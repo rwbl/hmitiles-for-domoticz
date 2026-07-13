@@ -43,18 +43,8 @@ introduces a unified multi-column data model, and launches an experimental stand
 * **Decoupled Styling Channel**: Launched a standalone `hmitiles-dark.css` sheet allowing clear dark-slate (`#1a1d24` / `#23262e`) canvas maps to mount cleanly onto elements without bloating light-mode source structures.
 * **Interactive Hover Protection**: Integrated an explicit `pointer-events: none !important;` layout shield for specialized components. This freezes SVG arcs, vector needle pathways, and background fills during mouse movements, completely stopping light-mode text-color leaks.
 
-**Previews**
-![Workbench](workbench.png)
-(selection only)
-
 ---
 
-![Solar-Dashboard](solardashboard.png)
-(real data)
-
----
-
-![Theme-Dark Experimental](theme-dark.png)
 ## 20260619 (1.5.0)
 #### Added
 - **SwitchesPanel** (`blueprints`): Define a panel with N switches (vertical aligned).
