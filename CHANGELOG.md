@@ -53,7 +53,6 @@ This release eliminates inline script blocks from layout files, centralizes even
 ---
 
 ![Theme-Dark Experimental](theme-dark.png)
-(real data)
 
 ---
 
