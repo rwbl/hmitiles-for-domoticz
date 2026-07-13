@@ -4,7 +4,7 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 
 ---
 
-## 20260708 - (2.0.0-BETA)
+## 20260713 - (2.0.0-BETA)
 Major framework rewrite. Work in progress. Pre-release staging phase.
 
 ### Summary
@@ -27,8 +27,8 @@ This release eliminates inline script blocks from layout files, centralizes even
 * **Local Offline Fonts**: Integrated a crisp, high-contrast, squared typography layer using locally-hosted assets. The entire UI is now 100% self-contained and immune to internet outages.
 
 #### 3. Simplified Threshold & Alarm Engine
-* **Declarative Threat Matrix**: Wiped out complex conditional checking scripts by introducing two lightweight HTML configuration mappings: `data-state-map` and `data-alarm-map`. 
-* **Universal Severity Evaluator**: Multi-tier alarm state escalations (upward spikes or downward drops, e.g., low battery levels) are handled uniformly inside a single engine tracking pass.
+* **Declarative Threat Matrix**: Wiped out complex conditional checking scripts by introducing two lightweight HTML configuration mappings: `data-state-map` and `data-alarm-direction`. 
+* **Universal Severity Evaluator**: Multi-tier alarm state escalations (upward spikes or downward drops, e.g., low battery levels) are handled uniformly inside a single engine tracking pass based on Alert device 5 alarm levels.
 * **Multi-Value Multi-Target Indexing**: Upgraded the evaluator to dynamically target distinct data track columns within arrays. The parser now uses leading index digits to isolate checks (e.g., assessing a battery's state of charge directly inside a composite charging payload string).
 * **Defensive Edge-Clamping Logic**: Fixed range-boundary logic loops by initializing state values with an explicit boundary fallback ceiling. This halts code lockouts and prevents `CONDITION: 0` glitches when sensor data surpasses maximum threshold parameters.
 
@@ -48,6 +48,11 @@ This release eliminates inline script blocks from layout files, centralizes even
 ---
 
 ![Solar-Dashboard](solardashboard.png)
+(real data)
+
+---
+
+![Theme-Dark Experimental](theme-dark.png)
 (real data)
 
 ---
