@@ -8,15 +8,15 @@
 	Author: Robert W.B. Linn (c) 2026 MIT
 	Domoticz Devices (Hardware Dummy, Virtual Sensors):
 	Idx Hardware		Name					Type			SubType		Data
-	39	VirtualDevices	SolarPowerFromSolar		Usage			Electric	541 Watt
-	40	VirtualDevices	SolarPowerFromGrid		Usage			Electric	8 Watt	
-	41	VirtualDevices	SolarPowerToGrid		Usage			Electric	0 Watt	
-	42	VirtualDevices	SolarPowerToHouse		Usage			Electric	169 Watt
-	43	VirtualDevices	SolarPowerToBattery		Usage			Electric	372 Watt
-	44	VirtualDevices	SolarPowerFromBattery	Usage			Electric	0 Watt
-	45	VirtualDevices	SolarBatteryChargeState	General			Percentage	77%
-	46	VirtualDevices	SolarTimeStamp			General			Text		2026-07-06 09:13
-	47	VirtualDevices	SolarData				General			Text		541;8;0;169;372;0;77;20260706;0913
+	5	VirtualDevices	SolarPowerFromSolar		Usage			Electric	541 Watt
+	7	VirtualDevices	SolarPowerFromGrid		Usage			Electric	8 Watt	
+	8	VirtualDevices	SolarPowerToGrid		Usage			Electric	0 Watt	
+	9	VirtualDevices	SolarPowerToHouse		Usage			Electric	169 Watt
+	10	VirtualDevices	SolarPowerToBattery		Usage			Electric	372 Watt
+	11	VirtualDevices	SolarPowerFromBattery	Usage			Electric	0 Watt
+	12	VirtualDevices	SolarBatteryChargeState	General			Percentage	77%
+	13	VirtualDevices	SolarTimeStamp			General			Text		2026-07-06 09:13
+	32	VirtualDevices	SolarData				General			Text		541;8;0;169;372;0;77;20260706;0913
 	48	VirtualDevices	SolarDataRefresh		Light/Switch	Switch		On	(Note: SwitchType Push-On-Button)
 -->
 
@@ -50,25 +50,25 @@
         <!-- ==================== ROW 1: POWER PRODUCTION & CONSUMPTION ==================== -->
 
         <!-- ROW 1 COL 1: Solar Production -->
-		<div class="hmi-pack-tile hmi-clickable-tile" data-type="value" data-device-idx="39" data-labels="0::W">
+		<div class="hmi-pack-tile hmi-clickable-tile" data-type="value" data-device-idx="5" data-labels="0::W">
 			<div class="hmi-tile-header"><div class="hmi-pack-label">Production</div></div>
 			<div class="hmi-value-grid"></div>
 		</div>
 
 		<!-- ROW 1 COL 2: Grid Export -->
-		<div class="hmi-pack-tile hmi-clickable-tile" data-type="value" data-device-idx="41" data-labels="0::W">
+		<div class="hmi-pack-tile hmi-clickable-tile" data-type="value" data-device-idx="7" data-labels="0::W">
 			<div class="hmi-tile-header"><div class="hmi-pack-label">Export</div></div>
 			<div class="hmi-value-grid"></div>
 		</div>
 
 		<!-- ROW 1 COL 3: Grid Import -->
-		<div class="hmi-pack-tile hmi-clickable-tile" data-type="value" data-device-idx="40" data-labels="0::W">
+		<div class="hmi-pack-tile hmi-clickable-tile" data-type="value" data-device-idx="8" data-labels="0::W">
 			<div class="hmi-tile-header"><div class="hmi-pack-label">Import</div></div>
 			<div class="hmi-value-grid"></div>
 		</div>
 
 		<!-- ROW 1 COL 4: House Consumption -->
-		<div class="hmi-pack-tile hmi-clickable-tile" data-type="value" data-device-idx="42" data-labels="0::W">
+		<div class="hmi-pack-tile hmi-clickable-tile" data-type="value" data-device-idx="9" data-labels="0::W">
 			<div class="hmi-tile-header"><div class="hmi-pack-label">Consumption</div></div>
 			<div class="hmi-value-grid"></div>
 		</div>
@@ -76,19 +76,19 @@
         <!-- ==================== ROW 2: BATTERY STORAGE MANAGEMENT ==================== -->
 
 		<!-- ROW 2 COL 1: Battery Charging -->
-		<div class="hmi-pack-tile hmi-clickable-tile" data-type="value" data-device-idx="43" data-labels="0::W">
+		<div class="hmi-pack-tile hmi-clickable-tile" data-type="value" data-device-idx="10" data-labels="0::W">
 			<div class="hmi-tile-header"><div class="hmi-pack-label">BAT Charging</div></div>
 			<div class="hmi-value-grid"></div>
 		</div>
 
 		<!-- ROW 2 COL 2: Battery Discharging -->
-		<div class="hmi-pack-tile hmi-clickable-tile" data-type="value" data-device-idx="44" data-labels="0::W">
+		<div class="hmi-pack-tile hmi-clickable-tile" data-type="value" data-device-idx="11" data-labels="0::W">
 			<div class="hmi-tile-header"><div class="hmi-pack-label">BAT Discharging</div></div>
 			<div class="hmi-value-grid"></div>
 		</div>
 
 		<!-- ROW 2 COL 3: Battery SoC -->
-		<div class="hmi-pack-tile hmi-clickable-tile" data-type="value" data-device-idx="45" data-labels="0::%">
+		<div class="hmi-pack-tile hmi-clickable-tile" data-type="value" data-device-idx="12" data-labels="0::%">
 			<div class="hmi-tile-header"><div class="hmi-pack-label">BAT SoC</div></div>
 			<div class="hmi-value-grid"></div>
 		</div>
@@ -97,12 +97,10 @@
 			Note that the idx must be set twice to see last-update and trigger switch.
 		-->
 		<div class="hmi-pack-tile"
-			data-device-idx="48">
-			<div class="hmi-tile-header">
-				<div class="hmi-pack-label">Refresh</div>
-			</div>			
+			data-device-idx="6">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Refresh</div></div>			
 			<div class="hmi-switch-button-row">
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="48" data-action="On" data-on-text="PUSH">
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="On" data-on-text="PUSH" data-off-text="PUSH">
 					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 			</div>
@@ -116,7 +114,7 @@
 			"powerfromsolar", "powerfromgrid", "powertogrid", "powertohouse", "powertobattery", "powerfrombattery", "batterychargestate", "powerdatestamp", "powertimestamp" 
 		-->
 		<div class="hmi-pack-tile" 
-			data-device-idx="47" 
+			data-device-idx="32" 
 			data-type="value" 
 			data-labels="0:PV:W;1:EXP:W;2:IMP:W;3:LOAD:W;4:CHG:W;5:DSCH:W;6:SOC:%">
 			<div class="hmi-tile-header"><div class="hmi-pack-label">Solar Telemetry </div></div>
@@ -133,50 +131,50 @@
 			<div class="hmi-value-grid"></div>
 		</div>
 		<!-- ROW 3 COL 4: Last Update -->
-		<div class="hmi-pack-tile" data-type="value" data-device-idx="46" data-labels="0::">
+		<div class="hmi-pack-tile" data-type="value" data-device-idx="13" data-labels="0::">
 			<div class="hmi-tile-header"><div class="hmi-pack-label">Last Update</div></div>
 			<div class="hmi-value-grid"></div>
 		</div>
 
         <!-- ==================== ROW 4: TREND 24-HR ROLLING ==================== -->
 		
-		<div class="hmi-pack-tile" data-type="trend" data-device-idx="39">
+		<div class="hmi-pack-tile" data-type="trend" data-device-idx="5">
 			<div class="hmi-tile-header"><div class="hmi-pack-label">Production</div></div>
 			<div class="hmi-value-grid"></div>
 			<div class="hmi-last-value"></div>
 			<div class="hmi-last-update"></div>
 		</div>
-		<div class="hmi-pack-tile" data-type="trend" data-device-idx="41">
+		<div class="hmi-pack-tile" data-type="trend" data-device-idx="7">
 			<div class="hmi-tile-header"><div class="hmi-pack-label">Export</div></div>
 			<div class="hmi-value-grid"></div>
 			<div class="hmi-last-value"></div>
 			<div class="hmi-last-update"></div>
 		</div>
-		<div class="hmi-pack-tile" data-type="trend" data-device-idx="40">
+		<div class="hmi-pack-tile" data-type="trend" data-device-idx="8">
 			<div class="hmi-tile-header"><div class="hmi-pack-label">Import</div></div>
 			<div class="hmi-value-grid"></div>
 			<div class="hmi-last-value"></div>
 			<div class="hmi-last-update"></div>
 		</div>
-		<div class="hmi-pack-tile" data-type="trend" data-device-idx="42">
+		<div class="hmi-pack-tile" data-type="trend" data-device-idx="9">
 			<div class="hmi-tile-header"><div class="hmi-pack-label">Consumption</div></div>
 			<div class="hmi-value-grid"></div>
 			<div class="hmi-last-value"></div>
 			<div class="hmi-last-update"></div>
 		</div>
-		<div class="hmi-pack-tile" data-type="trend" data-device-idx="43">
+		<div class="hmi-pack-tile" data-type="trend" data-device-idx="10">
 			<div class="hmi-tile-header"><div class="hmi-pack-label">BAT Charging</div></div>
 			<div class="hmi-value-grid"></div>
 			<div class="hmi-last-value"></div>
 			<div class="hmi-last-update"></div>
 		</div>
-		<div class="hmi-pack-tile" data-type="trend" data-device-idx="44">
+		<div class="hmi-pack-tile" data-type="trend" data-device-idx="11">
 			<div class="hmi-tile-header"><div class="hmi-pack-label">BAT Discharging</div></div>
 			<div class="hmi-value-grid"></div>
 			<div class="hmi-last-value"></div>
 			<div class="hmi-last-update"></div>
 		</div>
-		<div class="hmi-pack-tile" data-type="trend" data-device-idx="45">
+		<div class="hmi-pack-tile" data-type="trend" data-device-idx="12">
 			<div class="hmi-tile-header"><div class="hmi-pack-label">BAT SoC</div></div>
 			<div class="hmi-value-grid"></div>
 			<div class="hmi-last-value"></div>
