@@ -26,9 +26,9 @@ domoticz/www/templates/
 ├── HMITiles.html         <--- Main index file opened via Domoticz GUI
 ├── hmitiles.json         <--- Custom configuration layout dictionary
 └── your_custom_folders/   <--- Move all your custom panel modules here
-    ├── alarmtile/
+    ├── alarm/
     │   └── index.html
-    └── power_stats/
+    └── workbench/
         └── index.html
 ```
 
@@ -46,7 +46,7 @@ Use the snippet schema configuration mapping below to declare your custom catego
     {
       "category": "Security & Alarms",
       "pages": [
-        { "title": "Main House Alarm", "file": "alarmtile/index.html" },
+        { "title": "Main House Alarm", "file": "alarm/index.html" },
         { "title": "CCTV View Matrix", "file": "cctv/index.html" }
       ]
     },

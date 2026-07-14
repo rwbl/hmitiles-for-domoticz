@@ -3,41 +3,36 @@
     {
       "category": "Blueprint Tiles",
       "pages": [
-        { "title": "Alarm", "file": "alarmtile/index.html" },
-        { "title": "Emergency Stop Button", "file": "emergencystopbuttontile/index.html" },
-        { "title": "Indicator Panel", "file": "indicatorpaneltile/index.html" },
-        { "title": "Indoor Air Quality", "file": "indoorairqualitytile/index.html" },
-        { "title": "Input", "file": "inputtile/index.html" },
-        { "title": "Log Monitor", "file": "logmonitortile/index.html" },
-        { "title": "Progressbar", "file": "progressbartile/index.html" },
-        { "title": "Selector-Switch", "file": "selectorswitchtile/index.html" },
-        { "title": "Setpoint ProcessValue", "file": "setpointprocessvaluetile/index.html" },
-        { "title": "Switch Panel", "file": "switchpaneltile/index.html" },
-        { "title": "Thermostat", "file": "thermostattile/index.html" },
-        { "title": "Value Image", "file": "valueimagetile/index.html" },
-        { "title": "Value", "file": "valuetile/index.html" },
-        { "title": "Wind", "file": "windtile/index.html" }
+        { "title": "Alarm", "file": "blueprints/alarm/index.html" },
+        { "title": "Gauge", "file": "blueprints/gauge/index.html" },
+        { "title": "Info", "file": "blueprints/info/index.html" },
+        { "title": "Input", "file": "blueprints/input/index.html" },
+        { "title": "Log Monitor", "file": "blueprints/logmonitor/index.html" },
+        { "title": "Multi Devices", "file": "blueprints/multidevices/index.html" },
+        { "title": "Regulators", "file": "blueprints/regulators/index.html" },
+        { "title": "Setpoint", "file": "blueprints/setpoint/index.html" },
+        { "title": "Switches", "file": "blueprints/switches/index.html" },
+        { "title": "Theme Dark (experimental)", "file": "blueprints/themedark/index.html" },
+        { "title": "Theme Normal", "file": "blueprints/themenormal/index.html" },
+        { "title": "Values", "file": "blueprints/values/index.html" }
       ]
     },
     {
       "category": "Workbench",
       "pages": [
-        { "title": "Workbench", "file": "workbench/index.html" }
+        { "title": "Workbench", "file": "blueprints/workbench/index.html" }
       ]
     },
     {
-      "category": "Blueprint Pages",
+      "category": "Blueprint Charts",
       "pages": [
-        { "title": "Multi-Switch", "file": "multiswitchpage/index.html" },
-        { "title": "Multi-Trends", "file": "multitrendpage/index.html" }
+        { "title": "Trends", "file": "blueprints/trends/index.html" }
       ]
     },
     {
       "category": "Application Examples",
       "pages": [
-        { "title": "Solar Info Dashboard", "file": "solarinfodashboard/index.html" },
-        { "title": "Pico Servo Control", "file": "picoservocontrol/index.html" },
-        { "title": "Pico Telemetry View", "file": "picotelemetryview/index.html" }
+        { "title": "Solar Dashboard", "file": "examples/solardashboard/index.html" }
       ]
     }
   ]
