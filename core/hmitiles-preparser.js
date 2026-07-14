@@ -526,7 +526,7 @@ function preParseDevices(device, tileElement) {
     
     // Type General, SubType Alert
     // Automatically extracts the native hardware alarm level index (0-4) 
-    // and maps it straight onto your new ISA-101 compliant color border classes!
+    // and maps it straight onto color border classes!
     else if (device.Type === "General" && device.SubType === "Alert") {
         csvPayload = String(device.Data).trim();
         
@@ -554,7 +554,7 @@ function preParseDevices(device, tileElement) {
                 break;
         }
         
-        // Inject the ISA-101 color modifier tag directly onto the tile element chassis!
+        // Inject the color modifier tag directly onto the tile element chassis!
         tileElement.setAttribute("data-alarm", alertLevelStr);
 		// csvPayload = `${device.Level};${device.Data}`;
     }

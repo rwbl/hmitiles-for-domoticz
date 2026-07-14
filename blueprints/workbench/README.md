@@ -1,4 +1,4 @@
-## HMITiles Workbench
+## WORKBENCH
 
 ### Master Development Workbench (`index.html` Core Reference Panel)
 

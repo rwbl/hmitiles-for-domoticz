@@ -1,4 +1,4 @@
-# Alarm
+# ALARM
 
 ------------------------------
 ## Unified Alarm & State Engine (Adaptive Multi-Tier Dashboard Matrix)
