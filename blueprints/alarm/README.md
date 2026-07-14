@@ -12,7 +12,7 @@ The Adaptive Alarm Engine consolidates numeric thresholds, display state labels,
 | Attribute | Expected Value | Description |
 |---|---|---|
 | data-alarm-direction | up or down | up: Higher numbers intensify alarms (climbing scale). down: Lower numbers intensify alarms (dropping scale). |
-| data-state-map | Value:Text, ... | Comma-separated list of threshold checkpoints mapped directly to dynamic 4px ISA-101 color tiers (gray, green, yellow, orange, red) based on overall rule array length. |
+| data-state-map | Value:Text, ... | Comma-separated list of threshold checkpoints mapped directly to dynamic 4px color tiers (gray, green, yellow, orange, red) based on overall rule array length. |
 
 ------------------------------
 ## Production Template Implementations## 1. Ascending Spikes (5-Tier Air Quality Monitor)

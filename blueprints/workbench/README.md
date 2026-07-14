@@ -68,7 +68,7 @@ The framework includes a centralized, high-density industrial control reference 
 
 ### Architectural Verification Checklist* **Multi-Theme Isolation Layer**: To toggle the workbench framework cleanly between light and dark viewport canvases, add or strip the `.theme-dark` class directly from the root body node. The layout architecture decouples these states natively across separate style channels (`hmitiles.css` and `hmitiles-dark.css`).
 * **Symmetrical Grid Math**: The parent `.hmi-panel` class enforces strict industrial grid constraints. Sibling element widths calculate proportionally, isolating complex interactive control buttons entirely from your single and multi-column telemetry value blocks.
-* **Telemetry Emulation Contracts**: Feeding data strings (like `"1201;MEDIOCRE"`) straight to the workbench elements triggers all visualization pipelines instantly—simultaneously running gauge canvas rotations, grid column generations, and ISA-101 matte border transitions.
+* **Telemetry Emulation Contracts**: Feeding data strings (like `"1201;MEDIOCRE"`) straight to the workbench elements triggers all visualization pipelines instantly—simultaneously running gauge canvas rotations, grid column generations, and transitions.
 
 The documentation is completely wrapped, clean, and organized.
 Now that your GitHub reference manuals and repository README.md sheets are 100% complete, let me know if you would like to proceed with writing down the MicroPython firmware scripts for your Raspberry Pi Pico hardware modules to finalize this version cycle completely! Proactively use markdown bolding to advance.
