@@ -20,7 +20,7 @@ The core focus is clarity, consistency, and situational awareness—not visual s
 
 
 #### Example
-![Solar Info Dashboard Live Data](examples/solardashboard/solardashboard-livedata.png)
+![Solar Info Dashboard Live Data](examples/solardashboard/solardashboard.png)
 
 ---
 
