@@ -1,13 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <!--
-	File: alarms/index.html
-	Brief: Display devices data with alarm state.
-	Date: 2026-07-07
-	Author: Robert W.B. Linn (c) 2026 MIT
-	The Rule of Thumb:
-	For Upward maps (>): Write thresholds from lowest to highest (e.g., 0>700=GOOD,0>1200=BAD).
-	For Downward maps (<): Also write thresholds from lowest to highest (e.g., 0<5=EMPTY,0<20=LOW,0<100=FULL).
+Brief: 			HMITiles Blueprint Alarm
+Data-Type:		value
+Date: 			2026-07-24
+Author: 		Robert W.B. Linn (c) 2026 MIT
+Description:	Display devices data with alarm state.
+				Data labels are mandatory (e.g. "0:CO2 Concentration:ppm;1:State:").
+				If not used then set default (e.g. data-labels="0::").
+				
+				The Rule of Thumb for the state map:
+				For Upward maps ("up"):
+				Write thresholds from lowest to highest (e.g., 0:EXCELLENT,700:GOOD,900:FAIR...)
+				data-alarm-direction="up"
+				data-state-map="0:EXCELLENT,700:GOOD,900:FAIR,1100:MEDIOCRE,1600:BAD"
+
+				For Downward maps ("down"): 
+				Write thresholds from highest to lowest (e.g., 100:FULL,90:MEDIUM,50:LOW...)
+				data-alarm-direction="down"
+				data-state-map="100:FULL,90:MEDIUM,50:LOW,20:EMPTY,5:CRITICAL"
 -->
 <head>
     <meta charset="UTF-8">

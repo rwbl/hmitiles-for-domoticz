@@ -1,18 +1,18 @@
 /* ==========================================================================
-	File:		hmitiles.css
-	Brief: 		Clean, industry-inspired layout rules for smart home HMI panels.
-	Date: 		2026-07-12
-	Author: 	Robert W.B. Linn (c) 2026 MIT
-	Content:
-				-HMI PALETTE LIGHT
-				-GLOBAL LAYOUT RESET & VARIABLES
-				-MASTER CONTAINER & GRID SYSTEMS (4x3 / 4x2 MATRIX)
-				-PANEL TILE FRAME COMPONENTS (.hmi-pack-tile)
-				-STATUS BADGES & INTERACTIVE CLICK CLASSIFICATIONS
-				-HARDWARE INPUT ELEMENT STYLING (SLIDERS, SETPOINT BUTTONS)
-				-PROGRESS BAR & LEVEL GAUGE COMPONENTS (.hmi-bar-fill)
-				-DYNAMIC ALARM COLOR HOOKS (NORMAL, WARNING, CRITICAL CSS MARGINS)
-				-NATIVE SVG SPARKLINE TREND GRAPH MODULES (24h TELEMETRY BLOCKS)
+ File:		hmitiles.css
+ Brief:		Clean, industry-inspired layout rules for smart home HMI panels.
+ Date: 		2026-07-25
+ Author: 	Robert W.B. Linn (c) 2026 MIT
+ Content:
+			-HMI PALETTE LIGHT
+			-GLOBAL LAYOUT RESET & VARIABLES
+			-MASTER CONTAINER & GRID SYSTEMS (4x3 / 4x2 MATRIX)
+			-PANEL TILE FRAME COMPONENTS (.hmi-pack-tile)
+			-STATUS BADGES & INTERACTIVE CLICK CLASSIFICATIONS
+			-HARDWARE INPUT ELEMENT STYLING (SLIDERS, SETPOINT BUTTONS)
+			-PROGRESS BAR & LEVEL GAUGE COMPONENTS (.hmi-bar-fill)
+			-DYNAMIC ALARM COLOR HOOKS (NORMAL, WARNING, CRITICAL CSS MARGINS)
+			-NATIVE SVG SPARKLINE TREND GRAPH MODULES (24h TELEMETRY BLOCKS)
    ========================================================================== */
 
 /* ==========================================================================
@@ -150,16 +150,17 @@ hr.hmi-divider-short {
 /* ==========================================================================
    MASTER CONTAINER & GRID SYSTEMS (4x3 / 4x2 MATRIX) (.hmi-panel)
    ========================================================================== */
-
 /* Master Container matching panel layout */
 .hmi-panel {
     background-color: var(--hmi-bg-main);
     border: 2px solid var(--hmi-border-dark);
     padding: 10px;
-    width: 100%;				/* 320px; Adjust as needed for grid layout */
-    box-sizing: border-box; 	/* Enforces padding to stay inside the outer borders */
-    display: flex;
-    flex-direction: column;
+    width: 100%;                /* Dynamic and fluid track */
+    box-sizing: border-box;     /* Enforces padding to stay inside the outer borders */
+    
+    display: grid !important;
+    /* Default: 4 identical columns that compress fluidly down to 0 to prevent overflows */
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
     gap: 10px;
 }
 
@@ -169,15 +170,58 @@ hr.hmi-divider-short {
 
 /* Outer Tile Container (e.g., PACK 1, PACK 2) */
 .hmi-pack-tile {
-	position: relative;  
+    position: relative;  
     background-color: var(--hmi-bg-tile);
     border: 1px solid var(--hmi-border-dark);
-    padding: 8px;
     display: flex;
     flex-direction: column;
     gap: 8px;
-	padding: 8px 8px 12px 8px !important; /* top right bottom left */
+    padding: 8px 8px 12px 8px !important; /* top right bottom left */
+    
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
 }
+
+/* =========================================================================
+   FULL-WIDTH LAYOUT SPAN RULE
+   Forces massive elements to cross the entire horizontal row framework
+   ========================================================================= */
+.hmi-pack-tile[data-span="full"] {
+    grid-column: span 4 !important; /* Stretches across all 4 columns natively */
+}
+
+
+/* =========================================================================
+   HIGH-PERFORMANCE RESPONSIVE BREAKPOINTS (ISA-101 Industry Standards)
+   ========================================================================= */
+
+/* Tablet Optimization (Typically screens under 1024px wide) */
+@media (max-width: 1024px) {
+    .hmi-panel {
+        /* Drop from 4 columns to exactly 2 columns */
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+    
+    /* Adapt full-span tiles to the new 2-column boundary grid context */
+    .hmi-pack-tile[data-span="full"] {
+        grid-column: span 2 !important; 
+    }
+}
+
+/* Smartphone Optimization (Typically screens under 640px wide) */
+@media (max-width: 640px) {
+    .hmi-panel {
+        /* Drop to a single vertical column lane layout */
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+    
+    /* Adapt full-span tiles to collapse into the single lane */
+    .hmi-pack-tile[data-span="full"] {
+        grid-column: span 1 !important; 
+    }
+}
+
 
 /* ==========================================================================
    UNIFIED ALARM SEVERITY MATRIX
@@ -190,8 +234,9 @@ hr.hmi-divider-short {
 }
 
 /* LEVEL 1: INFORMATIONAL / RUNNING STEADY */
+/* Uses gray and not #15803d Matte Forest Green */
 .hmi-pack-tile[data-alarm="green"] {
-    border-left: 4px solid #15803d !important; /* Matte Forest Green */
+    border-left: 4px solid #6b7280 !important; /* Matte Slate Gray */
     background-color: transparent;
 }
 
@@ -233,6 +278,14 @@ hr.hmi-divider-short {
 	width: 100%;
 }
 
+/* Empty Placeholder Bay Style for layout alignment */
+.hmi-tile-placeholder {
+    background-color: transparent !important;
+    border: 1px dashed var(--hmi-border-dark) !important;
+    box-shadow: none !important;
+    opacity: 0.4;
+}
+
 .hmi-pack-label {
 	font-family: Arial, Helvetica, "Liberation Sans", sans-serif !important;
     font-weight: bold;
@@ -255,6 +308,23 @@ hr.hmi-divider-short {
     display: flex;
     flex-direction: column;
     gap: 8px;
+}
+
+/* Highly-targeted text override exclusively for the RailYard Alert status tile */
+.hmi-tile-alert-status .hmi-value-grid .hmi-multi-number {
+    font-size: 14px !important;       /* Reduces font size from standard headline to paragraph level */
+    line-height: 1.4 !important;      /* Improves line-height tracking for wrapped multi-line text sentences */
+    font-weight: 500 !important;      /* Softens extreme bolding to prevent text layout clipping */
+    padding: 4px 8px !important;      /* Adds clean buffer spacing around the message text inside the grid */
+    display: block;
+}
+
+/* Force the specific RailYard Alert tile to match the background of standard tiles */
+.hmi-tile-alert-status {
+    background-color: #e0e0e0 !important;   /* Matches your layout's solid card gray */
+    background: #e0e0e0 !important;          /* Overrides any underlying framework linear-gradients */
+    border-color: #b0b0b0 !important;       /* Syncs the thin structural outer card border lines */
+    box-shadow: none !important;            /* Removes glow patterns to maintain a flat industrial look */
 }
 
 /* ==========================================================================
@@ -467,11 +537,14 @@ hr.hmi-divider-short {
     min-width: 0;
 }
 
-/* Automatically adds a clean 1px divider between your inner data columns 
-   without breaking the outer box-sizing or border widths of the card! */
+/* NOT USED
+	Automatically adds a clean 1px divider between your inner data columns 
+	without breaking the outer box-sizing or border widths of the card! */
+   /*
 .hmi-multivalue-col + .hmi-multivalue-col {
     border-left: 1px solid #e5e5e5 !important;
 }
+*/
 
 /* Typography components - Clean, compact industrial sizes */
 .hmi-multi-header { 
@@ -555,9 +628,11 @@ hr.hmi-divider-short {
 /* =========================================================================
    DIMMER SLIDER 
    ========================================================================= */
+
 /* The tracking container - we make it match exact .hmi-value-box metrics */
 .layout-slider {
     display: flex;
+	flex-direction: column !important; 
     align-items: center;
     justify-content: center;
     width: 100%;
@@ -581,7 +656,7 @@ hr.hmi-divider-short {
     height: 20px;
     background: #cccccc;
     border: 1px solid #999999;
-    border-radius: 3px;
+    border-radius: 4px;
     outline: none;
     box-sizing: border-box;
     /* Strips away native browser text-baseline rules pushing the container down */
@@ -608,9 +683,35 @@ hr.hmi-divider-short {
     height: 16px;
     background: #f0f0f0;
     border: 1px solid #666666;
-    border-radius: 3px;
+    border-radius: 4px;
     cursor: pointer;
     box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+/* SCALE TYPOGRAPHY */
+
+.hmi-slider-scale {
+    display: flex;
+    justify-content: space-between;
+    width: calc(100% - 2px); /* Matches your exact slider track compression width */
+    margin: 4px auto 0 auto !important; /* Balanced top spacing */
+    position: relative;
+}
+
+/* Base Scale Tick Item Rules */
+.hmi-scale-tick {
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 9px !important; /* Subdued, compact industrial size */
+    font-weight: bold !important;
+	color: #767676 !important; 
+    text-transform: uppercase;
+}
+
+/* Center tick alignment helper to ensure perfect math tracking */
+.hmi-slider-scale .tick-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 /* ==========================================================================
@@ -624,14 +725,6 @@ hr.hmi-divider-short {
     width: 100% !important; /* Allows the dashboard to use the full screen width */
     max-width: 1400px; /* Prevents tiles from getting unnaturally wide */
     margin: 0 auto; /* Centers the whole grid desk on the screen */
-}
-
-/* Empty Placeholder Bay Style for layout alignment */
-.hmi-tile-placeholder {
-    background-color: transparent !important;
-    border: 1px dashed var(--hmi-border-dark) !important;
-    box-shadow: none !important;
-    opacity: 0.4;
 }
 
 /* ==========================================================================
@@ -895,6 +988,32 @@ hr.hmi-divider-short {
     font-weight: bold;
 }
 
+/* SCALE TYPOGRAPHY */
+
+.hmi-bar-scale {
+    display: flex;
+    justify-content: space-between;
+    width: calc(100% - 2px); /* Matches your exact slider track compression width */
+    margin: 4px auto 0 auto !important; /* Balanced top spacing */
+    position: relative;
+}
+
+/* Base Scale Tick Item Rules */
+.hmi-bar-tick {
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 9px !important; /* Subdued, compact industrial size */
+    font-weight: bold !important;
+	color: #767676 !important; 
+    text-transform: uppercase;
+}
+
+/* Center tick alignment helper to ensure perfect math tracking */
+.hmi-bar-scale .tick-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
 /* =========================================================================
    GENERIC DUAL-VARIABLE SETPOINT & PROCESS VALUE TILE
    ========================================================================= */
@@ -970,6 +1089,7 @@ hr.hmi-divider-short {
 /* =========================================================================
    COMBO ROW GRID ALIGNMENT OVERRIDES
    ========================================================================= */
+
 .hmi-pack-tile[data-type="setpointprocessvalue"] .hmi-multivalue-row {
     display: flex !important;
     justify-content: center !important;
@@ -1057,39 +1177,48 @@ hr.hmi-divider-short {
     line-height: 1.3;
 }
 
-/* Row wrapper for inputs */
+/* =========================================================================
+   HMI LOG MONITOR ROW FLUIDITY SYNC
+   ========================================================================= */
+
+/* The outer layout row container holding your controls */
 .hmi-log-input-row {
-    display: flex;
-    gap: 6px;
+    display: flex !important;
+    flex-direction: row !important; /* Force them to march side-by-side */
+    justify-content: space-between;
+    align-items: center;
     width: 100%;
-    margin-top: 4px;
+    gap: 6px;                      /* Clean spacing gap between input and buttons */
+    box-sizing: border-box !important;
 }
 
-/* Low-contrast form field */
+/* THE CORE FLEX FIX: The text message box wrapper */
 .hmi-log-input {
-    flex-grow: 1;
-    background-color: #ffffff;
-    border: 1px solid #7a7a7a;
-    color: #1a1a1a;
-    padding: 5px 8px;
-    font-family: inherit;
-    font-size: 0.85rem;
-    box-sizing: border-box;
+    /* 
+       1. Forces the text box to take up ALL remaining space 
+       2. Crucial layout trick: allows it to compress beneath its native width 
+          without breaking or pushing child buttons off the page!
+    */
+    flex: 1 !important;
+    min-width: 0 !important; 
+    
+    box-sizing: border-box !important;
+    padding: 4px 8px; /* Clean internal breathing room for text typing */
 }
 .hmi-log-input:focus { outline: none; border-color: #4a90e2; }
 
-/* Gray utility action buttons */
-.hmi-log-send-btn,
+/* The structural action control buttons */
+.hmi-log-send-btn, 
 .hmi-log-clear-btn {
-    background-color: #e0e0e0;
-    color: #1a1a1a;
-    border: 1px solid #7a7a7a;
-    padding: 4px 12px;
-    font-family: inherit;
-    font-weight: bold;
-    cursor: pointer;
-    box-sizing: border-box;
-    font-size: 0.8rem;
+    /* 
+       Prevents the font engine from shrinking or wrapping button text 
+       characters like "SEND" or "CLEAR" onto a second line!
+    */
+    flex-shrink: 0 !important; 
+    
+    padding: 4px 10px;
+    box-sizing: border-box !important;
+    white-space: nowrap !important; /* Locks text onto a single horizontal line */
 }
 .hmi-log-send-btn:hover, .hmi-log-clear-btn:hover { background-color: #ffffff; border-color: #1a1a1a; }
 
@@ -1210,16 +1339,16 @@ hr.hmi-divider-short {
 
 .hmi-gauge-track-bg {
     fill: none !important;
-    stroke: #eeeeee !important;    /* Clean dark gray background arc track channel line (313644) */
+    stroke: #eeeeee !important;    		/* Clean dark gray background arc track channel line (313644) */
     stroke-width: 10 !important;
-    stroke-linecap: round !important;
+    stroke-linecap: butt !important;
 }
 
 .hmi-gauge-fill {
     fill: none !important;
     stroke: #77777777 !important;    /* Standard: Quiet gray baseline operational arc (64748b)*/
     stroke-width: 10 !important;
-    stroke-linecap: round !important;
+    stroke-linecap: butt !important;
     stroke-dasharray: 126 !important;
     stroke-dashoffset: calc(var(--gauge-offset) * 1px) !important;
     transition: stroke-dashoffset 0.35s ease;
@@ -1239,12 +1368,27 @@ hr.hmi-divider-short {
     align-items: center !important;
 }
 
-/* Declarative automated chassis alarm borders */
+/* Left-aligned text starting exactly below the needle pivot point (50, 50) */
+.hmi-gauge-right-readout {
+    position: absolute !important;
+    bottom: -20% !important;
+    left: 50% !important; /* Starts exactly at the horizontal middle */
+    text-align: left !important;
+    white-space: nowrap !important;
+    z-index: 10 !important;        
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important; /* Left-aligns value and unit internally */
+}
+
+/* OPTIONAL
+	Declarative automated chassis alarm borders 
 [data-alarm="yellow"] .hmi-gauge-fill { stroke: #ffb300 !important; }
 .hmi-pack-tile[data-alarm="yellow"] { border-left: 4px solid #ffb300 !important; }
 
 [data-alarm="red"] .hmi-gauge-fill { stroke: #ef4444 !important; }
 .hmi-pack-tile[data-alarm="red"] { border-left: 4px solid #dc2626 !important; }
+*/
 
 /* =========================================================================
    TECHNICAL ANALOG INSTRUMENTATION NEEDLE GAUGE
@@ -1260,7 +1404,7 @@ hr.hmi-divider-short {
 .hmi-gauge-needle {
     stroke: #111111 !important;         /* Deep high-contrast black pointer indicator */
     stroke-width: 2 !important;
-    stroke-linecap: round !important;   /* Keeps the needle tip itself smooth */
+    stroke-linecap: butt !important;   /* Keeps the needle tip itself smooth */
     transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important; /* Damped hardware response physics */
 }
 
@@ -1271,20 +1415,14 @@ hr.hmi-divider-short {
     stroke-width: 0.5 !important;
 }
 
-/* Bottom-Right Sub-Footer Combined Data Label Text */
-.hmi-gauge-footer-value {
-    font-weight: 700 !important;
-    font-size: 13px !important;
-    color: #111111 !important;          /* Sits cleanly matching look of the update timestamps */
-    margin-right: 6px;
-}
-
-/* Chromatic Alarm System Overrides for the Needle and Center Cap Core */
+/* OPTIONAL	
+	Chromatic Alarm System Overrides for the Needle and Center Cap Core 
 [data-alarm="yellow"] .hmi-gauge-needle { stroke: #ffb300 !important; }
 [data-alarm="yellow"] .hmi-gauge-center-cap { fill: #ffb300 !important; }
 
 [data-alarm="red"] .hmi-gauge-needle { stroke: #ef4444 !important; }
 [data-alarm="red"] .hmi-gauge-center-cap { fill: #ef4444 !important; }
+*/
 
 /* =========================================================================
    WIND COMPASS ROSE

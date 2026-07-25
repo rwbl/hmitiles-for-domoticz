@@ -1,180 +1,108 @@
-# Blueprint: Generic Setpoint Stepper with Process Value (PV)
+# SETPOINT
 
-This blueprint demonstrates how to build an interactive dual-variable control tile that pairs a Target Setpoint (SP) value with step-incrementers `[-]` / `[+]` directly alongside its real-time Actual Process Value (PV) sensor feedback channel inside a single modular card.
-
----
-
-## Screenshots
-
-![Setpoint ProcessValue Tile](setpointprocessvaluetile.png)
+**Data Type**: `setpoint`, `setpointprocessvalue`.
 
 ---
 
-## High-Performance HMI Design Rules
+## Overview
+This tile builds an interactive dual-variable control tile that 
+1. enables to set a Setpoint (SP) value or
+2. pairs a Target Setpoint (SP) value with step-incrementers `[-]` / `[+]` directly alongside its real-time Actual Process Value (PV) sensor feedback channel inside a single modular tile.
+
+Design:
 * **Co-Located Visual Analytics**: Operators can instantly verify if a setpoint modification drives the physical hardware process state change effectively without switching between separate text logs or sensor grid dashboards.
-* **Typographic Contrast Hierarchy**: The critical numerical metrics remain bold and high-contrast, while secondary static operational field markers (`Actual (PV):`) use a muted charcoal layout presentation to minimize screen fatigue.
+* **Typographic Contrast Hierarchy**: The critical numerical metrics remain bold and high-contrast, while secondary static operational field markers use a muted charcoal layout presentation to minimize screen fatigue.
 
 ---
 
-## Step 1: Interface Component Layout Markup
+**Preview**
+![Setpoint/Setpoint Processvalue](setpoint.png)
 
-Add this responsive industrial component frame into your custom layout dashboard page file:
-The IDX values are placeholder.
-```html
+**IMPORTANT**
+Lookup `index.html` for latest examples.
+
+## Configuration Parameters 
+(HTML Data Attributes)
+
+To build out dashboard data grid columns, configure the following core attributes on the `.hmi-pack-tile` chassis.
+
+| Attribute | Expected Value | Description |
+|-----------|----------------|-------------|
+|`data-type`|"setpoint","setpointprocessvalue"|Tells the JavaScript loop to register this card into the server log stream synchronization pipeline.|
+|`data-device-idx`|"NNN"|Defines the primary Domoticz target element ID for the target Setpoint (SP) controller loop. (mandatory).|
+|`data-device-idx-pv="NNN"`|Specifies the secondary Domoticz tracking element ID for the live Actual Process Value (PV) feedback channel.
+|`data-step="N"`|Dictates the numerical step value shift increment (e.g., `1` or `0.5`).
+|`data-min="NNN"`, `data-max="NNN"`|Optional attributes that enforce strict process boundary limits. Left unassigned, the system defaults to infinity constants (`Number.NEGATIVE_INFINITY` / `Number.POSITIVE_INFINITY`) to prevent accidental value clipping on high-capacity industrial devices.
+
+### Component Control Actions
+* **Plus/Minus Buttons (`.hmi-stepper-row button`)**: Increases or decreases the setpoint target. Triggers the `data-input-mode="editing"` guard instantly to isolate the visual field from periodic background overwrites while changes are in progress.
+* **Value Text Display (`.hmi-value`)**: Stored as a pure, unformatted numeric string node. This ensures that sequential quick-clicks compute correctly without text suffix character parsing conflicts. 
+
+---
+
+## System Integration & API Tunneling
+
+When an adjustment button is clicked, the boundary logic evaluates the new value against your constraints, updates the layout UI optimistically, and dispatches the payload to the native Domoticz setpoint target endpoint:
+
+```http/json.htm?type=command&param=setsetpoint&idx={idx}&setpoint={nextSetpoint}
+```
+
+Once the network transaction returns a status of `"OK"`, the element-level lock clears to `readonly`, the tile header transitions cleanly back to `SYNCED`, and background server data synchronization resumes safely.
+
+## Template Implementations
+
+```
 <!-- 
-	TILE N ROW N COL N
-	THERMOSTAT (SP) + TEMPERATURE (PV)
-	IDX 2 = Type Setpoint, SubType Setpoint
-	IDX 22 = Type Temperature, SubType LaCrosse
+	SETPOINT
+	Domoticz Type Setpoint / SubType Setpoint
+	Generic single setpoint controller with layout
+	[-][SP][+]
+	Configurable Step Increment.
 -->
-<div class="hmi-pack-card" 
-	data-device-idx="2" 
-	data-type="setpoint-processvalue-tile" 
-	data-pv-idx="22" 
-	data-unit="°C" 
-	data-step="0.5">
-	<div class="hmi-card-header">
-		<div class="hmi-pack-label">Thermostat</div>
-		<div class="hmi-badge"></div>
-	</div>
-	
-	<div class="hmi-value-grid">
-		<!-- STEP 1 ROW: Interactive Target Setpoint Stepper (SP) -->
-		<div class="hmi-stepper-row">
-			<button class="hmi-btn-step hmi-btn-down">-</button>
-			<div class="hmi-sp-value hmi-value" style="font-size: 16px; width: 60px; text-align: center;">--</div>
-			<button class="hmi-btn-step hmi-btn-up">+</button>
-		</div>
-		
-		<!-- STEP 2 ROW: Read-Only Actual Feedback Tracker (PV) -->
-		<div class="hmi-pv-row">
-			<span class="hmi-column-label" style="margin-bottom: 0;">Actual (PV):</span>
-			<div class="hmi-value-box" style="width: auto; min-width: 80px;">
-				<div class="hmi-pv-value hmi-value" style="font-size: 16px;">--</div>
-			</div>
-		</div>
-	</div>
+<div class="hmi-pack-tile" 
+	data-type="setpoint" 
+	data-device-idx="10"
+	data-step="0.5"
+	data-unit="°C">
+	<div class="hmi-tile-header"><div class="hmi-pack-label">Setpoint</div></div>
+	<div class="hmi-value-grid"></div>
 </div>
-```
 
----
+<!-- 
+	SETPOINTPROCESSVALUE
+	Domoticz Type Setpoint / SubType Setpoint
+	Domoticz Type Temp / SubType LaCrosse TX3
+	Combined stepper controller with layout
+	   [PV]
+	[-][SP][+]
+-->
+<div class="hmi-pack-tile" 
+	data-type="setpointprocessvalue" 
+	data-device-idx="10" 
+	data-device-idx-pv="11"
+	data-step="1"
+	data-unit="°C">
+	<div class="hmi-tile-header"><div class="hmi-pack-label">Setpoint + ProcessValue</div></div>
+	<div class="hmi-value-grid"></div>
+</div>
 
-See latest in core/hmitiles.css.
-
-Ensure these style class blocks are appended into your global framework CSS file to eliminate layout hardcoding dependencies:
-
-```css
-/* Core element spacing inside the card grid frame */
-.hmi-pack-card[data-type="setpoint-stepper-tile"] .hmi-value-grid {
-    display: flex;
-    flex-direction: column;
-    padding: 12px;
-    gap: 10px;
-}
-
-/* Horizontal input element bar wrapping the buttons and SP number */
-.hmi-stepper-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    gap: 12px;
-    background-color: #f5f5f5;
-    border: 1px solid #dcdcdc; 
-    border-radius: 4px;
-    padding: 4px;
-    box-sizing: border-box;
-}
-
-/* Stepper push buttons */
-.hmi-btn-step {
-    padding: 2px 10px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    background: #e0e0e0;
-    border: 1px solid #bbbbbb;
-    color: #333333;
-    border-radius: 4px;
-    user-select: none;
-    transition: background 0.1s ease;
-}
-
-.hmi-btn-step:active {
-    background: #cccccc;
-}
-
-/* Horizontal structural wrapper for the Actual sensor row */
-.hmi-pv-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-}
-```
-
----
-
-## Step 3: Core Framework Engine Integration (`hmitiles.js`)
-
-This generic pipeline block executes inside the central `processDevices` handler, updating states dynamically and wiring up input callbacks on the fly without duplicative script scopes:
-
-```javascript
-if (cardType === "setpoint-stepper-tile") {
-    const spField = tileElement.querySelector('.hmi-sp-value');
-    const pvField = tileElement.querySelector('.hmi-pv-value');
-    
-    const targetPVIdx = tileElement.getAttribute('data-pv-idx');
-    const targetUnit = tileElement.getAttribute('data-unit') || "";
-    const stepValue = parseFloat(tileElement.getAttribute('data-step') || 0.5);
-
-    // 1. Sync current Target Setpoint (SP)
-    const currentSP = parseFloat(device.SetPoint || device.Data || 0);
-    if (spField) spField.textContent = `${currentSP.toFixed(1)} ${targetUnit}`;
-
-    // 2. Cross-reference the database array payload to pull the process value (PV)
-    if (targetPVIdx) {
-        const pvDevice = devices.find(d => String(d.idx) === String(targetPVIdx));
-        if (pvDevice && pvField) {
-            const currentPV = parseFloat(pvDevice.Temp || pvDevice.Data || 0);
-            pvField.textContent = `${currentPV.toFixed(1)} ${targetUnit}`;
-        }
-    }
-
-    // 3. Bind click listener transaction pipelines securely on initial loop pass
-    if (!tileElement.hasAttribute('data-listeners-bound')) {
-        tileElement.setAttribute('data-listeners-bound', 'true');
-        
-        const btnUp = tileElement.querySelector('.hmi-btn-up');
-        const btnDown = tileElement.querySelector('.hmi-btn-down');
-        let workingSP = currentSP;
-
-        const sendSetpointUpdate = async (newVal) => {
-            if (spField) spField.textContent = `${newVal.toFixed(1)} ${targetUnit}`;
-            try {
-                const targetUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=setsetpoint&idx=${device.idx}&setpoint=${newVal.toFixed(1)}`;
-                await fetch(targetUrl);
-            } catch (err) {
-                console.error("Setpoint transmission error:", err);
-            }
-        };
-
-        if (btnUp) {
-            btnUp.addEventListener('click', () => {
-                workingSP += stepValue;
-                sendSetpointUpdate(workingSP);
-            });
-        }
-
-        if (btnDown) {
-            btnDown.addEventListener('click', () => {
-                workingSP -= stepValue;
-                sendSetpointUpdate(workingSP);
-            });
-        }
-    }
-
-    checkAlarmThresholds(device.idx, rawValue);
-    return;
-}
+<!-- 
+	SETPOINTPROCESSVALUE
+	Domoticz Type Setpoint / SubType Setpoint
+	Domoticz Type Temp / SubType LaCrosse TX3
+	Combined stepper controller with layout
+	   [PV]
+	[-][SP][+]
+-->
+<div class="hmi-pack-tile" 
+	data-type="setpointprocessvalue" 
+	data-device-idx="10" 
+	data-device-idx-pv="11"
+	data-step="0.5"
+	data-min="20"
+	data-max="23"
+	data-unit="°C">
+	<div class="hmi-tile-header"><div class="hmi-pack-label">Setpoint (min 20/max 23) + ProcessValue</div></div>
+	<div class="hmi-value-grid"></div>
+</div>
 ```

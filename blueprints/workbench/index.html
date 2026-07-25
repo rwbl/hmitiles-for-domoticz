@@ -1,21 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <!--
-================================================================================
-HMITILES CUSTOM VIEW PROFILE - APPLICATION BLUEPRINT Blueprint
-================================================================================
-Brief:  		HMITiles Sandbox Sandbox Sandbox Workbench Workbench
-Date:  		 	2026-07-12
+Brief:  		HMITiles Blueprint Workbench
+Date:  		 	2026-07-22
 Author:   		Robert W.B. Linn @ 2026 MIT
-Description:	Reference Master Sandbox Template Panel Panel
+Description:	Reference Master Blueprint
 --------------------------------------------------------------------------------
-MANDATORY ARCHITECTURAL SYSTEM LAWS (RELEASE VERSION 2.0.0):
-1. The HTML definition attribute [data-labels] is STRICTLY MANDATORY for every 
-   single tile element carrying the [data-type="value"] token classification marker.
-2. Structure Contract Format: data-labels="INDEX_BUCKET:DISPLAY_TITLE:UNIT_SUFFIX"
-3. The View Layer relies entirely on this data-labels configuration map as the 
-   final, absolute master authority for column rendering rendering math.
-================================================================================
+MANDATORY ARCHITECTURAL SYSTEM RULES:
+- The HTML definition attribute [data-labels] is STRICTLY MANDATORY for every 
+  single tile element carrying the [data-type="value"] token classification marker.
+- Structure Contract Format: data-labels="INDEX_BUCKET:DISPLAY_TITLE:UNIT_SUFFIX"
+- The View Layer relies entirely on this data-labels configuration map as the 
+  final, absolute master authority for column rendering rendering math.
 -->
 	
 <head>
@@ -155,13 +151,13 @@ MANDATORY ARCHITECTURAL SYSTEM LAWS (RELEASE VERSION 2.0.0):
 			<div class="hmi-switch-button-row">
 				
 				<!-- LEVEL Off -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Off">
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Off" data-on-text="OFF" data-off-text="OFF">
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 				<!-- LEVEL On -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="On">
-					<div class="hmi-badge hmi-clickable-badge">ON</div>
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="On" data-on-text="ON" data-off-text="ON">
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 			</div>
 		</div>
@@ -180,13 +176,13 @@ MANDATORY ARCHITECTURAL SYSTEM LAWS (RELEASE VERSION 2.0.0):
 			<div class="hmi-switch-button-row">
 				
 				<!-- LEVEL Off -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="37" data-action="Off">
-					<div class="hmi-badge hmi-clickable-badge">STAND-BY</div>
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="37" data-action="Off" data-on-text="STAND-BY" data-off-text="STAND-BY">
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 				<!-- LEVEL On -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="37" data-action="On">
-					<div class="hmi-badge hmi-clickable-badge">RUNNING</div>
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="37" data-action="On" data-on-text="RUNNING" data-off-text="RUNNING">
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 			</div>
 		</div>
@@ -246,7 +242,8 @@ MANDATORY ARCHITECTURAL SYSTEM LAWS (RELEASE VERSION 2.0.0):
 			Emergency stop actions reset and trigged (reusing switch infrastructure).
 			To set the last-update, the data-device-idx must be set in the hmi-pack-tile.
 		-->
-		<div class="hmi-pack-tile" data-device-idx="9">
+		<div class="hmi-pack-tile" 
+			data-device-idx="9">
 			<div class="hmi-tile-header"><div class="hmi-pack-label">EMERGENCY-STOP</div></div>
 			<div class="hmi-switch-button-row">
 				<!-- A single, full-width inner tile block.
@@ -257,9 +254,11 @@ MANDATORY ARCHITECTURAL SYSTEM LAWS (RELEASE VERSION 2.0.0):
 					 data-type="switch" 
 					 data-device-idx="9" 
 					 data-action="Toggle" 
+					 data-on-text="Tripped"
+					 data-off-text="Reset"
 					 id="hmi-estop-active-btn" 
 					 style="width: 100%;">
-					<div class="hmi-badge hmi-clickable-badge hmi-active-state">TRIPPED</div>
+					<div class="hmi-badge hmi-clickable-badge hmi-active-state"></div>
 				</div>
 			</div>
 			<div class="hmi-last-update" data-field="LastUpdate">YYYY-MM-DD hh:mm:ss</div>
@@ -273,7 +272,8 @@ MANDATORY ARCHITECTURAL SYSTEM LAWS (RELEASE VERSION 2.0.0):
 		<div class="hmi-pack-tile" 
 			data-type="setpoint" 
 			data-device-idx="10"
-			data-step="0.5">
+			data-step="0.5"
+			data-unit="°C">
 			<div class="hmi-tile-header"><div class="hmi-pack-label">Setpoint</div></div>
 			<div class="hmi-value-grid"></div>
 		</div>
@@ -288,7 +288,8 @@ MANDATORY ARCHITECTURAL SYSTEM LAWS (RELEASE VERSION 2.0.0):
 			data-type="setpointprocessvalue" 
 			data-device-idx="10" 
 			data-device-idx-pv="11"
-			data-step="1.0">
+			data-step="1.0"
+			data-unit="°C">
 			<div class="hmi-tile-header"><div class="hmi-pack-label">Setpoint + ProcessValue</div></div>
 			<div class="hmi-value-grid"></div>
 		</div>
@@ -324,9 +325,9 @@ MANDATORY ARCHITECTURAL SYSTEM LAWS (RELEASE VERSION 2.0.0):
 			6-Column layout to support data: "270;W;45;120;22.0;18.5"
 		-->
 		<div class="hmi-pack-tile hmi-clickable-tile" 
-			 data-type="value" 
-			 data-device-idx="14"
-			 data-labels="0:BEARING:°;1:DIR:Compass;2:SPEED:m/s;3:GUST:m/s;4:TEMP:°C;5:CHILL:°C">
+			data-type="value" 
+			data-device-idx="14"
+			data-labels="0:BEARING:°;1:DIR:Compass;2:SPEED:bft;3:GUST:bft;4:TEMP:°C;5:CHILL:°C">
 			<div class="hmi-tile-header">
 				<div class="hmi-pack-label">Wind</div>
 			</div>
@@ -383,7 +384,7 @@ MANDATORY ARCHITECTURAL SYSTEM LAWS (RELEASE VERSION 2.0.0):
 		<!-- 
 			VALUE
 			Domoticz Type General / SubType Baro
-			2-Column layout to support data: BAR;BAR_FOR
+			2-Column layout to support data: BAR;BARFOR
 		-->
 		<div class="hmi-pack-tile hmi-clickable-tile" 
 			 data-type="value" 
@@ -391,6 +392,21 @@ MANDATORY ARCHITECTURAL SYSTEM LAWS (RELEASE VERSION 2.0.0):
 			 data-labels="0:BARO:hPa;1:BAROFOR:">
 			<div class="hmi-tile-header">
 				<div class="hmi-pack-label">Baro</div>
+			</div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			HUMIDITY
+			Domoticz Type Humidity / SubType LaCrosse TX3
+			2-Column layout to support data: HUM;HUMSTAT
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="value" 
+			 data-device-idx="70"
+			 data-labels="0:HUM:%;1:HUMSTAT:">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Humidity</div>
 			</div>
 			<div class="hmi-value-grid"></div>
 		</div>
@@ -513,7 +529,7 @@ MANDATORY ARCHITECTURAL SYSTEM LAWS (RELEASE VERSION 2.0.0):
 		<div class="hmi-pack-tile hmi-clickable-tile" 
 			 data-type="value" 
 			 data-device-idx="22"
-			 data-labels="0:POWER:W;1:ENERGY:Wh">
+			 data-labels="0:COUNTERTODAY:kWh;1:USAGE:W">
 			<div class="hmi-tile-header">
 				<div class="hmi-pack-label">Electricity</div>
 			</div>
@@ -552,13 +568,13 @@ MANDATORY ARCHITECTURAL SYSTEM LAWS (RELEASE VERSION 2.0.0):
 
 		<!-- 
 			VALUE
-			Domoticz Type P1 SMART METER / SubType Electricity
-			2-Column layout to support data: USAGE1;USAGE2;RETURN1;RETURN2;CONS;PROD
+			Domoticz Type P1 Smart Meter / SubType Gas
+			3-Column layout to support data: COUNTER;COUNTERTODAY;PRICE
 		-->
 		<div class="hmi-pack-tile hmi-clickable-tile" 
 			 data-type="value" 
 			 data-device-idx="25"
-			 data-labels="0:USE1:Wh;1:USE2:Wh;2:RET1:Wh;3:RET2:Wh;4:CONS:W;5:PROD:W">
+			 data-labels="0:COUNTER:m3;1:COUNTERTODAY:m3;2:PRICE:ct">
 			<div class="hmi-tile-header">
 				<div class="hmi-pack-label">P1 Smart Meter Gas</div>
 			</div>
@@ -681,7 +697,7 @@ MANDATORY ARCHITECTURAL SYSTEM LAWS (RELEASE VERSION 2.0.0):
 			VALUE
 			Domoticz Type General / SubType Custom Sensor
 			Display value of any kind. 
-			For tests used custom sensor (taking Unit rom device.Data property).
+			For tests used custom sensor (taking Unit from device.Data property).
 		-->
 		<div class="hmi-pack-tile hmi-clickable-tile" 
 			data-type="value" 
@@ -699,25 +715,22 @@ MANDATORY ARCHITECTURAL SYSTEM LAWS (RELEASE VERSION 2.0.0):
 		<div class="hmi-pack-tile hmi-clickable-tile" 
 			data-type="value" 
 			data-device-idx="35"
-			data-labels="0:Scale:kg">
-			<div class="hmi-tile-header">
-				<div class="hmi-pack-label">Scale</div>
-			</div>
+			data-labels="0:WEIGHT:kg">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Scale</div></div>
 			<div class="hmi-value-grid"></div>
 		</div>
 
 		<!-- 
 			VALUE
-			Domoticz Type Managed Counter / SubType Energy
-			2-Column layout to support data: COUNTER;USAGE
+			Domoticz Type General / SubType Managed Counter
+			ENERGY
+			2-Column layout to support data: COUNTER
 		-->
 		<div class="hmi-pack-tile hmi-clickable-tile" 
 			 data-type="value" 
 			 data-device-idx="38"
-			 data-labels="0:COUNTER:Wh;1:USAGE:Wh">
-			<div class="hmi-tile-header">
-				<div class="hmi-pack-label">Managed Counter Electricity</div>
-			</div>
+			 data-labels="0:COUNTER:Wh">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Managed Counter Energy</div></div>
 			<div class="hmi-value-grid"></div>
 		</div>
 				
@@ -768,101 +781,31 @@ MANDATORY ARCHITECTURAL SYSTEM LAWS (RELEASE VERSION 2.0.0):
 			<div class="hmi-switch-button-row">
 				
 				<!-- SWITCH 1 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle">
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-pack-label">P1</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 				<!-- SWITCH 2 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-pack-label">Switch 2</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 				<!-- SWITCH 3 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle">
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-pack-label">Switch 3</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 				<!-- SWITCH 4 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-pack-label">Switch 4</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 			</div>
 		</div>
-
-		<!-- 
-			SWITCH
-			Domoticz Type Light/Switch / SubType Switch / SwitchType On/Off
-			8-SWITCH HORIZONTAL PANEL
-			Generic horizontal multi-onoff-switch panel with flexible number of switches.
-		-->
-		<div class="hmi-pack-tile">
-			<div class="hmi-tile-header">
-				<div class="hmi-pack-label">8-Switch Horizontal Panel</div>
-			</div>
-			
-			<!-- Outer horizontal container wrapper -->
-			<div class="hmi-switch-button-row">
-				
-				<!-- SWITCH 1 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
-					<div class="hmi-pack-label">P1</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
-				</div>
-
-				<!-- SWITCH 2 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="7" data-action="Toggle">
-					<div class="hmi-pack-label">P2</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
-				</div>
-
-				<!-- SWITCH 3 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
-					<div class="hmi-pack-label">P3</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
-				</div>
-
-				<!-- SWITCH 4 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="7" data-action="Toggle">
-					<div class="hmi-pack-label">P4</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
-				</div>
-
-			</div>
-			<!-- Outer horizontal container wrapper -->
-			<div class="hmi-switch-button-row">
-				
-				<!-- SWITCH 5 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle">
-					<div class="hmi-pack-label">F1</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
-				</div>
-
-				<!-- SWITCH 6 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
-					<div class="hmi-pack-label">F2</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
-				</div>
-
-				<!-- SWITCH 7 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle">
-					<div class="hmi-pack-label">F3</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
-				</div>
-
-				<!-- SWITCH 8 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
-					<div class="hmi-pack-label">F4</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
-				</div>
-
-			</div>
-		</div>
-
 
 		<!-- 
 			SWITCH
@@ -878,33 +821,33 @@ MANDATORY ARCHITECTURAL SYSTEM LAWS (RELEASE VERSION 2.0.0):
 			<div class="hmi-value-grid">
 
 				<!-- SWITCH 1 (IDX N) -->
-				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="5" data-action="Toggle">
+				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="5" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-tile-header">
 						<div class="hmi-pack-label">Switch 1</div>
-						<div class="hmi-badge hmi-clickable-badge">OFF</div>
+						<div class="hmi-badge hmi-clickable-badge"></div>
 					</div>
 				</div>
 				<!-- SWITCH 2 (IDX N) -->
-				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="6" data-action="Toggle">
+				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="6" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-tile-header">
 						<div class="hmi-pack-label">Switch 2</div>
-						<div class="hmi-badge hmi-clickable-badge">OFF</div>
+						<div class="hmi-badge hmi-clickable-badge"></div>
 					</div>
 				</div>
 
 				<!-- SWITCH 3 (IDX N) -->
-				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="5" data-action="Toggle">
+				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="5" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-tile-header">
 						<div class="hmi-pack-label">Switch 3</div>
-						<div class="hmi-badge hmi-clickable-badge">OFF</div>
+						<div class="hmi-badge hmi-clickable-badge"></div>
 					</div>
 				</div>
 
 				<!-- SWITCH 4 (IDX N) -->
-				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="6" data-action="Toggle">
+				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="6" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-tile-header">
 						<div class="hmi-pack-label">Switch 4</div>
-						<div class="hmi-badge hmi-clickable-badge">OFF</div>
+						<div class="hmi-badge hmi-clickable-badge"></div>
 					</div>
 				</div>
 
@@ -1018,10 +961,11 @@ MANDATORY ARCHITECTURAL SYSTEM LAWS (RELEASE VERSION 2.0.0):
 			<div class="hmi-tile-header"><div class="hmi-pack-label">[ SPARE TILE COMPONENT ]</div></div>
 		</div>
 
-		<div class="hmi-pack-tile" data-type="trend" data-device-idx="3">
+		<div class="hmi-pack-tile" data-type="trend" data-device-idx="3" data-unit="ppm">
 			<div class="hmi-tile-header"><div class="hmi-pack-label">Air Quality</div></div>
 			<!-- LEAVE BLANK: Automatically filled with dynamic SVG canvas -->
 			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-value"></div>
 			<div class="hmi-last-update"></div>
 		</div>
 

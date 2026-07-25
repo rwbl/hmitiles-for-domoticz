@@ -1,5 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+<!--
+Brief:  		HMITiles Blueprint Switches
+Data-Type:		switch
+Date:  		 	2026-07-24
+Author:   		Robert W.B. Linn @ 2026 MIT
+Description:	For every switch define attributes data-on-text="ANYTEXT" data-off-text="ANYTEXT".
+				This gives flexibility showing a switch state like ON/OFF,STOP/START/STAND-BY/RUNNING.
+-->
+
 <head>
     <meta charset="UTF-8">
     <title>HMITiles Switches</title>
@@ -24,19 +33,33 @@
 		<!-- 
 			SWITCH
 			Domoticz Type Light/Switch / SubType Switch / SwitchType On/Off
+			Toggle ON/OFF.
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">1-Button Toggle ON/OFF</div></div>
+			<div class="hmi-switch-button-row">
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
+					<div class="hmi-badge hmi-clickable-badge"></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 
+			SWITCH
+			Domoticz Type Light/Switch / SubType Switch / SwitchType On/Off
 			Horizontal selector button row panel (like the 4-switch panel).
 		-->
 		<div class="hmi-pack-tile">
-			<div class="hmi-tile-header"><div class="hmi-pack-label">Switch (ON/OFF)</div></div>
+			<div class="hmi-tile-header"><div class="hmi-pack-label">2-Buttons ON/OFF</div></div>
 			<div class="hmi-switch-button-row">
 				<!-- LEVEL Off -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Off">
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Off" data-on-text="OFF" data-off-text="OFF">
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 				<!-- LEVEL On -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="On">
-					<div class="hmi-badge hmi-clickable-badge">ON</div>
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="On" data-on-text="ON" data-off-text="ON">
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 			</div>
 		</div>
@@ -48,16 +71,16 @@
 			Show state of a machine STAND-BY or RUNNING.
 		-->
 		<div class="hmi-pack-tile">
-			<div class="hmi-tile-header"><div class="hmi-pack-label">Machine Status Control</div></div>
+			<div class="hmi-tile-header"><div class="hmi-pack-label">2-Buttons Machine Status Control</div></div>
 			<div class="hmi-switch-button-row">
 				<!-- LEVEL Off -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="37" data-action="Off">
-					<div class="hmi-badge hmi-clickable-badge">STAND-BY</div>
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="37" data-action="Off" data-on-text="STAND-BY" data-off-text="STAND-BY">
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 				<!-- LEVEL On -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="37" data-action="On">
-					<div class="hmi-badge hmi-clickable-badge">RUNNING</div>
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="37" data-action="On" data-on-text="RUNNING" data-off-text="RUNNING">
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 			</div>
 		</div>
@@ -69,7 +92,7 @@
 		<div class="hmi-pack-tile" 
 			data-type="selector" 
 			data-device-idx="7">
-			<div class="hmi-tile-header"><div class="hmi-pack-label">Selector (Dropdown)</div></div>
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Selector Dropdown</div></div>
 			<div class="hmi-value-grid"></div>
 		</div>
 
@@ -79,27 +102,27 @@
 			Horizontal selector button row panel (like the 4-switch panel).
 		-->
 		<div class="hmi-pack-tile">
-			<div class="hmi-tile-header"><div class="hmi-pack-label">Selector (Buttons)</div></div>
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Selector 4-Buttons</div></div>
 			<div class="hmi-switch-button-row">
 				
 				<!-- LEVEL 0: OFF -->
 				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="8" data-level="0" data-on-text="OFF" data-off-text="OFF">
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 				<!-- LEVEL 10: HOME -->
 				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="8" data-level="10" data-on-text="HOME" data-off-text="HOME">
-					<div class="hmi-badge hmi-clickable-badge">HOME</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 				<!-- LEVEL 20: AWAY -->
 				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="8" data-level="20" data-on-text="AWAY" data-off-text="AWAY">
-					<div class="hmi-badge hmi-clickable-badge">AWAY</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 				<!-- LEVEL 30: NIGHT -->
 				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="8" data-level="30" data-on-text="NIGHT" data-off-text="NIGHT">
-					<div class="hmi-badge hmi-clickable-badge">NIGHT</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 			</div>
@@ -111,7 +134,8 @@
 			Emergency stop actions reset and trigged (reusing switch infrastructure).
 			To set the last-update, the data-device-idx must be set in the hmi-pack-tile.
 		-->
-		<div class="hmi-pack-tile" data-device-idx="9">
+		<div class="hmi-pack-tile" 
+			data-device-idx="9">
 			<div class="hmi-tile-header"><div class="hmi-pack-label">EMERGENCY-STOP</div></div>
 			<div class="hmi-switch-button-row">
 				<!-- A single, full-width inner tile block.
@@ -122,13 +146,16 @@
 					 data-type="switch" 
 					 data-device-idx="9" 
 					 data-action="Toggle" 
+					 data-on-text="Tripped"
+					 data-off-text="Reset"
 					 id="hmi-estop-active-btn" 
 					 style="width: 100%;">
-					<div class="hmi-badge hmi-clickable-badge hmi-active-state">TRIPPED</div>
+					<div class="hmi-badge hmi-clickable-badge hmi-active-state"></div>
 				</div>
 			</div>
-			<div class="hmi-last-update" data-field="LastUpdate">YYYY-MM-DD hh:mm:ss</div>
+			<div class="hmi-last-update" data-field="LastUpdate"></div>
 		</div>
+
 		<!-- 
 			SWITCH
 			Domoticz Type Light/Switch / SubType Switch / SwitchType On/Off
@@ -140,15 +167,15 @@
 			<div class="hmi-switch-button-row">
 				
 				<!-- SWITCH 1 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle">
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-pack-label">Switch 1</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 				<!-- SWITCH 2 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-pack-label">Switch 2</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 			</div>
@@ -165,17 +192,17 @@
 			<div class="hmi-value-grid">
 
 				<!-- SWITCH 1 (IDX N) -->
-				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="5" data-action="Toggle">
+				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="5" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-tile-header">
 						<div class="hmi-pack-label">Switch 1</div>
-						<div class="hmi-badge hmi-clickable-badge">OFF</div>
+						<div class="hmi-badge hmi-clickable-badge"></div>
 					</div>
 				</div>
 				<!-- SWITCH 2 (IDX N) -->
-				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="6" data-action="Toggle">
+				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="6" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-tile-header">
 						<div class="hmi-pack-label">Switch 2</div>
-						<div class="hmi-badge hmi-clickable-badge">OFF</div>
+						<div class="hmi-badge hmi-clickable-badge"></div>
 					</div>
 				</div>
 
@@ -194,21 +221,21 @@
 			<div class="hmi-switch-button-row">
 				
 				<!-- SWITCH 1 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle">
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-pack-label">Switch 1</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 				<!-- SWITCH 2 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-pack-label">Switch 2</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 				<!-- SWITCH 3 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle">
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-pack-label">Switch 3</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 			</div>
 		</div>
@@ -226,27 +253,27 @@
 			<div class="hmi-switch-button-row">
 				
 				<!-- SWITCH 1 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle">
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-pack-label">Switch 1</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 				<!-- SWITCH 2 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-pack-label">Switch 2</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 				<!-- SWITCH 3 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle">
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-pack-label">Switch 3</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 				<!-- SWITCH 4 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-pack-label">Switch 4</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 			</div>
@@ -259,37 +286,40 @@
 			Generic vertical multi-onoff-switch panel with 1-4 number of switches.
 		-->
 		<div class="hmi-pack-tile">
-			<div class="hmi-tile-header"><div class="hmi-pack-label">4-Switch Vertical Panel</div></div>
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">4-Switch Vertical Panel</div>
+			</div>
+
 			<div class="hmi-value-grid">
 
 				<!-- SWITCH 1 (IDX N) -->
-				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="5" data-action="Toggle">
+				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="5" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-tile-header">
 						<div class="hmi-pack-label">Switch 1</div>
-						<div class="hmi-badge hmi-clickable-badge">OFF</div>
+						<div class="hmi-badge hmi-clickable-badge"></div>
 					</div>
 				</div>
 				<!-- SWITCH 2 (IDX N) -->
-				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="6" data-action="Toggle">
+				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="6" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-tile-header">
 						<div class="hmi-pack-label">Switch 2</div>
-						<div class="hmi-badge hmi-clickable-badge">OFF</div>
+						<div class="hmi-badge hmi-clickable-badge"></div>
 					</div>
 				</div>
 
 				<!-- SWITCH 3 (IDX N) -->
-				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="5" data-action="Toggle">
+				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="5" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-tile-header">
 						<div class="hmi-pack-label">Switch 3</div>
-						<div class="hmi-badge hmi-clickable-badge">OFF</div>
+						<div class="hmi-badge hmi-clickable-badge"></div>
 					</div>
 				</div>
 
 				<!-- SWITCH 4 (IDX N) -->
-				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="6" data-action="Toggle">
+				<div class="hmi-pack-innertile" data-type="switch" data-device-idx="6" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-tile-header">
 						<div class="hmi-pack-label">Switch 4</div>
-						<div class="hmi-badge hmi-clickable-badge">OFF</div>
+						<div class="hmi-badge hmi-clickable-badge"></div>
 					</div>
 				</div>
 
@@ -308,27 +338,27 @@
 			<div class="hmi-switch-button-row">
 				
 				<!-- SWITCH 1 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-pack-label">P1</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 				<!-- SWITCH 2 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="7" data-action="Toggle">
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-pack-label">P2</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 				<!-- SWITCH 3 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-pack-label">P3</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 				<!-- SWITCH 4 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="7" data-action="Toggle">
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-pack-label">P4</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 			</div>
@@ -336,27 +366,27 @@
 			<div class="hmi-switch-button-row">
 				
 				<!-- SWITCH 5 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle">
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-pack-label">F1</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 				<!-- SWITCH 6 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-pack-label">F2</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 				<!-- SWITCH 7 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle">
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-pack-label">F3</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 				<!-- SWITCH 8 -->
-				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle">
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="6" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
 					<div class="hmi-pack-label">F4</div>
-					<div class="hmi-badge hmi-clickable-badge">OFF</div>
+					<div class="hmi-badge hmi-clickable-badge"></div>
 				</div>
 
 			</div>

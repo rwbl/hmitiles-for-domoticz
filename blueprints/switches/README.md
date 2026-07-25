@@ -1,92 +1,134 @@
-# Swiches
+# SWICHES
 
-## Interactive Switch & Selector Components (`data-type="switch" | "selector"`)
+**Data Type**: `switch`, `selector`
+
+---
+
+## Overview
+Interactive Switch & Selector Components (`data-type="switch" | "selector"`)
 Switch and Selector tiles manage discrete, binary, or multi-level control arrays. Instead of displaying a passive telemetry stream, they split interaction tracks across internal horizontal or vertical grids. The background core engine scans these elements and dynamically attaches physical hardware command click handlers to any node carrying a `data-action` token.
+Each switch is defined as a badge which acts as a button.
 
 **Preview**
 ![Switch](switch.png)
 
-### Core Switch Configuration Markups##### 1. Standard Binary Toggle Panel (Horizontal Split)*Renders an interactive side-by-side action pair to toggle discrete system states.*```html
-```
-<div class="hmi-pack-tile" data-device-idx="1" data-type="switch">
-    <div class="hmi-tile-header"><div class="hmi-pack-label">Switch (ON/OFF)</div></div>
-    <div class="hmi-switch-button-row">
-        <div class="hmi-pack-innertile hmi-switch-col-cell" data-action="Off">
-            <div class="hmi-badge">OFF</div>
-        </div>
-        <div class="hmi-pack-innertile hmi-switch-col-cell" data-action="On">
-            <div class="hmi-badge">ON</div>
-        </div>
-    </div>
+**IMPORTANT**
+Lookup `index.html` for latest examples.
+
+-- 
+
+## Configuration Parameters 
+(HTML Data Attributes)
+
+To build out dashboard data grid columns, configure the following core attributes on the `.hmi-pack-tile` chassis.
+
+| Attribute | Expected Value | Description |
+|-----------|----------------|-------------|
+|`data-type`|"value","gauge"|Tells the JavaScript loop to register this card into the server log stream synchronization pipeline.|
+|`data-device-idx`|"NNN"|Domoticz device index (`idx`) (mandatory).|
+|`data-action="Toggle`|On,Off,Toggle| Binds an explicit execution payload (e.g., `On`, `Off`, or specific index commands like `10`) straight to the component node, routing click transactions directly into your backend handler loops.|
+|`data-on-text`|Any text, default ON| Mandatory button text displayed when button state ON.|
+|`data-off-text`||Any text, default OFF| Mandatory button text displayed when button state OFF.|
+
+**Low-Distraction Active states**: Selected choices automatically receive the `.hmi-active-state` class from your view script. Ensure your interactive dark and light styles use desaturated background fills to preserve low operator eye strain when sitting idle.
+
+## Template Implementations
+
+### Standard Binary Toggle Panel (Horizontal Split)
+Renders an interactive side-by-side action pair to toggle discrete system states.
+```html
+<div class="hmi-pack-tile">
+	<div class="hmi-tile-header"><div class="hmi-pack-label">1-Button Toggle ON/OFF</div></div>
+	<div class="hmi-switch-button-row">
+		<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="5" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
+			<div class="hmi-badge hmi-clickable-badge"></div>
+		</div>
+	</div>
 </div>
 ```
 
-### 2. Interlocked Emergency Shutter Panel (High Priority Alert)*A single-cell safety button setup that uses your custom stylesheets to toggle active alerts or simulation flags cleanly in a single box.*```html
+### Interlocked Emergency Shutter Panel (High Priority Alert)
+A single-cell safety button setup that uses your custom stylesheets to toggle active alerts or simulation flags cleanly in a single box.
+```html
+		<div class="hmi-pack-tile" 
+			data-device-idx="9">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">EMERGENCY-STOP</div></div>
+			<div class="hmi-switch-button-row">
+				<!-- A single, full-width inner tile block.
+					 The background script simply toggles the text inside the badge:
+					 Normal Mode:  badge says "RESET / OK" and drops the active class
+					 Tripped Mode: badge says "TRIPPED" and gains the hmi-active-state class -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" 
+					 data-type="switch" 
+					 data-device-idx="9" 
+					 data-action="Toggle" 
+					 data-on-text="Tripped"
+					 data-off-text="Reset"
+					 id="hmi-estop-active-btn" 
+					 style="width: 100%;">
+					<div class="hmi-badge hmi-clickable-badge hmi-active-state"></div>
+				</div>
+			</div>
+			<div class="hmi-last-update" data-field="LastUpdate"></div>
+		</div>
 ```
-<div class="hmi-pack-tile" data-device-idx="9" data-type="switch">
-    <div class="hmi-tile-header"><div class="hmi-pack-label">EMERGENCY-STOP</div></div>
-    <div class="hmi-switch-button-row">
-        <div class="hmi-pack-innertile hmi-switch-col-cell" data-action="Toggle" id="hmi-estop-active-btn" style="width: 100%;">
-            <div class="hmi-badge hmi-clickable-badge hmi-active-state">TRIPPED</div>
-        </div>
-    </div>
-    <div class="hmi-last-update" data-field="LastUpdate">YYYY-MM-DD hh:mm:ss</div>
+
+### Multi-Button Virtual State Selection Matrix (Buttons Selector)
+Lines up multiple operational states horizontally. The engine flags the selected button with the `.hmi-active-state` class automatically on update loops.
+```html
+<div class="hmi-pack-tile">
+	<div class="hmi-tile-header"><div class="hmi-pack-label">Selector 4-Buttons</div></div>
+	<div class="hmi-switch-button-row">
+		
+		<!-- LEVEL 0: OFF -->
+		<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="8" data-level="0" data-on-text="OFF" data-off-text="OFF">
+			<div class="hmi-badge hmi-clickable-badge"></div>
+		</div>
+
+		<!-- LEVEL 10: HOME -->
+		<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="8" data-level="10" data-on-text="HOME" data-off-text="HOME">
+			<div class="hmi-badge hmi-clickable-badge"></div>
+		</div>
+
+		<!-- LEVEL 20: AWAY -->
+		<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="8" data-level="20" data-on-text="AWAY" data-off-text="AWAY">
+			<div class="hmi-badge hmi-clickable-badge"></div>
+		</div>
+
+		<!-- LEVEL 30: NIGHT -->
+		<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="8" data-level="30" data-on-text="NIGHT" data-off-text="NIGHT">
+			<div class="hmi-badge hmi-clickable-badge"></div>
+		</div>
+
+	</div>
 </div>
 ```
-### 3. Multi-Button Virtual State Selection Matrix (Buttons Selector)*Lines up multiple operational states horizontally. The engine flags the selected button with the `.hmi-active-state` class automatically on update loops.*```html
-```
-<div class="hmi-pack-tile" data-device-idx="15" data-type="selector">
-    <div class="hmi-tile-header"><div class="hmi-pack-label">Selector (Buttons)</div></div>
-    <div class="hmi-switch-button-row">
-        <div class="hmi-pack-innertile hmi-switch-col-cell" data-action="0"><div class="hmi-badge">OFF</div></div>
-        <div class="hmi-pack-innertile hmi-switch-col-cell" data-action="10"><div class="hmi-badge">HOME</div></div>
-        <div class="hmi-pack-innertile hmi-switch-col-cell" data-action="20"><div class="hmi-badge">AWAY</div></div>
-        <div class="hmi-pack-innertile hmi-switch-col-cell" data-action="30"><div class="hmi-badge">NIGHT</div></div>
-    </div>
-</div>
-```
-### 4. Stacked Control Board Matrix (Vertical Grid Layout)*Arranges multi-switch parameters vertically for neat alignment inside narrow layout rows.*```html
-```
-<div class="hmi-pack-tile" data-device-idx="22" data-type="switch">
-    <div class="hmi-tile-header"><div class="hmi-pack-label">2-Switch Vertical Panel</div></div>
-    <div class="hmi-switch-button-stack">
-        <div class="hmi-switch-row-cell">
-            <span class="hmi-switch-label">Switch 1</span>
-            <div class="hmi-pack-innertile hmi-badge" data-action="Toggle">OFF</div>
-        </div>
-        <div class="hmi-switch-row-cell">
-            <span class="hmi-switch-label">Switch 2</span>
-            <div class="hmi-pack-innertile hmi-badge" data-action="Toggle">OFF</div>
-        </div>
-    </div>
-</div>
-```
-### 5. High-Density Array Grid (8-Switch Matrix Combo Block)*Combines horizontal action rows to track multiple relay states, zone boundaries, or circuit loads simultaneously.*```html
-```
-<div class="hmi-pack-tile" data-device-idx="40" data-type="switch">
-    <div class="hmi-tile-header"><div class="hmi-pack-label">8-Switch Horizontal Panel</div></div>
-    
-    <!-- Row 1: Primary Phase Outputs -->
-    <div class="hmi-switch-button-row" style="margin-bottom: 6px;">
-        <div class="hmi-pack-innertile hmi-switch-col-cell" data-action="P1_Toggle"><div class="hmi-badge">P1</div></div>
-        <div class="hmi-pack-innertile hmi-switch-col-cell" data-action="P2_Toggle"><div class="hmi-badge">P2</div></div>
-        <div class="hmi-pack-innertile hmi-switch-col-cell" data-action="P3_Toggle"><div class="hmi-badge">P3</div></div>
-        <div class="hmi-pack-innertile hmi-switch-col-cell" data-action="P4_Toggle"><div class="hmi-badge">P4</div></div>
-    </div>
-    
-    <!-- Row 2: Secondary Feedback Lines -->
-    <div class="hmi-switch-button-row">
-        <div class="hmi-pack-innertile hmi-switch-col-cell" data-action="F1_Toggle"><div class="hmi-badge">F1</div></div>
-        <div class="hmi-pack-innertile hmi-switch-col-cell" data-action="F2_Toggle"><div class="hmi-badge">F2</div></div>
-        <div class="hmi-pack-innertile hmi-switch-col-cell" data-action="F3_Toggle"><div class="hmi-badge">F3</div></div>
-        <div class="hmi-pack-innertile hmi-switch-col-cell" data-action="F4_Toggle"><div class="hmi-badge">F4</div></div>
-    </div>
+
+### Stacked Control Board Matrix (Vertical Grid Layout)
+Arranges multi-switch parameters vertically for neat alignment inside narrow layout rows.
+```html
+<div class="hmi-pack-tile">
+	<div class="hmi-tile-header"><div class="hmi-pack-label">2-Switch Vertical Panel</div></div>
+	<div class="hmi-value-grid">
+
+		<!-- SWITCH 1 (IDX N) -->
+		<div class="hmi-pack-innertile" data-type="switch" data-device-idx="5" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Switch 1</div>
+				<div class="hmi-badge hmi-clickable-badge"></div>
+			</div>
+		</div>
+		<!-- SWITCH 2 (IDX N) -->
+		<div class="hmi-pack-innertile" data-type="switch" data-device-idx="6" data-action="Toggle" data-on-text="ON" data-off-text="OFF">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Switch 2</div>
+				<div class="hmi-badge hmi-clickable-badge"></div>
+			</div>
+		</div>
+
+	</div>
 </div>
 ```
 
 ---
-
-### Interactive Execution Laws
-* **`data-action="[Command]"`**: Binds an explicit execution payload (e.g., `On`, `Off`, or specific index commands like `10`) straight to the component node, routing click transactions directly into your backend handler loops.
-* **Low-Distraction Active states**: Selected choices automatically receive the `.hmi-active-state` class from your view script. Ensure your interactive dark and light styles use desaturated background fills to preserve low operator eye strain when sitting idle.
 

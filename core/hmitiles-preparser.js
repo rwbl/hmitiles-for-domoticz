@@ -1,7 +1,7 @@
 /**
  * @file hmitiles-preparser.js
  * @brief Core Normalization & Feature Extraction Layer
- * @date 2026-07-12
+ * @date 2026-07-22
  * @author Robert W.B. Linn (c) 2026 MIT
  * @description
  * This layer intercepts incoming raw Domoticz hardware payloads before the UI 
@@ -31,32 +31,10 @@ export function parseDigits(str) {
 }
 
 /**
- * Utility to extract floating-point decimals safely from strings (e.g., "0.0000 kWh" -> "0.0000")
+ * Utility to extract floating-point decimals from strings (e.g., "23.5 C" -> 23.5)
  * @param {string|number} str - The raw incoming text or data from Domoticz.
  * @param {number} [decimalPlaces] - Optional precision padding to force trailing zeros.
  * @returns {number|string} True float value, or precision string if decimalPlaces is provided.
- */
-export function parseFloats2(str, decimalPlaces = null) {
-    if (str === undefined || str === null || str === "") return decimalPlaces !== null ? (0).toFixed(decimalPlaces) : 0.0;
-    
-    // Captures negative, positive, integer, and decimal notation structures perfectly
-    const matches = String(str).match(/[-+]?[0-9]*\.?[0-9]+/);
-    if (!matches) {
-        return decimalPlaces !== null ? (0).toFixed(decimalPlaces) : 0.0;
-    }
-    
-    const parsedNum = parseFloat(matches[0]);
-    
-    // THE FIX: If the user requests specific precision decimals, enforce it via toFixed()
-    if (decimalPlaces !== null) {
-        return parsedNum.toFixed(decimalPlaces); // Returns "0.0000" safely as a string
-    }
-    
-    return parsedNum; // Falls back to native floating-point primitives for standard math checks
-}
-
-/**
- * Utility to extract floating-point decimals safely from strings (e.g., "23.5 C" -> 23.5)
  */
 export function parseFloats(str) {
     if (!str) return 0.0;
@@ -65,7 +43,7 @@ export function parseFloats(str) {
 }
 
 /**
- * Safely decodes Base64 strings sent by Domoticz APIs (e.g. for Selector LevelNames)
+ * Decodes Base64 strings sent by Domoticz APIs (e.g. for Selector LevelNames)
  */
 export function decodeBase64(str) {
     if (!str) return "";
@@ -73,7 +51,7 @@ export function decodeBase64(str) {
         // atob() is the standard web API to decode Base64 data strings natively
         return atob(str.trim());
     } catch (e) {
-        console.warn("Base64 string decoding skipped/failed:", e);
+        console.warn("[decodeBase64] Decoding skipped/failed:", e);
         return str; // Safe fallback return if string is already raw text
     }
 }
@@ -98,111 +76,99 @@ export function replaceString(text, searchFor, replaceWith = " ") {
     return cleanSource.split(searchFor).join(replaceWith);
 }
 
+/**
+ * Extracts the first valid numeric segment out of any mixed Domoticz text string.
+ * Accurately processes formats like: "250 ppm", "100%", or "Set Level: 50%".
+ * 
+ * @param {Object} device - The active raw device data node package.
+ * @returns {String} The isolated clean numeric payload word.
+ */
+function parseSingleValue(device) {
+    const rawData = device.Data;
+    const cleanString = String(rawData || "").trim();
+
+    if (!cleanString) {
+        device.tileUnit = "";
+        return "0";
+    }
+
+    // REGEX SCAN MATRIX: Matches the first numeric block, supporting decimals (. or ,)
+    const match = cleanString.match(/[-+]?\d*[\.,]\d+|\d+/);
+    if (!match) {
+        device.tileUnit = "";
+        return "0";
+    }
+
+    // Match[0] contains the extracted raw number chunk (e.g., "250")
+    const rawNumericString = match[0].replace(',', '.');
+
+    // =========================================================================
+    // DYNAMIC UNIT EXTRACTION LOGIC
+    // Slice everything following the matched number block and scrub whitespace
+    // =========================================================================
+    const numericIndex = match.index;
+    const numericLength = match[0].length;
+    
+    // Grab the leftover string portion located straight after the number digits
+    let isolatedUnit = cleanString.slice(numericIndex + numericLength).trim();
+
+    // CONVERSION PIPELINE: Route through native parsing engine helper
+    let isolatedValue = 0;
+    if (typeof parseFloats === "function") {
+        isolatedValue = parseFloats(rawNumericString);
+    } else {
+        isolatedValue = parseFloat(rawNumericString) || 0;
+    }
+
+    // Preserve custom internal properties natively on the device object reference
+    device.tileValue = isolatedValue;
+    device.tileUnit = isolatedUnit; // Dynamically populates "", "%", "ppm", "W", etc.
+	
+    // Returns a pure data string token clean of units or formatting text!
+    return String(isolatedValue);
+}
+
 /* ================================
  * UTILITY DOMOTICS FUNCTIONS
  * ================================ */
 
 /**
- * Translates Domoticz Type and SubType configurations into precise string suffixes.
- * Fully compatible with single-value sensors and multi-device matrix structures.
- * Resolves the appropriate measurement unit suffix based on semantic device profiles.
- * Intelligently auto-discovers units from raw value string suffixes first, then
- * uses semantic fallback cascades for complex multi-value or raw text devices.
- * 
- * @param {Object} device - The active target Domoticz device data block object.
- * @returns {String} The structural measurement suffix label string.
+ * Normalizes Domoticz textual states into clean numeric floats for HMI Gauges
+ * @param {Object} device - The active Domoticz device data structure
  */
-export function getUnit(device) {
-    // Fail-safe initialization fallback default
-    if (!device || device.Data === undefined || device.Data === null) return "°C";
-    
-    const rawDataStr    = String(device.Data).trim();
-    const deviceType    = String(device.Type || "");
-    const deviceSubType = String(device.SubType || "");
+export function setTileValue(device) {
+    // If a clean numeric value already exists, preserve it and exit
+    if (device.tileValue !== undefined && device.tileValue !== null && !isNaN(parseFloat(device.tileValue))) {
+        device.tileValue = parseFloat(device.tileValue);
+        return;
+    }
 
-    // =========================================================================
-    // PHASE 1: AUTOMATIC REAL-TIME SUFFIX DISCOVERY (TYPE 2 HIGHEST PRIORITY)
-    // If the device data is a single value containing spaces and trailing text,
-    // natively grab the exact unit string sent straight from the API!
-    // Catches: "123.4 cm", "0 l/min", "10.3 km", "0 V", "65 dB", "0.0 Bar", "0 Lux"
-    // =========================================================================
-    if (!rawDataStr.includes(';') && rawDataStr.includes(' ')) {
-        const spaceParts = rawDataStr.split(/\s+/);
-        const trailingWord = spaceParts[spaceParts.length - 1].trim();
-        
-        // Block out UI state labels (like "Set Level:", "Off", or "On") from becoming units
-        if (trailingWord !== "%" && isNaN(parseFloat(trailingWord)) && 
-            !rawDataStr.includes("Set Level") && trailingWord !== "On" && trailingWord !== "Off") {
-            return trailingWord;
+    // Safely extract the raw status textual string payload
+    const rawData = String(device.Data || device.tileValue || '').trim().toUpperCase();
+
+    // Check for standard Boolean discrete switch text flags
+    if (rawData === "ON") {
+        device.tileValue = 1;
+        return;
+    }
+    if (rawData === "OFF") {
+        device.tileValue = 0;
+        return;
+    }
+
+    // Extract numeric percentages from strings like "Set Level 20%" or "Level 45%"
+    if (rawData.includes("SET LEVEL") || rawData.includes("LEVEL")) {
+        // Regular expression maps any integer match sequence inside the string bounds
+        const matchNumber = rawData.match(/\d+/);
+        if (matchNumber) {
+            device.tileValue = parseFloat(matchNumber[0]);
+            return;
         }
     }
 
-    // =========================================================================
-    // PHASE 2: SEMANTIC HARDCODED MATRIX MATCHING
-    // Fallback gates for Multi-Values, Un-suffixed Primitives, and Switches.
-    // =========================================================================
-    
-    // 1. CLIMATE TEMPERATURE NETWORKS
-    if (deviceType.includes("Temp") || deviceType === "Temperature" || deviceType === "Setpoint") {
-        return "°C";
-    }
-    
-    // 2. CAPACITY & METRIC LEVEL READOUTS
-    if (deviceType === "Humidity" || deviceSubType === "Percentage" || rawDataStr.includes("%")) {
-        return "%";
-    }
-    
-    // 3. MULTI-VALUE WEATHER METRICS
-    if (deviceType === "Wind") {
-        return "m/s"; // International standard wind velocity baseline notation
-    }
-    if (deviceType === "Rain") {
-        return "mm";  // Liquid accumulation depth standard
-    }
-    if (deviceSubType === "Soil Moisture") {
-        return "cb";  // Centibars soil tension metric
-    }
-    if (deviceType === "UV") {
-        return "UVI"; // Ultraviolet index scale marker
-    }
-    if (deviceType === "Wind") {
-        return "Bft"; // Default to bft (need to set in the Domoticz settings
-    }
-
-    // POWER, ENERGY & ACCUMULATED GENERATION
-    if (deviceType === "Usage" || deviceSubType === "Electric" || deviceSubType === "Custom Watts Sensor") {
-        return "W";
-    }
-    if (deviceSubType === "kWh" || deviceType.includes("Energy") || deviceType === "P1 Smart Meter") {
-        // Distinguish the gas loop sub-channel index from primary electric logs
-        if (deviceSubType === "Gas") return "m³";
-        return "kWh";
-    }
-
-    // METEOROLOGICAL BAROMETRIC PRESSURE DATA
-    if (deviceSubType === "Barometer" || deviceType.includes("Baro")) {
-        return "hPa";
-    }
-
-	// Safe controls and informational text cards bypass unit markings completely
-
-    // MULTI-PHASE CURRENT AMPLITUDE READS
-    if (deviceType === "Current") {
-        return "A";
-    }
-
-    // Light/Switch
-    if (deviceType === "Light/Switch" || deviceSubType === "Switch") {
-        return ""; 
-    }
-
-    // Text
-    if (deviceSubType === "Text") {
-        return ""; 
-    }
-
-    // Quiet baseline system fallback cushion
-    return "";
+    // Default structural fallback safely handles empty values
+    device.tileValue = 0;
+	device.tileUnit = "";
 }
 
 /**
@@ -273,7 +239,7 @@ export function processTileStateAndAlarm(tileElement, stateVal) {
 
     let matchedIdx = 0; // Default fallback to Index 0
 
-    // 1. Core threshold index lookup (Pure numeric execution loop)
+    // Core threshold index lookup (Pure numeric execution loop)
     for (let i = 0; i < totalStates; i++) {
         const parts = rules[i].split(':');
         if (parts.length < 2) continue;
@@ -292,8 +258,8 @@ export function processTileStateAndAlarm(tileElement, stateVal) {
     result.text = finalParts.length > 1 ? finalParts[1].trim() : "";
 
     // =========================================================================
-    // 2. THE ADAPTIVE STATE ROUTER (DYNAMIC CHROMATIC SCALE MATCHING)
-    // Maps your matched index slot to your 4px CSS classes based on array length!
+    // ADAPTIVE STATE ROUTER (DYNAMIC CHROMATIC SCALE MATCHING)
+    // Maps matched index slot to 4px CSS classes based on array length!
     // =========================================================================
     let activeClassStr = "gray";
 
@@ -312,9 +278,31 @@ export function processTileStateAndAlarm(tileElement, stateVal) {
         activeClassStr = fiveStateClasses[matchedIdx] || "gray";
     }
 
-    // Write the clean color modifier attribute straight onto your tile element chassis
+    // Write the clean color modifier attribute straight onto tile element chassis
     tileElement.setAttribute("data-alarm", activeClassStr);
-    
+
+    // =========================================================================
+	// TITLE ICON INJECTION SYSTEM
+	// =========================================================================
+	const titleElement = tileElement.querySelector('.tile-header') || tileElement.querySelector('*:first-child');
+
+	if (titleElement) {
+		const iconMap = {
+			"yellow": "[!] ",
+			"orange": "[!!] ",
+			"red": "[▲] "
+		};
+		const newPrefix = iconMap[activeClassStr] || "";
+
+		// Clean up previous text-based icons safely
+		let currentText = titleElement.textContent;
+		currentText = currentText.replace(/^\[!\]\s*|^\[!!\]\s*|^\[▲\]\s*/, "");
+
+		// Re-inject using innerHTML, wrapping the prefix or title text 
+		// to preserve bold styling tags natively!
+		titleElement.innerHTML = `<div class="hmi-pack-label">${newPrefix}${currentText}</div>`;
+	}
+	
     result.level = matchedIdx;
     return result;
 }
@@ -337,35 +325,6 @@ function updateDashboardTimestamp() {
  * ================================ */
 
 /**
- * Safely extracts a space-separated string ("VALUE UNIT") into a standardized semicolon row.
- * 
- * @param {String} rawData - The raw telemetry data string (e.g., "123.4 cm", "0 l/min").
- * @param {String} fallbackUnit - Default unit suffix used if the string lacks trailing text.
- * @returns {String} Standardized structural string format: "VALUE;UNIT"
- */
-function parseSingleValue(device, fallbackUnit = "") {
-	const rawData = device.Data;
-    const cleanString = String(rawData || "").trim();
-    if (!cleanString) return `0;${fallbackUnit}`;
-
-    // Tokenize text segments cleanly by removing all consecutive spaces pass holes
-    const parts = cleanString.split(/\s+/);
-    
-    // Extract numbers safely using your framework's native parsing helper
-    const isolatedValue = typeof parseFloats === "function" ? parseFloats(parts[0]) : parseFloat(parts[0]) || 0;
-    
-    // Read the suffix from parts index 1, falling back smoothly to your default unit parameter
-    const isolatedUnit = parts.length > 1 ? parts[1].trim() : fallbackUnit;
-
-	// Set the custom properties
-	device.tileValue = isolatedValue;
-	device.tileUnit = isolatedUnit;
-	// tile.State done in processTileStateAndAlarm
-	
-    return `${isolatedValue};${isolatedUnit}`;
-}
-
-/**
  * Main orchestration function for device preprocessing and payload standardization.
  * 
  * @param {Object} device - The shared Domoticz device data reference object.
@@ -373,7 +332,7 @@ function parseSingleValue(device, fallbackUnit = "") {
  */
 /**
  * Master Pre-Parser Entry Point.
- * Standardizes raw Domoticz values and executes your real-time alarm thresholds.
+ * Standardizes raw Domoticz values and executes real-time alarm thresholds.
  */
 export function preParseDeviceData(device, tileElement) {
     if (!device || !device.Data || !tileElement) return;
@@ -399,7 +358,7 @@ export function preParseDeviceData(device, tileElement) {
         
         device.tileState = evaluation.text;
         
-        // Re-pack metrics into your standard semicolon row to feed columns perfectly
+        // Re-pack metrics into standard semicolon row to feed columns perfectly
         device.Data = `${currentNumericVal};${evaluation.text}`;
         return;
     }
@@ -408,181 +367,267 @@ export function preParseDeviceData(device, tileElement) {
 }
 
 /**
- * Hardware Exclusion Filter Matrix.
+ * Advanced Device Pre-Parser Engine
+ * Routes Domoticz devices to specialized handlers based on their primary Type.
  * Explicitly breaks irregular hardware variations down into unified semicolon rows.
- * 
+ * These are assigned to the device Data property used by tile handling in processDevices.
  * @param {Object} device - The raw incoming Domoticz device data block reference.
  * @param {HTMLElement} tileElement - The active host layout chassis node.
  * @returns {Boolean} Returns true if a signature matched and handled the payload.
  * @todo
  * Device Fan
  */
-function preParseDevices(device, tileElement) {
+export function preParseDevices(device, tileElement) {
+    if (!device) return;
+
     let csvPayload = undefined;
 
-    // =========================================================================
-    // 1. COMPOUND TYPE SELECTIONS (UNCHANGED, FROZEN ARCHITECTURE)
-    // =========================================================================
-    if (device.Type === "Temp + Humidity") {
-        const humstat = device.HumidityStatus === "Comfortable" ? "COMF" : device.HumidityStatus;
-        csvPayload = `${device.Temp};${device.Humidity};${humstat}`;
-    }
-    else if (device.Type === "Temp + Baro") {
-        csvPayload = `${device.Temp};${device.Barometer};${device.ForecastStr}`;
-    }
-    else if (device.Type === "Temp + Humidity + Baro") {
-        const humstat = device.HumidityStatus === "Comfortable" ? "COMF" : device.HumidityStatus;
-        csvPayload = `${device.Temp};${device.Humidity};${humstat};${device.Barometer};${device.ForecastStr}`;
+    switch (device.Type) {
+        case "General":
+            csvPayload = preParseGeneral(device, tileElement);
+            break;
+            
+        case "Light/Switch":
+            csvPayload = preParseLightSwitch(device);
+            break;
+
+        case "Color Switch":
+            csvPayload = preParseColorSwitch(device);
+            break;
+
+        case "Humidity":
+        case "Rain":
+        case "Temp + Humidity":
+        case "Temp + Baro":
+        case "Temp + Humidity + Baro":
+        case "Wind":
+            csvPayload = preParseWeather(device);
+            break;
+
+        // Group all known standard single-value categories together safely!
+        case "Air Quality":
+		case "Lux":
+        case "UV":
+        case "Weight":
+            csvPayload = parseSingleValue(device);
+            break;
+
+		// Energy
+		case "Current":
+        case "P1 Smart Meter":
+        case "Usage":
+			csvPayload = preParseEnergy(device);
+
+        default:
+            // Optional fallback trace if an unconfigured device type enters the pipeline
+            break;
     }
 
-
-    else if (device.Type === "General" && device.SubType === "Barometer") {
-        csvPayload = `${device.Barometer};${device.ForecastStr}`;
-    }
-    else if (device.Type === "General" && device.SubType === "Managed Counter") {
-        csvPayload = `${parseFloats(device.counter)};${parseFloats(device.Data)}`;
-    }
-
-    // =========================================================================
-    // 2. TARGETED UTILITY DEPLOYMENT FOR SINGLE-VALUE DEVICES WITH SPACE SUFFIXES
-    // =========================================================================
-    else if (device.Type === "General" && device.SubType === "Custom Sensor") {
-        // Converts "123.4 unit" -> "123.4;unit"
-        csvPayload = parseSingleValue(device, "");
-    }
-    else if (device.Type === "General" && device.SubType === "Distance") {
-        // Converts "123.4 cm" -> "123.4;cm"
-        csvPayload = parseSingleValue(device, "cm");
-    }
-    else if (device.Type === "General" && device.SubType === "Pressure") {
-        // Converts "250 Bar" -> "250;Bar"
-        csvPayload = parseSingleValue(device, "Bar");
-    }
-    else if (device.Type === "General" && device.SubType === "Sound Level") {
-        // Converts "65 dB" -> "65;dB"
-        csvPayload = parseSingleValue(device, "dB");
-    }
-    else if (device.Type === "General" && device.SubType === "Visibility") {
-        // Converts "10.3 km" -> "10.3;km"
-        csvPayload = parseSingleValue(device, "km");
-    }
-    else if (device.Type === "General" && device.SubType === "Waterflow") {
-        // Converts "0 l/min" -> "0;l/min"
-        csvPayload = parseSingleValue(device, "l/min");
-    }
-    else if (device.Type === "General" && device.SubType === "Leaf Wetness") {
-        // Converts "250" -> "250;0=dry,100=wet"
-        csvPayload = parseSingleValue(device, "lux");
-    }
-    else if (device.Type === "Lux" && device.SubType === "Lux") {
-        // Converts "250 Lux" -> "250;Lux"
-        csvPayload = parseSingleValue(device, "lux");
-    }
-    else if (device.Type === "General" && device.SubType === "Soil Moisture") {
-        // Converts "250 cb" -> "250;cb"
-        csvPayload = parseSingleValue(device, "cb");
-    }
-    else if (device.Type === "General" && device.SubType === "Solar Radiation") {
-        // Converts "250 Watt/m2" -> "250;Watt/m2"
-        csvPayload = parseSingleValue(device, "Watt/m2");
-    }
-    else if (device.Type === "General" && device.SubType === "Voltage") {
-        // Converts "250 V" -> "250;V"
-        csvPayload = parseSingleValue(device, "V");
-    }
-    else if (device.Type === "Usage" && device.SubType === "Electric") {
-        // Converts "250 Watt" -> "250;Watt"
-        csvPayload = parseSingleValue(device, "W");
-    }
-    else if (device.Type === "UV") {
-        // Converts "250 UVI" -> "250;UVI"
-        csvPayload = parseSingleValue(device, "UVI");
-    }
-    else if (device.Type === "Weight" && device.SubType === "BWR102") {
-        // Converts "250 kg" -> "250;kg"
-        csvPayload = parseSingleValue(device, "kg");
-    }
-    else if (device.Type === "Air Quality" && device.SubType === "Voc") {
-        // Converts "250 ppm" -> "250;ppm"
-        csvPayload = parseSingleValue(device, "ppm");
-    }
-    else if (device.Type === "Rain" && device.SubType === "TFA") {
-		// Type Rain, SubType TFA
-		// Normalizes multi-value precipitation records into a clean data contract row
-        // Converts "100 mm, 200 mm" or "100, 200" -> "100;200" safely!
-        const rawInput = String(device.Data || "0, 0");
-        const items = rawInput.split(',');
-        
-        // Extract numbers using your framework's native parsing helper
-        const rainRate  = typeof parseFloats === "function" ? parseFloats(items[0]) : parseFloat(items[0]) || 0;
-        const rainTotal = typeof parseFloats === "function" ? parseFloats(items[1]) : parseFloat(items[1]) || 0;
-        
-        csvPayload = `${rainRate};${rainTotal}`;
-    }
-
-    // =========================================================================
-    // 3. OTHER EXPLICIT HISTORICAL CHANNELS & TEXT SHIELDS
-    // =========================================================================
-    
-    // Type General, SubType Alert
-    // Automatically extracts the native hardware alarm level index (0-4) 
-    // and maps it straight onto color border classes!
-    else if (device.Type === "General" && device.SubType === "Alert") {
-        csvPayload = String(device.Data).trim();
-        
-        let alertLevelStr = "gray";
-        
-        // Explicitly map the integer level (0-4) cleanly using structured execution tracks
-        switch (parseInt(device.Level, 10)) {
-            case 0:
-                alertLevelStr = "gray";
-                break;
-            case 1:
-                alertLevelStr = "green";
-                break;
-            case 2:
-                alertLevelStr = "yellow";
-                break;
-            case 3:
-                alertLevelStr = "orange";
-                break;
-            case 4:
-                alertLevelStr = "red";
-                break;
-            default:
-                alertLevelStr = "gray";
-                break;
-        }
-        
-        // Inject the color modifier tag directly onto the tile element chassis!
-        tileElement.setAttribute("data-alarm", alertLevelStr);
-		// csvPayload = `${device.Level};${device.Data}`;
-    }
-    else if (device.Type === "General" && device.SubType === "Text") {
-        csvPayload = device.Data;
-    }
-    else if (device.Type === "General" && device.SubType === "Percentage") {
-        csvPayload = `${parseFloats(device.Data)};%`;
-    }
-    else if (device.Type === "Light/Switch" && device.SubType === "Switch" && device.SwitchType == "Dimmer") {
-        csvPayload = device.Data;
-    }
-    else if (device.Type === "Current") {
-        const values = device.Data.split(',');
-        if (values.length == 3) {
-            csvPayload = `${parseFloats(values[0])};${parseFloats(values[1])};${parseFloats(values[2])}`;
-        } else {
-            csvPayload = parseSingleValue(device, "A");
-        }
-    }
-
-    // If there is a compiled csvPayload, update device.Data and return true
-    if (csvPayload) {
+    // Lifecycle Commit: Mutate the device data node payload if a match occurred
+    if (csvPayload !== undefined) {
         device.Data = csvPayload;
-        return true;
-    } else {
-        return false;
     }
+}
+
+/* ================================
+ * PREPARSER TYPE FUNCTIONS
+ * ================================ */
+ 
+// Type General with subtype handling.
+function preParseGeneral(device, tileElement) {
+    switch (device.SubType) {
+
+		case "Alert": {
+			// 1. Map values directly to their matching array index positions (0-4)
+			const alertLevels = ["gray", "green", "yellow", "orange", "red"];
+			
+			// 2. Fetch the color string instantly using the integer level as the index
+			const levelIndex = parseInt(device.Level, 10);
+			const alertLevelStr = alertLevels[levelIndex] || "gray";
+
+			// 3. Inject the color modifier tag directly onto the tile element chassis!
+			tileElement.setAttribute("data-alarm", alertLevelStr);
+			return String(device.Data).trim();
+		}
+
+        case "Barometer":
+			return `${device.Barometer};${device.ForecastStr}`;
+		case "Counter Incremental":
+			return `${parseFloats(device.Counter)};${parseFloats(device.CounterToday)}`;
+		case "Custom Sensor":
+			// Converts "250 unit" -> "250"
+			return parseSingleValue(device);
+		case "Distance":
+			// Converts "250 cm" -> "250"
+			return parseSingleValue(device);
+        case "kWh": {
+            // Wrap the strings in an object so the function can assign properties safely!
+            const cleanToday = parseSingleValue({ Data: device.CounterToday || "0" });
+            const cleanUsage = parseSingleValue({ Data: device.Usage || "0" });
+            return `${cleanToday};${cleanUsage}`;
+        }
+		case "Leaf Wetness":
+			// Converts "250" -> "250"
+			return parseSingleValue(device);
+		case "Managed Counter":
+			return `${parseFloats(device.Counter)}`;
+		case "Percentage":
+			return `${parseSingleValue(device)}`;
+		case "Pressure":
+			// Converts "250 Bar" -> "250"
+			return parseSingleValue(device);
+		case "Soil Moisture":
+			// Converts "250 cb" -> "250"
+			return parseSingleValue(device);
+		case "Solar Radiation":
+			// Converts "250 Watt/m2" -> "250"
+			return parseSingleValue(device);
+		case "Sound Level":
+			// Converts "65 dB" -> "65"
+			return parseSingleValue(device);
+		case "Text":
+			return device.Data;
+		case "Visibility":
+			// Converts "10.3 km" -> "10.3"
+			return parseSingleValue(device);
+		case "Voltage":
+			// Converts "250 V" -> "250"
+			return parseSingleValue(device);
+		case "Waterflow":
+			// Converts "0 l/min" -> "0"
+			return parseSingleValue(device);
+        // Catch-all fallback for all single-value General devices (Distance, Pressure, Sound, etc.)
+        default:
+            return parseSingleValue(device);
+    }
+}
+
+function preParseLightSwitch(device) {
+    // Domoticz normalizes switch configurations via numeric or text SwitchType properties
+    const switchType = String(device.SwitchType || "").trim();
+
+    switch (switchType) {
+		case "Dimmer":
+		case "On/Off":
+		case "Push On Button":
+		case "Push Off Button":
+			return device.Data;
+		case "Selector":
+			return device.Level;
+        default:
+            // Standard on/off binary switches simply use their raw state text string ("ON"/"OFF")
+            return String(device.Data || "OFF").trim();
+    }
+}
+
+function preParseColorSwitch(device) {
+    // Domoticz normalizes switch configurations via numeric or text SwitchType properties
+    const subType = String(device.SubType || "").trim();
+    const switchType = String(device.SwitchType || "").trim();
+
+    switch (subType) {
+		case "WW":
+			// 0-100
+			// device.Level
+			// '{"b":0,"cw":14,"g":0,"m":2,"r":0,"t":241,"ww":241}'
+			// device.Color = 
+			return String(device.Data || "OFF").trim();
+
+		case "RGB":
+			// 0-100
+			// device.Level
+			// '{"b":0,"cw":14,"g":0,"m":2,"r":0,"t":241,"ww":241}'
+			// device.Color = 
+			return String(device.Data || "OFF").trim();
+
+        default:
+            // Standard on/off binary switches simply use their raw state text string ("ON"/"OFF")
+            return String(device.Data || "OFF").trim();
+    }
+}
+
+function preParseWeather(device) {
+    const humstat = device.HumidityStatus === "Comfortable" ? "COMF" : (device.HumidityStatus || "");
+
+    switch (device.Type) {
+        case "Humidity":
+            return `${device.Humidity};${humstat}`;
+
+		case "Rain":
+			if (device.SubType === "TFA") {
+				// Type Rain, SubType TFA
+				// Normalizes multi-value precipitation records into a clean data contract row
+				// Converts "100 mm, 200 mm" or "100, 200" -> "100;200"
+				const rawInput = String(device.Data || "0, 0");
+				const items = rawInput.split(',');
+				// Extract numbers using framework's native parsing helper
+				const rainRate  = typeof parseFloats === "function" ? parseFloats(items[0]) : parseFloat(items[0]) || 0;
+				const rainTotal = typeof parseFloats === "function" ? parseFloats(items[1]) : parseFloat(items[1]) || 0;
+				return `${rainRate};${rainTotal}`;
+			}
+			else {
+				return undefined;
+			}
+
+        case "Wind":
+			// WB;WD;WS;WG;T;TWS
+			// device.Data returns the default values.
+			// If units set different then wrong data returned
+			// The temperature and temperaturechill are not properties and are extracted from device.DATA
+			const items = device.Data.split(';');
+			const temp = items[4];
+			const tempChill = items[5];
+            return `${device.Direction};${device.Direction};${device.Speed};${device.Gust};${temp};${tempChill}`;
+
+        case "Temp + Humidity":
+            return `${device.Temp};${device.Humidity};${humstat}`;
+
+        case "Temp + Baro":
+            return `${device.Temp};${device.Barometer};${device.ForecastStr}`;
+
+        case "Temp + Humidity + Baro":
+            return `${device.Temp};${device.Humidity};${humstat};${device.Barometer};${device.ForecastStr}`;
+            
+        default:
+            return undefined;
+    }
+}
+
+function preParseEnergy(device) {
+
+    switch (device.Type) {
+		
+		case "Current":
+			const values = device.Data.split(',');
+			if (values.length == 3) {
+				return `${parseFloats(values[0])};${parseFloats(values[1])};${parseFloats(values[2])}`;
+			} else {
+				return parseFloats(device.Data);
+			}
+
+		case "Usage":
+			switch (device.SubType) {
+				case "Electric":
+					return `${parseFloats(device.Data)}`;
+			}
+
+		case "P1 Smart Meter":
+			switch (device.SubType) {
+				case "Energy":
+					return `${device.Data}`;
+
+				case "Gas":
+					return `${parseFloats(device.Counter)};${parseFloats(device.CounterToday)};${parseFloats(device.price)}`;
+					
+				default:
+					return undefined;
+			}
+
+        default:
+            return undefined;
+		
+	}
+
 }
 
 /*

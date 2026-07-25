@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <!--
-	File: values/index.html
-	Brief: Display devices data in value tile.
-	Date: 2026-07-12
-	Author: Robert W.B. Linn (c) 2026 MIT
+Brief: 			HMITiles Blueprint Values
+Data-Type:		value
+Date: 			2026-07-24
+Author: 		Robert W.B. Linn (c) 2026 MIT
+Description:	Display devices data in value tile.
 -->
 <head>
     <meta charset="UTF-8">
@@ -94,7 +95,7 @@
 		<div class="hmi-pack-tile hmi-clickable-tile" 
 			 data-type="value" 
 			 data-device-idx="14"
-			 data-labels="0:BEARING:°;1:DIR:Compass;2:SPEED:m/s;3:GUST:m/s;4:TEMP:°C;5:CHILL:°C">
+			 data-labels="0:BEARING:°;1:DIR:Compass;2:SPEED:bft;3:GUST:bft;4:TEMP:°C;5:CHILL:°C">
 			<div class="hmi-tile-header">
 				<div class="hmi-pack-label">Wind</div>
 			</div>
@@ -246,12 +247,12 @@
 		<!-- 
 			VALUE
 			Domoticz Type P1 SMART METER / SubType Electricity
-			Multi-Column layout to support data: USAGE1;USAGE2;RETURN1;RETURN2;CONS;PROD
+			2-Column layout to support data: USAGE1;USAGE2;RETURN1;RETURN2;CONS;PROD
 		-->
 		<div class="hmi-pack-tile hmi-clickable-tile" 
-			data-type="value" 
-			data-device-idx="24"
-			data-labels="0:USE1:Wh;1:USE2:Wh;2:RET1:Wh;3:RET2:Wh;4:CONS:W;5:PROD:W">
+			 data-type="value" 
+			 data-device-idx="24"
+			 data-labels="0:USE1:Wh;1:USE2:Wh;2:RET1:Wh;3:RET2:Wh;4:CONS:W;5:PROD:W">
 			<div class="hmi-tile-header">
 				<div class="hmi-pack-label">P1 Smart Meter Energy</div>
 			</div>
@@ -260,13 +261,13 @@
 
 		<!-- 
 			VALUE
-			Domoticz Type P1 SMART METER / SubType Electricity
-			Multi-Column layout to support data: USAGE1;USAGE2;RETURN1;RETURN2;CONS;PROD
+			Domoticz Type P1 Smart Meter / SubType Gas
+			3-Column layout to support data: COUNTER;COUNTERTODAY;PRICE
 		-->
 		<div class="hmi-pack-tile hmi-clickable-tile" 
 			 data-type="value" 
 			 data-device-idx="25"
-			 data-labels="0:USE1:Wh;1:USE2:Wh;2:RET1:Wh;3:RET2:Wh;4:CONS:W;5:PROD:W">
+			 data-labels="0:COUNTER:m3;1:COUNTERTODAY:m3;2:PRICE:ct">
 			<div class="hmi-tile-header">
 				<div class="hmi-pack-label">P1 Smart Meter Gas</div>
 			</div>
@@ -378,7 +379,7 @@
 		<div class="hmi-pack-tile hmi-clickable-tile" 
 			data-type="value" 
 			data-device-idx="35"
-			data-labels="0:Scale:kg">
+			data-labels="0:WEIGHT:kg">
 			<div class="hmi-tile-header">
 				<div class="hmi-pack-label">Scale</div>
 			</div>

@@ -7,7 +7,7 @@
 
     <!-- Link backward to reuse shared global common styles -->
     <link rel="stylesheet" href="/templates/core/hmitiles.css">
-    <link rel="stylesheet" href="/templates/core/hmitiles-dark.css"> <!-- Load your override skin right here -->
+    <link rel="stylesheet" href="/templates/core/hmitiles-dark.css">
 	
 	<!-- Link backward to the HMI tile engine -->
 	<!-- Ensure type="module" is declared so the browser resolves the import statement -->
@@ -15,7 +15,7 @@
 </head>
 
 
-<!-- THE TRICK: Simply add your class here to turn on the classic Domoticz look! -->
+<!-- Add the class for dark mode -->
 <body class="theme-dark">
 
 	<header class="hmi-header-container">
@@ -214,24 +214,63 @@
 					 data-type="switch" 
 					 data-device-idx="9" 
 					 data-action="Toggle" 
+					 data-on-text="TRIGGERED"
+					 data-off-text="RESET"
 					 id="hmi-estop-active-btn" 
 					 style="width: 100%;">
-					<div class="hmi-badge hmi-clickable-badge hmi-active-state">TRIPPED</div>
+					<div class="hmi-badge hmi-clickable-badge hmi-active-state"></div>
 				</div>
 			</div>
 			<div class="hmi-last-update" data-field="LastUpdate">YYYY-MM-DD hh:mm:ss</div>
 		</div>
 
+		<!-- 
+			PROGRESSBAR
+			Domoticz Type Any value
+			Progressbar with Value in badge
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="progressbar" 
+			data-device-idx="4" 
+			data-unit="%">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Percentage</div></div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			DIMMER
+			Domoticz Type Light/Switch / SubType Switch / SwitchType Dimmer
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="dimmer" 
+			data-device-idx="12" 
+			data-unit="%"			
+			data-slider-min="0"
+			data-slider-max="100"
+			data-slider-step="10"
+			data-slider-scale="1">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Dimmer</div></div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+
+
         <!-- 
 			TREND Solar Production
 		-->
-		<div class="hmi-pack-tile hmi-clickable-tile" data-type="value" data-device-idx="39" data-labels="0::W">
-			<div class="hmi-tile-header"><div class="hmi-pack-label">Production</div></div>
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			data-type="value" 
+			data-device-idx="39" 
+			data-labels="0::W">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Solar Production</div></div>
 			<div class="hmi-value-grid"></div>
 		</div>
 		
-		<div class="hmi-pack-tile" data-type="trend" data-device-idx="39">
-			<div class="hmi-tile-header"><div class="hmi-pack-label">Production</div></div>
+		<div class="hmi-pack-tile" 
+			data-type="trend" 
+			data-device-idx="39" 
+			data-unit="W">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Solar Production</div></div>
 			<div class="hmi-value-grid"></div>
 			<div class="hmi-last-value"></div>
 			<div class="hmi-last-update"></div>

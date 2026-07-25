@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+ File: index.html
+ Project: HMITiles-for-Domoticz
+ Brief: Example controlling RailYard 
+ Date: 2026-07-20
+ Author: Robert W.B. Linn (c) 2026 MIT
+-->
+<head>
+    <meta charset="UTF-8">
+    <title>RailYard</title>
+    <link rel="stylesheet" href="/templates/core/hmitiles.css">
+    <link rel="stylesheet" href="/templates/core/hmitiles-dark.css">
+
+    <script type="module" src="/templates/core/hmitiles.js" defer></script>
+
+<!-- Add the class for dark mode -->
+<body class="theme-dark">
+
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+				<h2>RailYard</h2>
+			</div>
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
+			</div>
+		</div>
+	</header>
+
+    <main class="hmi-panel">
+
+		<!--
+		============================================================
+		ROW 1: SAFETY & CONNECTION (THE MASTER CONTROL ROW)
+		============================================================			
+		-->
+
+		<!-- 
+			SWITCH
+			Type Light/Switch / SubType Switch / SwitchType On/Off
+			Emergency stop actions reset and trigged (reusing switch infrastructure).
+			To set the last-update, the data-device-idx must be set in the hmi-pack-tile.
+		-->
+		<div class="hmi-pack-tile" 
+			data-device-idx="68">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">EMERGENCY-STOP</div></div>
+			<div class="hmi-switch-button-row">
+				<!-- A single, full-width inner tile block.
+					 The background script simply toggles the text inside the badge:
+					 Normal Mode:  badge says "RESET / OK" and drops the active class
+					 Tripped Mode: badge says "TRIPPED" and gains the hmi-active-state class -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" 
+					 data-type="switch" 
+					 data-device-idx="68" 
+					 data-action="Toggle"
+					 data-on-text="STOP" data-off-text="RESET"					 
+					 id="hmi-estop-active-btn" 
+					 style="width: 100%;">
+					<div class="hmi-badge hmi-clickable-badge hmi-active-state"></div>
+				</div>
+			</div>
+			<div class="hmi-last-update"></div>
+		</div>
+
+		<!-- 
+			SWITCH
+			Domoticz Type Light/Switch / SubType Switch / SwitchType On/Off
+			Horizontal selector button row panel (like the 4-switch panel).
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Serial Connect</div></div>
+			<div class="hmi-switch-button-row">
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="67" data-action="On" data-on-text="CONNECT" data-off-text="CONNECT">
+					<div class="hmi-badge hmi-clickable-badge">Connect</div>
+				</div>
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="67" data-action="Off" data-on-text="DISCONNECT" data-off-text="DISCONNECT">
+					<div class="hmi-badge hmi-clickable-badge"></div>
+				</div>
+			</div>
+		</div>
+
+
+		<!-- 
+			ALERT
+			Domoticz Type General / SubType Alert
+			Level = (0=gray, 1=green, 2=yellow, 3=orange, 4=red)
+		-->
+		<div class="hmi-pack-tile hmi-tile-alert-status" 
+			data-type="value"
+			data-device-idx="66"
+			data-labels="0::">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Alert</div></div>
+			<div class="hmi-value-grid "></div>
+			<div class="hmi-last-update"></div>
+		</div>
+
+		<!--
+			PLACEHOLDER
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="value"
+			data-device-idx=""
+			data-labels="0::">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">SAFETY & CONNECTION</div></div>
+			<div class="hmi-value-grid "></div>
+		</div>
+
+		<!--
+		============================================================
+		ROW 2: TRACKSIDE INFRASTRUCTURE (THE DISPATCHER PANEL)
+		============================================================			
+		-->
+
+		<!-- 
+			SWITCH
+			Domoticz Type Light/Switch / SubType Switch / SwitchType On/Off
+			Horizontal selector button row panel (like the 4-switch panel).
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Signal South</div></div>
+			<div class="hmi-switch-button-row">
+				<!-- LEVEL Off -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="60" data-action="Off" data-on-text="OFF" data-off-text="OFF">
+					<div class="hmi-badge hmi-clickable-badge"></div>
+				</div>
+
+				<!-- LEVEL On -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="60" data-action="On" data-on-text="ON" data-off-text="ON">
+					<div class="hmi-badge hmi-clickable-badge"></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 
+			SWITCH
+			Domoticz Type Light/Switch / SubType Switch / SwitchType On/Off
+			Horizontal selector button row panel (like the 4-switch panel).
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Signal North</div></div>
+			<div class="hmi-switch-button-row">
+				<!-- LEVEL Off -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="61" data-action="Off" data-on-text="OFF" data-off-text="OFF">
+					<div class="hmi-badge hmi-clickable-badge"></div>
+				</div>
+
+				<!-- LEVEL On -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="61" data-action="On" data-on-text="ON" data-off-text="ON">
+					<div class="hmi-badge hmi-clickable-badge"></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 
+			SWITCH
+			Domoticz Type Light/Switch / SubType Switch / SwitchType On/Off
+			Horizontal selector button row panel (like the 4-switch panel).
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Turnout South</div></div>
+			<div class="hmi-switch-button-row">
+				<!-- LEVEL Off -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="62" data-action="Off" data-on-text="OFF" data-off-text="OFF">
+					<div class="hmi-badge hmi-clickable-badge"></div>
+				</div>
+
+				<!-- LEVEL On -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="62" data-action="On" data-on-text="ON" data-off-text="ON">
+					<div class="hmi-badge hmi-clickable-badge"></div>
+				</div>
+			</div>
+		</div>
+
+		<!--
+			PLACEHOLDER
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="value"
+			data-device-idx=""
+			data-labels="0::">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">TRACKSIDE INFRASTRUCTURE</div></div>
+			<div class="hmi-value-grid "></div>
+		</div>
+
+		<!--
+		============================================================
+		ROW 3: LOCOMOTIVE OPERATIONS (THE ENGINEER THROTTLE PANEL)
+		============================================================			
+		-->
+
+		<!-- 
+			SWITCH
+			Domoticz Type Light/Switch / SubType Switch / SwitchType On/Off
+			Horizontal selector button row panel (like the 4-switch panel).
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Train Power</div></div>
+			<div class="hmi-switch-button-row">
+				<!-- LEVEL Off -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="65" data-action="Off" data-on-text="OFF" data-off-text="OFF">
+					<div class="hmi-badge hmi-clickable-badge"></div>
+				</div>
+
+				<!-- LEVEL On -->
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="65" data-action="On" data-on-text="ON" data-off-text="ON">
+					<div class="hmi-badge hmi-clickable-badge"></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- 
+			SELECTOR (BUTTONS)
+			Domoticz Type Light/Switch / SubType Selector Switch
+			Horizontal selector button row panel (like the 4-switch panel).
+		-->
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Train Direction</div></div>
+			<div class="hmi-switch-button-row">
+
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="64" data-level="10" data-on-text="Forward" data-off-text="Forward">
+					<div class="hmi-badge hmi-clickable-badge">FWD</div>
+				</div>
+
+				<div class="hmi-pack-innertile hmi-switch-col-cell" data-type="switch" data-device-idx="64" data-level="20" data-on-text="Reverse" data-off-text="Reverse">
+					<div class="hmi-badge hmi-clickable-badge">REV</div>
+				</div>
+
+			</div>
+		</div>
+
+		<!-- 
+			SLIDER
+			Domoticz Type Light/Switch / SubType Switch / SwitchType Dimmer
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="slider" 
+			data-device-idx="63" 
+			data-unit="%"
+			data-slider-min="0"
+			data-slider-max="100"
+			data-slider-step="10"
+			data-slider-scale="1">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Train Speed</div></div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!--
+			PLACEHOLDER
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="value"
+			data-device-idx=""
+			data-labels="0::">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">LOCOMOTIVE OPERATIONS</div></div>
+			<div class="hmi-value-grid "></div>
+		</div>
+
+		<!--
+		============================================================
+		ROW 4: SYSTEM TELEMETRY LOG (FULL WIDTH)
+		============================================================			
+		-->
+
+        <!-- 
+			LOGMONITOR
+			Monospace system log tile with dynamic channel selector, no filter
+			No idx and no input row (see hmitiles.css class .hmi-log-fullpage .hmi-log-input-row.
+		-->
+		<div class="hmi-pack-tile hmi-log-fullpage" 
+			data-type="logmonitor" 
+			data-log-limit="8" 
+			data-log-prefix="[RAILYARD]" 
+			data-log-filter="RailYard">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Logging</div>
+				<select class="hmi-log-channel-select">
+					<option value="268435455">ALL LOGS</option>
+					<option value="1">STATUS</option>
+					<option value="2">DETAIL</option>
+					<option value="4">ERRORS</option>
+				</select>
+			</div>
+			
+			<div class="hmi-log-terminal">
+				<div class="hmi-log-line">Initializing log system link...</div>
+			</div>
+
+			<div class="hmi-log-input-row">
+				<input type="text" class="hmi-log-input" placeholder="Type custom log message..." maxlength="100">
+				<button class="hmi-log-send-btn">SEND</button>
+				<button class="hmi-log-clear-btn">CLEAR</button>
+			</div>
+		</div>
+
+		<!--
+		============================================================
+		BOTTOM: FOOTER
+		============================================================			
+		-->
+
+		<footer class="hmi-footer-version">
+			<hr>
+			<span>HMITiles for Domoticz</span>
+		</footer>
+
+
+    </main>
+
+</body>
+</html>

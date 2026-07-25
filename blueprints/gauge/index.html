@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <!--
-	File: gauge/index.html
-	Brief: Display devices data in 180° gauge tile.
-	Date: 2026-07-07
-	Author: Robert W.B. Linn (c) 2026 MIT
-	The Rule of Thumb:
-	For Upward maps (>): Write thresholds from lowest to highest (e.g., 0>700=GOOD,0>1200=BAD).
-	For Downward maps (<): Also write thresholds from lowest to highest (e.g., 0<5=EMPTY,0<20=LOW,0<100=FULL).
+Brief:  		Display devices data in 180° gauge tile.
+Data-Type:		gauge, gaugeneedle, gauge90needle
+Date:  		 	2026-07-24
+Author:   		Robert W.B. Linn @ 2026 MIT
+Description:	Alarm sectors to be defined as descriobed for the alarm.
+				Max data attribute: data-max="2000"
+				Unit attribute: data-unit="ppm">
+				Show optional at tile bottom the last value or last update:
+				<div class="hmi-value-grid"></div>
+				<div class="hmi-last-update"></div>
 -->
 <head>
     <meta charset="UTF-8">
@@ -53,9 +56,9 @@
 			 data-labels="0:CO2 Concentration:ppm;1:State:"
 			 data-state-map="0:EXCELLENT,700:GOOD,900:FAIR,1100:MEDIOCRE,1600:BAD"
 			 data-alarm-direction="up">
-			<div class="hmi-tile-header"><div class="hmi-pack-label">Air Quality</div></div>
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Air Quality Value</div></div>
 			<div class="hmi-value-grid"></div>
-			<div class="hmi-last-update" data-field="LastUpdate"></div>
+			<div class="hmi-last-update"></div>
 		</div>
 
 		<!-- =========================================================================
@@ -65,13 +68,14 @@
 		<div class="hmi-pack-tile hmi-clickable-tile" 
 			 data-type="gauge" 
 			 data-device-idx="3"
-			 data-max="2000">
+			 data-max="2000"
+			 data-unit="ppm">
 			<div class="hmi-tile-header">
-				<div class="hmi-pack-label">Air Quality Gauge</div>
+				<div class="hmi-pack-label">180° + Standard - Air Quality</div>
 			</div>
 			<!-- LEAVE BLANK: Automatically filled with dynamic SVG gauge canvas -->
 			<div class="hmi-value-grid"></div>
-			<div class="hmi-last-update" data-field="LastUpdate"></div>
+			<div class="hmi-last-update"></div>
 		</div>
 
 		<!-- AIR QUALITY GAUGE TILE -->
@@ -79,15 +83,16 @@
 			 data-type="gauge" 
 			 data-device-idx="3"
 			 data-max="2000"
+			 data-unit="ppm"
 			 data-labels="0:CO2 Concentration:ppm;1:State:"
 			 data-state-map="0:EXCELLENT,700:GOOD,900:FAIR,1100:MEDIOCRE,1600:BAD"
 			 data-alarm-direction="up">
 			<div class="hmi-tile-header">
-				<div class="hmi-pack-label">Air Quality Gauge</div>
+				<div class="hmi-pack-label">180° + Alarm - Air Quality</div>
 				<div class="hmi-badge"></div>
 			</div>
 			<div class="hmi-value-grid"></div>
-			<div class="hmi-last-update" data-field="LastUpdate"></div>
+			<div class="hmi-last-update"></div>
 		</div>
 
 		<!-- AIR QUALITY DYNAMIC ANALOG NEEDLE GAUGE -->
@@ -95,12 +100,46 @@
 			 data-type="gaugeneedle" 
 			 data-device-idx="3"
 			 data-max="2000"
+			 data-unit="ppm"
 			 data-needle="1"
 			 data-state-map="0:EXCELLENT,700:GOOD,900:FAIR,1100:MEDIOCRE,1600:BAD"
 			 data-alarm-direction="up">
 			<div class="hmi-tile-header">
-				<div class="hmi-pack-label">Air Quality Gauge</div>
+				<div class="hmi-pack-label">180° Needle + Alarm - Air Quality</div>
 				<div class="hmi-badge"></div>
+			</div>
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-value"></div>
+			<div class="hmi-last-update"></div>
+		</div>
+
+		<!-- AIR QUALITY DYNAMIC ANALOG NEEDLE GAUGE -->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="gauge90needle" 
+			 data-device-idx="3"
+			 data-max="2000"
+			 data-unit="ppm"
+			 data-needle="1"
+			 data-state-map="0:EXCELLENT,700:GOOD,900:FAIR,1100:MEDIOCRE,1600:BAD"
+			 data-alarm-direction="up">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">90° Needle + Alarm - Air Quality</div>
+				<div class="hmi-badge"></div>
+			</div>
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-value"></div>
+			<div class="hmi-last-update"></div>
+		</div>
+
+		<!-- SWITCH ON (OPEN, 1) or OFF (CLOSED, 0) -->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			 data-type="gauge90needle" 
+			 data-device-idx="57"
+			 data-max="1"
+			 data-unit=""
+			 data-needle="1">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">90° Needle - Switch OnOff</div>
 			</div>
 			<div class="hmi-value-grid"></div>
 			<div class="hmi-last-value"></div>
@@ -109,10 +148,11 @@
 
 		<!-- DYNAMIC COMPASS ROSE WEATHER PANEL -->
 		<div class="hmi-pack-tile hmi-clickable-tile" 
-			 data-type="compass" 
-			 data-device-idx="14"> <!-- Points to your native multi-value wind device array -->
+			data-type="compass" 
+			data-device-idx="14"
+			data-unit="">
 			<div class="hmi-tile-header">
-				<div class="hmi-pack-label">Wind Direction</div>
+				<div class="hmi-pack-label">Compass - Wind</div>
 			</div>
 			<div class="hmi-value-grid"></div>
 			<div class="hmi-last-value"></div>

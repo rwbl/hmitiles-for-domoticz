@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+File: 	valuesmulti/index.html
+Brief: 	Display values from multi devices using tile-type "value" with data-device-idx containing CSV string with device idx's like "43;44;45".
+Date: 	2026-07-22
+Author: Robert W.B. Linn (c) 2026 MIT
+Notes:	- To see the log of the first device, set div class="hmi-pack-tile hmi-clickable-tile".
+		- Max 7 devices are supported.
+-->
+<head>
+    <meta charset="UTF-8">
+    <title>HMITiles Multi Values</title>
+
+    <!-- Link backward to reuse shared global common styles -->
+    <link rel="stylesheet" href="/templates/core/hmitiles.css">
+	
+	<!-- Link backward to the HMI tile engine -->
+	<!-- Ensure type="module" is declared so the browser resolves the import statement -->
+	<script type="module" src="/templates/core/hmitiles.js"></script>
+</head>
+
+<body>
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+				<h2>HMITiles Multi Values</h2>
+			</div>
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
+			</div>
+		</div>
+	</header>
+
+	<main class="hmi-panel">
+	
+        <!-- 
+			VALUE
+			Domoticz multiple devices
+			Display solar battery charge, discharage and state of charge.
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="value" 
+			data-device-idx="43;44;45"
+			data-labels="0:CHG:W;1:DCHG:W;2:SOC:%">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Solar Battery</div></div>
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-update"></div>
+		</div>
+
+        <!-- 
+			VALUE
+			Domoticz multiple devices
+			Display solar production, export to grid, import from grid, house consumption.
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="value" 
+			data-device-idx="39;41;40;42"
+			data-labels="0:PRODUCTION:W;1:EXPORT:W;2:IMPORT:W;3:CONSUMPTION:W">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Solar Production</div></div>
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-update"></div>
+		</div>
+
+
+	</main>
+
+</body>
+</html>

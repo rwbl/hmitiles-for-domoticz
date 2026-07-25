@@ -1,70 +1,88 @@
-# Values
+# VALUE
 
-------------------------------
-## High-Density Value Component Blueprints (data-type="value")
-Value tiles display live telemetry inside a structured grid canvas. The data-labels attribute is strictly mandatory and serves as the absolute master authority for column rendering. The layout engine splits your pre-parsed data rows automatically based on specified segment indexes, eliminating layout guessing.
+**Data Type**: `value`
+
+---
+
+## Overview
+The `value` tile engine dynamically scales to support high-density metric rows, ranging from a single value up to 7 horizontal layout columns. 
+The layout engine automatically balances space boundaries and grid structures based on the configuration of your HTML markup tags.
+
+This unified approach allows you to seamlessly map a single hardware sensor, a multi-value dataset from a single Domoticz hardware device (e.g., kWh counters tracking Today/Usage), or combine telemetry from up to 7 entirely independent Domoticz hardware devices simultaneously.
 
 **Preview**
 ![Values](values.png)
 
+**Values Multiple Devices**
+![ValuesMulti](valuesmulti.png)
 
-## Core Implementation Markups## 1. Standard Single-Value Sensor (e.g., Distance)
-Uses the pre-parser parseSingleValue() helper to isolate numbers from text trailing spaces seamlessly.
+**IMPORTANT**
+Lookup `index.html` for latest examples.
 
-```
-<div class="hmi-pack-tile hmi-clickable-tile" 
-     data-device-idx="52" data-type="value"
-     data-labels="0:Distance:cm">
-    <div class="hmi-tile-header"><div class="hmi-pack-label">Custom Distance</div></div>
-    <div class="hmi-value-grid"></div>
-    <div class="hmi-last-update"></div>
+---
+
+## Configuration Parameters 
+(HTML Data Attributes)
+
+To build out dashboard data grid columns, configure the following core attributes on the `.hmi-pack-tile` chassis.
+
+| Attribute | Expected Value | Description |
+|-----------|----------------|-------------|
+| `data-type` | `"value"` | Explicitly targets the high-density grid row compilation matrix. |
+| `data-device-idx` | `"IDX"` or `"IDX1;IDX2;IDX3"` | Semicolon-separated string of the Domoticz hardware tracker indices to extract. |
+| `data-labels` | `"INDEX:LABEL:UNIT;INDEX:LABEL:UNIT"` | Semicolon-separated positional blueprint map linking headers and units to values. |
+
+### Engineering Best Practices
+* **Zero Label Overlap:** Keep descriptive labels (`LABEL`) compact (under 12 characters) to guarantee clean, unyielding layout margins without wrapping on standard responsive viewports.
+* **Separation of Units:** Never inject static text units inside your Domoticz back-end strings. Let the backend preparser scrub numbers cleanly (`parseFloats`), and pass the visual context strings (`UNIT`) explicitly into the `data-labels` attribute profile.
+
+---
+
+### Single Value Target Mode
+Extracts a standalone telemetry metric out of a standard device payload.
+
+```html
+<div class="hmi-pack-tile" 
+     data-type="value" 
+     data-device-idx="12" 
+     data-labels="0:VOC:ppm">
+     <div class="hmi-tile-header"><div class="hmi-pack-label">Air Quality</div></div>
+     <div class="hmi-value-grid"></div>
+     <div class="hmi-last-update"></div>
 </div>
 ```
 
-## 2. Multi-Phase Electrical Amperage (3-Column Grid Layout)
-Maps multi-value current strings (e.g., "1.0 A, 2.0 A, 3.0 A" normalized into "1.0;2.0;3.0") across distinct horizontal columns.
+#### Multi-Value Target Mode (Single Hardware Device)
+Extracts multi-segmented CSV telemetry payloads generated from a single specialized device configuration block (such as a smart meter device returning separate data pools).
 
-```
-<div class="hmi-pack-tile hmi-clickable-tile" 
-     data-device-idx="14" data-type="value"
-     data-labels="0:Phase 1:A;1:Phase 2:A;2:Phase 3:A">
-    <div class="hmi-tile-header"><div class="hmi-pack-label">Current Grid Loads</div></div>
-    <div class="hmi-value-grid"></div>
-    <div class="hmi-last-update"></div>
+```html
+<div class="hmi-pack-tile" 
+     data-type="value" 
+     data-device-idx="14" 
+     data-labels="0:TODAY:kWh;1:USAGE:W">
+     <div class="hmi-tile-header"><div class="hmi-pack-label">Smart Meter</div></div>
+     <div class="hmi-value-grid"></div>
+     <div class="hmi-last-update"></div>
 </div>
 ```
 
-## 3. Meteorological Precipitation Tracker (2-Column Array Layout)
-Picks apart structured dual-value payloads (e.g., Rain Rate and Daily Accumulation formatted as "100;200").
+#### Multi-Device Target Matrix (Up to 7 Devices Combined)
+Gathers single live data values from multiple, entirely distinct hardware index references in your Domoticz system, compiling them dynamically into a unified virtual row layout.
 
-```
-<div class="hmi-pack-tile hmi-clickable-tile" 
-     data-device-idx="72" data-type="value"
-     data-labels="0:Rain Rate:mm/h;1:Total Accum:mm">
-    <div class="hmi-tile-header"><div class="hmi-pack-label">Precipitation Tracker</div></div>
-    <div class="hmi-value-grid"></div>
-    <div class="hmi-last-update"></div>
+```html
+<div class="hmi-pack-tile" 
+     data-type="value" 
+     data-device-idx="43;44;45" 
+     data-labels="0:CHG:W;1:DCHG:W;2:SOC:%">
+     <div class="hmi-tile-header"><div class="hmi-pack-label">Solar Battery</div></div>
+     <div class="hmi-value-grid"></div>
+     <div class="hmi-last-update"></div>
 </div>
 ```
 
-## 4. Climate Environment Suite (3-Column Combo Layout)
-Maps native composite sensor payloads (e.g., "21.2;50;COMF") instantly under clear column headers.
+---
 
-```
-<div class="hmi-pack-tile hmi-clickable-tile" 
-     data-device-idx="8" data-type="value"
-     data-labels="0:Temp:°C;1:Humidity:%;2:Comfort:">
-    <div class="hmi-tile-header"><div class="hmi-pack-label">Living Room Climate</div></div>
-    <div class="hmi-value-grid"></div>
-    <div class="hmi-last-update"></div>
-</div>
-```
-
-------------------------------
-## Symmetrical Grid Alignment Laws
-
-* data-labels="[INDEX]:[TITLE]:[UNIT];...": Each section separated by a semicolon represents a unique vertical data pillar. You can slice up to 7 layout columns horizontally.
-* Proportional Width Isolation: Individual data cells apply flex-basis: 100% !important inside your stylesheet. This locks all grid columns into perfectly symmetrical widths, preventing empty layout units from causing visual column collisions or clipping.
-
-------------------------------
-
+## Hints
+**Multiple Values**
+- To see the log of the first device, set div class="hmi-pack-tile hmi-clickable-tile".
+- Max 7 devices are supported, e.g. `data-device-idx="1;2;3;4;5;6;7"`. The limit is caused by the width of a tile (as defined in `hmitiles.js`).
