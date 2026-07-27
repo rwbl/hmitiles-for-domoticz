@@ -20,7 +20,8 @@ Select a Domoticz device containing a single value or create a new virtual devic
 Note the `idx` of this device.
 
 ### 2. HMITile HTML File
-In the Domoticz templates folder (`www/templates`), create a new file named `MyHMITile.html` with the content below. This defines an HMITile of device type `value`.
+In the Domoticz templates folder (`www/templates`), create a new file named `MyHMITile.html` with the content below. 
+This defines an HMITile of device type `value` (`data-type="value"`).
 
 ```html
 <!DOCTYPE html>
