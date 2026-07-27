@@ -1,7 +1,7 @@
 /**
  * @file hmitiles.js
  * @brief Core JavaScript engine for the HMITiles-for-Domoticz framework.
- * @date 2026-07-22
+ * @date 2026-07-27
  * @author Robert W.B. Linn (c) 2026 MIT
  * @description 
  * Manages industrial-inspired tile updates, trend lines, network polling, 
@@ -15,11 +15,11 @@
 // Set to true to see logs in console, false to hide
 export const DEBUG = false; 
 
-// Domoticz server URL with two options
-// Option 1: Domoticz server (f.e. running on Windows 11 or Raspberry Pi 5 OS Trixie)
-const DOMOTICZ_URL = window.parent && window.parent.$ ? window.parent.$.domoticzurl : window.location.origin;
-// Option 2: Python simulator (folder tools)
-// const DOMOTICZ_URL ="http://127.0.0.1:8080";
+// Domoticz server URL (f.e. running on Windows 11, Ubuntu or Raspberry Pi 5 OS Trixie)
+const DOMOTICZ_URL = (window.parent && window.parent.$ && window.parent.$.domoticzurl) 
+    ? window.parent.$.domoticzurl 
+    : window.location.origin;
+if (DEBUG) console.log(">>>", DOMOTICZ_URL, DEBUG);
 
 // Set refresh rate high to see immediate response on user interaction or data updates
 const REFRESH_RATE = 5000;
@@ -29,7 +29,7 @@ const REFRESH_RATE = 5000;
 // =========================================================================
 
 // Imports from the preparser: conversion, domoticz helpers
-import { parseDigits, parseFloats, decodeBase64, replaceString } from './hmitiles-preparser.js';
+import { parseDigits, parseFloats, decodeBase64, replaceString, getPercentChange } from './hmitiles-preparser.js';
 import { setTileValue, getHistorySensor, preParseDeviceData } from './hmitiles-preparser.js';
 import { processDevices } from './hmitiles-processor.js';
 
@@ -38,6 +38,7 @@ import { processDevices } from './hmitiles-processor.js';
 window.parseDigits = parseDigits;
 window.parseFloats = parseFloats;
 window.replaceString = replaceString;
+window.getPercentChange = getPercentChange;
 window.getHistorySensor = getHistorySensor;
 
 // From hmitiles-processor
@@ -270,7 +271,7 @@ function bindStepperControls() {
             const badge = tile.querySelector('.hmi-badge');
             if (badge) badge.textContent = "SYNCED";
             
-            // Small debounce window matching your input framework rules
+            // Small debounce window matching the input framework rules
             setTimeout(() => {
                 tile.setAttribute('data-input-mode', 'readonly');
             }, 500);
@@ -783,6 +784,46 @@ function renderEmbeddedSparkline(container, dataPoints) {
 }
 
 // =========================================================================
+// INTEGRATED DAY LOG POINTS
+// =========================================================================
+
+/**
+ * Fetches 24-hour log data from Domoticz and returns a clean array of numerical data points.
+ * @param {Object} device - The standard Domoticz device registry node object
+ * @returns {Promise<Array|undefined>} Resolves to an array of floats, or undefined on failure
+ */
+export async function fetchDayLog(device) {
+    try {
+        const idx = parseInt(device.idx, 10);
+        const sensor = getHistorySensor(device);
+        const baseUrl = window.DOMOTICZ_URL || window.location.origin;
+        const targetUrl = `${baseUrl}/json.htm?type=command&param=graph&sensor=${sensor}&idx=${idx}&range=day`;
+        // console.log("[fetchDayLog]", targetUrl);
+		
+        const response = await fetch(targetUrl);
+        if (!response.ok) throw new Error();
+        const data = await response.json();
+        
+        if (data.result && data.result.length > 0) {
+            // Compile your numerical array
+            const parsedPoints = data.result.map(item => {
+                const valueKeys = Object.keys(item).filter(key => key !== "d");
+                const activeMetricKey = valueKeys[0];
+                return activeMetricKey ? parseFloat(item[activeMetricKey] || 0) : 0;
+            });
+
+            // console.log("[fetchDayLog] points extracted:", parsedPoints.length, "data:", parsedPoints);	
+            return parsedPoints; // RULE: Return the array directly to the caller!
+        }
+        
+        return undefined;
+    } catch (err) {
+        console.error("[fetchDayLog] Tracking error:", err);
+        return undefined;
+    }
+}
+
+// =========================================================================
 // OPENURLS
 // =========================================================================
 
@@ -834,28 +875,34 @@ window.goToHMITilesIndex = goToHMITilesIndex;
 // =========================================================================
 
 /**
- * Global initialization handler to bind control listeners and kickstart background network polling cycles.
+ * Global initialization handler to bind control listeners and 
+ * kickstart background network polling cycles.
  * @listens DOMContentLoaded
  */
-window.addEventListener('DOMContentLoaded', () => {
-
-	// Sets up the permanent background delegated event hooks
+function initHMITiles() {
+    // Call Controls
     bindControls(); 
     	
-	// Get the domoticz device data for all devices
+    // Get Domoticz data
     fetchDomoticzData();
 
-	// And do this every 60 secs (or any other value > 60 secs)
+    // Start Intervall (REFRESH_RATE Millisekunden)
     setInterval(fetchDomoticzData, REFRESH_RATE);
 
-	// =========================================================================
+    // =========================================================================
     // SYSTEM LOGGING INITIALIZATION ENGINE (SINGLE TIMING LOOP)
     // =========================================================================
-	const logTile = document.querySelector('[data-type="logmonitor"]');
+    const logTile = document.querySelector('[data-type="logmonitor"]');
     if (logTile) {
         fetchDomoticzServerLogs();
-        setInterval(fetchDomoticzServerLogs, 5000); // Simple, low-overhead 5s polling cycle (5000)
-    }	
-	
-});
+        setInterval(fetchDomoticzServerLogs, 5000); 
+    }
+}
+
+// Check if DOM already loaded as required for type="module"
+if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', initHMITiles);
+} else {
+    initHMITiles(); // If already loaded (mainly Ubuntu/Linux), call immediate!
+}
 

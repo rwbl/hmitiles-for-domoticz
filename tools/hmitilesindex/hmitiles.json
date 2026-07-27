@@ -3,6 +3,7 @@
     {
       "category": "Blueprint Tiles",
       "pages": [
+        { "title": "MyFirstTile", "file": "blueprints/myfirsttile/index.html" },
         { "title": "Alarm", "file": "blueprints/alarm/index.html" },
         { "title": "Gauge", "file": "blueprints/gauge/index.html" },
         { "title": "Info", "file": "blueprints/info/index.html" },
@@ -10,6 +11,7 @@
         { "title": "Log Monitor", "file": "blueprints/logmonitor/index.html" },
         { "title": "Regulators", "file": "blueprints/regulators/index.html" },
         { "title": "Setpoint", "file": "blueprints/setpoint/index.html" },
+        { "title": "Stock", "file": "blueprints/stock/index.html" },
         { "title": "Switches", "file": "blueprints/switches/index.html" },
         { "title": "Theme Dark (experimental)", "file": "blueprints/themedark/index.html" },
         { "title": "Theme Normal", "file": "blueprints/themenormal/index.html" },

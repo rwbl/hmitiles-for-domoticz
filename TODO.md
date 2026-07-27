@@ -2,6 +2,18 @@
 
 ---
 
+### Documenation
+Improve documentation:
+* For every HMITile create `README.md`. Status: 90% completed
+* Create HMITiles Developer Documentation `DEVNOTES.md`. Status: drafted but to be re-worked after core engine changes.
+
+#### Status
+Not Started.
+
+---
+
+## New HMITiles
+
 ### Multi-State Manual Override Selector (Mode Controller)
 Industrial control often requires switching between operating modes (Auto, Manual, and Override Standby) for devices like ventilation fans, irrigation systems, or pool pumps.
 Standard switches are binary (On/Off). 

@@ -4,6 +4,24 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 
 ---
 
+## 2.2.0 - 2026-07-27 (BETA)
+
+### Blueprints
+
+- **MyFirstTile**
+	- New example showing a simple tile with a single device using `data-type="value"` (used by `GETSTARTED.md`).
+- **Stock**
+	- New data-type `stock` to display for a single device its current value, 24hr last, 24hr change, 24hr change percentage.
+
+### Core
+
+- **hmitiles.js**
+	- Fixed race condition `addEventListener` when using `module`.
+- **Documenation**
+	- New document `GETSTARTED.md`.
+	
+---
+
 ## 2.1.0 - 2026-07-25
 
 ### Blueprints

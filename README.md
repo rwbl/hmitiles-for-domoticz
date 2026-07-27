@@ -1,7 +1,7 @@
 # HMITiles Custom Pages Framework for Domoticz
 
 > [!WARNING]
-> **MAJOR UPDATE COMING SOON**: Currently finalizing **v2.0.0-BETA**, a massive, ground-up rewrite introducing a purely declarative, script-free HTML architecture. Check out the latest breaking changes and migration details in the [CHANGELOG.md](./CHANGELOG.md).
+> **MAJOR UPDATE**: **v2.1.0**, a massive, ground-up rewrite introducing a purely declarative, script-free HTML architecture. Check out the latest breaking changes and migration details in the [CHANGELOG.md](./CHANGELOG.md).
 
 **HMITiles for Domoticz** is a lightweight, decoupled HTML/CSS/JS framework designed to visualize and control your smart home devices using structured, high-density tiles.
 
@@ -42,20 +42,19 @@ The framework started as a personal open-source project, evolving from earlier l
 * **Independent Page Routing**: Engineered to function as completely standalone, purpose-driven custom pages built for discrete automation monitoring tasks.
 
 **Design Philosophy**
-This framework bypasses typical flashy smart-home trends to strictly mirror modern industrial SCADA standards - using muted baselines to reduce eye strain and reserving high-contrast colors exclusively for active process alarms.
+This framework bypasses typical flashy smart-home trends to strictly mirror modern industrial HMI standards - using muted baselines to reduce eye strain and reserving high-contrast colors exclusively for active process alarms.
 
 ---
 
 ## Included Custom Page Examples & Blueprints
 (Selective)
 #### Blueprints
-* **`hmitilesworkbench`**: An interactive testing layout panel used for mocking up new modular components, validating styles, and debugging device index assignments.
-* **`valuetile`**: A basic entry-level walkthrough for establishing file pathways, creating your first tile wrapper, and establishing server handshakes.
-* and many more...
+* **`workbench`**: An interactive testing layout panel used for mocking up new modular components, validating styles, and debugging device index assignments.
+* **`values`**: A basic entry-level walkthrough for establishing file pathways, creating your first tile wrapper, and establishing server handshakes.
+* many more...
 #### Examples
-* **`solarinfodashboard`**: A dense four-column process view detailing live energy flows across production, household consumption, grid balance, and battery bank state-of-charge.
-* **`picoservocontrol`**: A clean, WiFi-based microcontroller interface facilitating remote multi-axis servo positioning commands.
-* **`picotelemetryview`**: Real-time diagnostic monitoring tracking internal silicon temperature logs, virtual text data timestamps, and antenna Wi-Fi RSSI signal strength fields.
+* **`solardashboard`**: A dense four-column process view detailing live energy flows across production, household consumption, grid balance, and battery bank state-of-charge.
+* more...
 
 ---
 
@@ -74,18 +73,20 @@ HMITiles-for-Domoticz/
 ├── core/                           	# Standard shared framework engines
 │   ├── hmitiles.css                	# Global styling for all tiles and layouts
 │   └── hmitiles.js                 	# Shared UI logic (bulk polling loop, hook dispatcher)
+│   └── hmitiles-preparser.js           # Pre-parse Domoticz specific devices data into HMITiles standard format used by the processor
+│   └── hmitiles-processor.js           # Process a HMI tile based on its data-type
 ├── examples/                     		# Custom page example applications
-│   ├── solarinfopanel/      			# Solar Info Panel with live data & trends
+│   ├── solardashboard/      			# Solar Dashboard with live data & trends
 │   └── ...								# More application examples
 ├── blueprints/                     	# Custom page usage examples & tutorials
-│   ├── hmitilesworkbench/      		# Tile design test bed folder
+│   ├── workbench/      		        # Tile design test bed folder
 │   │   ├── index.html              	# Standalone workbench interface markup
-│   │   ├── HMITilesWorkbench.html  	# Domoticz custom page wrapper definition
+│   │   ├── Workbench.html  	        # Domoticz custom page wrapper definition
 │   │   ├── README.md               	# Detailed usage instructions
-│   │   └── hmitilesworkbench.png  	    # Layout preview graphic
-│   ├── valuetile/ 	                    # Example using value tile
-│   │   ├── ValueTile.html     	        # Domoticz custom page tab navigation file
-│   │   ├── valuetile/         	        # Core application directory
+│   │   └── workbench.png  	            # Layout preview graphic
+│   ├── values/ 	                    # Example using value tile
+│   │   ├── Values.html     	        # Domoticz custom page tab navigation file
+│   │   ├── values/         	        # Core application directory
 │   │   └── index.html              	# Main blueprint page structure
 │   └── ...								# More blueprints tiles & pages
 ├── LICENSE                         	# MIT open-source license
@@ -99,10 +100,12 @@ HMITiles-for-Domoticz/
 Follow these steps to deploy and run the `SingleTilePage` blueprint example directly inside your local Domoticz installation.
 
 1. **Deploy Core Framework**: Copy the files `hmitiles.css` and `hmitiles.js` from the `core/` repository folder into your Domoticz `/www/templates/` directory.
-2. **Select the Blueprint**: Navigate into the repository folder `blueprints/valuetile/`.
-3. **Deploy Custom Page Wrapper**: Copy the file `ValueTile.html` into your Domoticz `/www/templates/` directory.
-4. **Deploy Application Subfolder**: Copy the entire subfolder `valuetile/` into your Domoticz `/www/templates/` directory.
-5. **Launch Interface**: Open your Domoticz Web UI -> select the **Custom** tab -> click **ValueTile**. The custom dashboard view `ValueTile` will load immediately.
+2. **Select the Blueprint**: Navigate into the repository folder `blueprints/values/`.
+3. **Deploy Custom Page Wrapper**: Copy the file `Values.html` into your Domoticz `/www/templates/` directory.
+4. **Deploy Application Subfolder**: Copy the entire subfolder `values/` into your Domoticz `/www/templates/` directory.
+5. **Launch Interface**: Open your Domoticz Web UI -> select the **Custom** tab -> click **Values**. The custom dashboard view `Values` will load immediately.
+
+See also [GETSTARTED.md](./GETSTARTED.md).
 
 ### Final Domoticz Directory Structure
 Your Domoticz `/www/templates/` server folder path must reflect this exact layout:
@@ -110,8 +113,8 @@ Your Domoticz `/www/templates/` server folder path must reflect this exact layou
 domoticz/www/templates/
 ├── hmitiles.css            # Framework shared styles
 ├── hmitiles.js             # Core polling and hook loop engine
-├── ValueTile.html     		# Domoticz tab navigation wrapper file
-└── valuetile/         		# Dedicated application folder assets
+├── Values.html     		# Domoticz tab navigation wrapper file
+└── values/         		# Dedicated application folder assets
 	└── index.html          # Main HTML structure and page hook scripts
 ```
 ---
