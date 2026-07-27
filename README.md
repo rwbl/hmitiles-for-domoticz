@@ -78,14 +78,14 @@ HMITiles-for-Domoticz/
 │   ├── solarinfopanel/      			# Solar Info Panel with live data & trends
 │   └── ...								# More application examples
 ├── blueprints/                     	# Custom page usage examples & tutorials
-│   ├── hmitilesworkbench/      		# Tile design test bed folder
+│   ├── workbench/      		        # Tile design test bed folder
 │   │   ├── index.html              	# Standalone workbench interface markup
-│   │   ├── HMITilesWorkbench.html  	# Domoticz custom page wrapper definition
+│   │   ├── Workbench.html  	        # Domoticz custom page wrapper definition
 │   │   ├── README.md               	# Detailed usage instructions
-│   │   └── hmitilesworkbench.png  	    # Layout preview graphic
-│   ├── valuetile/ 	                    # Example using value tile
-│   │   ├── ValueTile.html     	        # Domoticz custom page tab navigation file
-│   │   ├── valuetile/         	        # Core application directory
+│   │   └── workbench.png  	            # Layout preview graphic
+│   ├── values/ 	                    # Example using value tile
+│   │   ├── Values.html     	        # Domoticz custom page tab navigation file
+│   │   ├── values/         	        # Core application directory
 │   │   └── index.html              	# Main blueprint page structure
 │   └── ...								# More blueprints tiles & pages
 ├── LICENSE                         	# MIT open-source license
@@ -99,10 +99,10 @@ HMITiles-for-Domoticz/
 Follow these steps to deploy and run the `SingleTilePage` blueprint example directly inside your local Domoticz installation.
 
 1. **Deploy Core Framework**: Copy the files `hmitiles.css` and `hmitiles.js` from the `core/` repository folder into your Domoticz `/www/templates/` directory.
-2. **Select the Blueprint**: Navigate into the repository folder `blueprints/valuetile/`.
-3. **Deploy Custom Page Wrapper**: Copy the file `ValueTile.html` into your Domoticz `/www/templates/` directory.
-4. **Deploy Application Subfolder**: Copy the entire subfolder `valuetile/` into your Domoticz `/www/templates/` directory.
-5. **Launch Interface**: Open your Domoticz Web UI -> select the **Custom** tab -> click **ValueTile**. The custom dashboard view `ValueTile` will load immediately.
+2. **Select the Blueprint**: Navigate into the repository folder `blueprints/values/`.
+3. **Deploy Custom Page Wrapper**: Copy the file `Values.html` into your Domoticz `/www/templates/` directory.
+4. **Deploy Application Subfolder**: Copy the entire subfolder `values/` into your Domoticz `/www/templates/` directory.
+5. **Launch Interface**: Open your Domoticz Web UI -> select the **Custom** tab -> click **Values**. The custom dashboard view `Values` will load immediately.
 
 ### Final Domoticz Directory Structure
 Your Domoticz `/www/templates/` server folder path must reflect this exact layout:
@@ -110,8 +110,8 @@ Your Domoticz `/www/templates/` server folder path must reflect this exact layou
 domoticz/www/templates/
 ├── hmitiles.css            # Framework shared styles
 ├── hmitiles.js             # Core polling and hook loop engine
-├── ValueTile.html     		# Domoticz tab navigation wrapper file
-└── valuetile/         		# Dedicated application folder assets
+├── Values.html     		# Domoticz tab navigation wrapper file
+└── values/         		# Dedicated application folder assets
 	└── index.html          # Main HTML structure and page hook scripts
 ```
 ---
