@@ -20,7 +20,7 @@ Select a Domoticz device containing a single value or create a new virtual devic
 Note the `idx` of this device.
 
 ### 2. HMITile HTML File
-In the Domoticz templates folder (`www/templates`), create a new file named `MyHMITile.html` with the content below. 
+In the Domoticz templates folder (`www/templates`), create a new file named `MyFirstTile.html` with the content below. 
 This defines an HMITile of device type `value` (`data-type="value"`).
 
 ```html
@@ -54,13 +54,13 @@ This defines an HMITile of device type `value` (`data-type="value"`).
 ```
 
 ### 3. Set IDX
-Update the attribute `data-device-idx` with your specific device `idx` inside your `MyHMITile.html` file. 
+Update the attribute `data-device-idx` with your specific device `idx` inside your `MyFirstTile.html` file. 
 
 *Note: If your sensor displays a specific unit like temperature, you can change `data-labels="0:Data:"` to `data-labels="0:Temperature:°C"`.*
 
 ### 4. Show HMITile
 To see your first HMITile, do a hard refresh of your browser (**Ctrl + F5**) to clear the cache, then open it from 
-the Domoticz **Custom** menu under the submenu **MyHMITile**.
+the Domoticz **Custom** menu under the submenu **MyFirstTile**.
 
 ---
 
