@@ -4,7 +4,7 @@
 Download the [repository](https://github.com/rwbl/hmitiles-for-domoticz) from GitHub.
 
 ## Install
-From the repository `hmitiles-for-domoticz_main.zip`, unpack the folders `blueprints` and `core` to the Domoticz folder `www/templates`.
+From the repository `hmitiles-for-domoticz-main.zip`, unpack the folders `blueprints` and `core` to the Domoticz folder `www/templates`.
 
 Folder structure (example Ubuntu):
 ```

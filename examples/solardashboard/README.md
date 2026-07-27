@@ -1,13 +1,11 @@
-# Blueprint Solar Info Dashboard
+# Example Solar Dashboard
 
 
 ---
 
 ## Screenshots
 
-![Solar Info Dashboard Live Data](solarinfodashboard-livedata.png)
-![Solar Info Dashboard Trends](solarinfodashboard-trends.png)
-
+![Solar Dashboard Live Data](solardashboard.png)
 
 ---
 

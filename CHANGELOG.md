@@ -4,7 +4,7 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 
 ---
 
-## 2.2.0 - 2026-07-27 (BETA)
+## 2.2.0 - 2026-07-27
 
 ### Blueprints
 
