@@ -1,7 +1,7 @@
 /**
  * @file hmitiles.js
  * @brief Core JavaScript engine for the HMITiles-for-Domoticz framework.
- * @date 2026-07-22
+ * @date 2026-07-27
  * @author Robert W.B. Linn (c) 2026 MIT
  * @description 
  * Manages industrial-inspired tile updates, trend lines, network polling, 
@@ -15,11 +15,11 @@
 // Set to true to see logs in console, false to hide
 export const DEBUG = false; 
 
-// Domoticz server URL with two options
-// Option 1: Domoticz server (f.e. running on Windows 11 or Raspberry Pi 5 OS Trixie)
-const DOMOTICZ_URL = window.parent && window.parent.$ ? window.parent.$.domoticzurl : window.location.origin;
-// Option 2: Python simulator (folder tools)
-// const DOMOTICZ_URL ="http://127.0.0.1:8080";
+// Domoticz server URL (f.e. running on Windows 11, Ubuntu or Raspberry Pi 5 OS Trixie)
+const DOMOTICZ_URL = (window.parent && window.parent.$ && window.parent.$.domoticzurl) 
+    ? window.parent.$.domoticzurl 
+    : window.location.origin;
+if (DEBUG) console.log(">>>", DOMOTICZ_URL, DEBUG);
 
 // Set refresh rate high to see immediate response on user interaction or data updates
 const REFRESH_RATE = 5000;
@@ -59,6 +59,7 @@ async function fetchDomoticzData() {
     try {
 		const commandUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=getdevices&filter=all`;
 		if (DEBUG) console.log("[fetchDomoticzData]", commandUrl);
+		console.log("[fetchDomoticzData]", commandUrl);
 		
         const response = await fetch(commandUrl);
         if (!response.ok) throw new Error(`[fetchDomoticzData][E] Network response: ${response.status}`);
@@ -834,28 +835,34 @@ window.goToHMITilesIndex = goToHMITilesIndex;
 // =========================================================================
 
 /**
- * Global initialization handler to bind control listeners and kickstart background network polling cycles.
+ * Global initialization handler to bind control listeners and 
+ * kickstart background network polling cycles.
  * @listens DOMContentLoaded
  */
-window.addEventListener('DOMContentLoaded', () => {
-
-	// Sets up the permanent background delegated event hooks
+function initHMITiles() {
+    // Call Controls
     bindControls(); 
     	
-	// Get the domoticz device data for all devices
+    // Get Domoticz data
     fetchDomoticzData();
 
-	// And do this every 60 secs (or any other value > 60 secs)
+    // Start Intervall (REFRESH_RATE Millisekunden)
     setInterval(fetchDomoticzData, REFRESH_RATE);
 
-	// =========================================================================
+    // =========================================================================
     // SYSTEM LOGGING INITIALIZATION ENGINE (SINGLE TIMING LOOP)
     // =========================================================================
-	const logTile = document.querySelector('[data-type="logmonitor"]');
+    const logTile = document.querySelector('[data-type="logmonitor"]');
     if (logTile) {
         fetchDomoticzServerLogs();
-        setInterval(fetchDomoticzServerLogs, 5000); // Simple, low-overhead 5s polling cycle (5000)
-    }	
-	
-});
+        setInterval(fetchDomoticzServerLogs, 5000); 
+    }
+}
+
+// Check if DOM already loaded as required for type="module"
+if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', initHMITiles);
+} else {
+    initHMITiles(); // If already loaded (mainly Ubuntu/Linux), call immediate!
+}
 
