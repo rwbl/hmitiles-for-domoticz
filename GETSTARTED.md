@@ -61,3 +61,26 @@ Update the attribute `data-device-idx` with your specific device `idx` inside yo
 To see your first HMITile, do a hard refresh of your browser (**Ctrl + F5**) to clear the cache, then open it from 
 the Domoticz **Custom** menu under the submenu **MyHMITile**.
 
+---
+
+## Configuration Settings
+
+To fine-tune the background polling mechanism, configure the variables at the top of your `hmitiles.js` file.
+
+### Setting the Polling Interval (`REFRESH_RATE`)
+JavaScript timing loops (`setInterval`) expect intervals to be declared explicitly in **milliseconds**. 
+
+Setting this too low will overload your web server, while setting it using seconds (e.g., `60`) will freeze your browser tab by hammering the network every 60 milliseconds.
+
+```javascript
+// =========================================================================
+// CORE CONFIGURATION CONSTANTS
+// =========================================================================
+
+// Background poll rate for device updates. Must be in MILLISECONDS.
+// 10000 = 10 seconds | 30000 = 30 seconds | 60000 = 1 minute
+const REFRESH_RATE = 60000; 
+```
+
+---
+
