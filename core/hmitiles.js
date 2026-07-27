@@ -19,7 +19,7 @@ export const DEBUG = false;
 const DOMOTICZ_URL = (window.parent && window.parent.$ && window.parent.$.domoticzurl) 
     ? window.parent.$.domoticzurl 
     : window.location.origin;
-if (DEBUG) console.log(">>>", DOMOTICZ_URL, DEBUG);
+if (DEBUG) console.log("[HMITILES]", DOMOTICZ_URL, DEBUG);
 
 // Set refresh rate high to see immediate response on user interaction or data updates
 const REFRESH_RATE = 5000;
@@ -60,7 +60,6 @@ async function fetchDomoticzData() {
     try {
 		const commandUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=getdevices&filter=all`;
 		if (DEBUG) console.log("[fetchDomoticzData]", commandUrl);
-		console.log("[fetchDomoticzData]", commandUrl);
 		
         const response = await fetch(commandUrl);
         if (!response.ok) throw new Error(`[fetchDomoticzData][E] Network response: ${response.status}`);
