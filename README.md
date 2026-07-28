@@ -20,7 +20,7 @@ The core focus is clarity, consistency, and situational awareness—not visual s
 
 
 #### Example
-![Solar Info Dashboard Live Data](examples/solardashboard/solardashboard.png)
+![Solar Dashboard](examples/solardashboard/solardashboard.png)
 
 ---
 
@@ -51,7 +51,7 @@ This framework bypasses typical flashy smart-home trends to strictly mirror mode
 #### Blueprints
 * **`workbench`**: An interactive testing layout panel used for mocking up new modular components, validating styles, and debugging device index assignments.
 * **`values`**: A basic entry-level walkthrough for establishing file pathways, creating your first tile wrapper, and establishing server handshakes.
-* many more...
+* more...
 #### Examples
 * **`solardashboard`**: A dense four-column process view detailing live energy flows across production, household consumption, grid balance, and battery bank state-of-charge.
 * more...
@@ -75,21 +75,27 @@ HMITiles-for-Domoticz/
 │   └── hmitiles.js                 	# Shared UI logic (bulk polling loop, hook dispatcher)
 │   └── hmitiles-preparser.js           # Pre-parse Domoticz specific devices data into HMITiles standard format used by the processor
 │   └── hmitiles-processor.js           # Process a HMI tile based on its data-type
-├── examples/                     		# Custom page example applications
-│   ├── solardashboard/      			# Solar Dashboard with live data & trends
-│   └── ...								# More application examples
 ├── blueprints/                     	# Custom page usage examples & tutorials
+│   ├── myfirsttile/      		        # Simple Tile example to get started.
+│   │   ├── index.html              	# Standalone workbench interface markup
+│   │   ├── MyFirstTile.html     	    # Domoticz custom page tab navigation file
+│   │   ├── README.md               	# Detailed usage instructions
+│   │   └── myfirsttile.png  	        # Layout preview graphic
+│   ├── values/ 	                    # Example using value tile
+│   │   ├── Values.html     	        # Domoticz custom page tab navigation file
+│   │   ├── values/         	        # Core application directory
+│   │   └── index.html              	# Main blueprint page structure
 │   ├── workbench/      		        # Tile design test bed folder
 │   │   ├── index.html              	# Standalone workbench interface markup
 │   │   ├── Workbench.html  	        # Domoticz custom page wrapper definition
 │   │   ├── README.md               	# Detailed usage instructions
 │   │   └── workbench.png  	            # Layout preview graphic
-│   ├── values/ 	                    # Example using value tile
-│   │   ├── Values.html     	        # Domoticz custom page tab navigation file
-│   │   ├── values/         	        # Core application directory
-│   │   └── index.html              	# Main blueprint page structure
 │   └── ...								# More blueprints tiles & pages
+├── examples/                     		# Custom page example applications
+│   ├── solardashboard/      			# Solar Dashboard with live data & trends
+│   └── ...								# More application examples
 ├── LICENSE                         	# MIT open-source license
+├── GETSTARTED.md                       # Step-by-step guideline on how to create your first simple tile showing the value of a Domoticz device
 └── README.md                       	# Documentation entry point manual
 ```
 
@@ -99,11 +105,11 @@ HMITiles-for-Domoticz/
 
 Follow these steps to deploy and run the `SingleTilePage` blueprint example directly inside your local Domoticz installation.
 
-1. **Deploy Core Framework**: Copy the files `hmitiles.css` and `hmitiles.js` from the `core/` repository folder into your Domoticz `/www/templates/` directory.
-2. **Select the Blueprint**: Navigate into the repository folder `blueprints/values/`.
-3. **Deploy Custom Page Wrapper**: Copy the file `Values.html` into your Domoticz `/www/templates/` directory.
-4. **Deploy Application Subfolder**: Copy the entire subfolder `values/` into your Domoticz `/www/templates/` directory.
-5. **Launch Interface**: Open your Domoticz Web UI -> select the **Custom** tab -> click **Values**. The custom dashboard view `Values` will load immediately.
+1. **Deploy Core Framework**: Copy all files from the `core/` repository folder into your Domoticz `/www/templates/` directory.
+2. **Select the Blueprint**: Navigate into the repository folder `blueprints/myfirsttile/`.
+3. **Deploy Custom Page Wrapper**: Copy the file `MyFirstTile.html` into your Domoticz `/www/templates/` directory.
+4. **Deploy Application Subfolder**: Copy the entire subfolder `myfirsttile/` into your Domoticz `/www/templates/` directory.
+5. **Launch Interface**: Open your Domoticz Web UI -> select the **Custom** tab -> click **MyFirstTile**. The custom dashboard view `MyFirstTile` will load immediately.
 
 See also [GETSTARTED.md](./GETSTARTED.md).
 
@@ -112,9 +118,12 @@ Your Domoticz `/www/templates/` server folder path must reflect this exact layou
 ```
 domoticz/www/templates/
 ├── hmitiles.css            # Framework shared styles
+├── hmitiles-dark.css       # Framework shared styles dark theme
 ├── hmitiles.js             # Core polling and hook loop engine
-├── Values.html     		# Domoticz tab navigation wrapper file
-└── values/         		# Dedicated application folder assets
+├── hmitiles-preparser.js   # Pre parses Domoticz devices to be used by the processor
+├── hmitiles-processor.js   # Process data-types to be displayed as HMITiles
+├── MyFirstTile.html     	# Domoticz tab navigation wrapper file
+└── blueprints/myfirsttile/ # Dedicated application folder assets
 	└── index.html          # Main HTML structure and page hook scripts
 ```
 ---
