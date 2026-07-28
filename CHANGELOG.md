@@ -8,24 +8,6 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 
 ### Blueprints
 
-- **MyFirstTile**
-	- New example showing a simple tile with a single device using `data-type="value"` (used by `GETSTARTED.md`).
-- **Stock**
-	- New data-type `stock` to display for a single device its current value, 24hr last, 24hr change, 24hr change percentage.
-
-### Core
-
-- **hmitiles.js**
-	- Fixed race condition `addEventListener` when using `module`.
-- **Documenation**
-	- New document `GETSTARTED.md`.
-	
----
-
-## 2.1.0 - 2026-07-25
-
-### Blueprints
-
 - **Alarm**
 	- Added critical, high, and medium warning symbols (! and ▲).
 	- Added custom left border colors for alert levels (critical, high, medium).
@@ -39,10 +21,14 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 	- Fixed input handling whilst the data gets refreshed.
 - **Logmonitor**
 	- Added a new full-page log tile template.
+- **MyFirstTile**
+	- New example showing a simple tile with a single device using `data-type="value"` (used by `GETSTARTED.md`).
 - **Progressbar**
 	- Added attributes to set min, max, step and scale (use 1 to show a simple scale with min | mid | max).
 - **Setpoint/SetpointProcessValue**
 	- Added attributes to set min, max.
+- **Stock**
+	- New data-type `stock` to display for a single device its current value, 24hr last, 24hr change, 24hr change percentage.
 - **Values**
 	- Added a `multiple values` option by passing semicolon-separated indices (e.g., `data-device-idx="idx1;idx2;idx3"`).
 	- Fixed state tracking and value updates for nested inner-tile device definitions.
@@ -51,6 +37,7 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 
 - **hmitiles.js**
 	- Fixed several core initialization bugs.
+	- Fixed race condition `addEventListener` when using `module`.
 - **hmitiles-preparser.js**
 	- Split data parsing into dedicated functions by Type, SubType, and SwitchType to improve code maintenance.
 	- Refactored the core normalization and feature extraction pipeline.
@@ -69,6 +56,8 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 	- Fixed text contrast and specificity bugs in dark ambient mode.
 - **HTML Attributes**
 	- Added new tracking configuration attributes for tiles: data-device-idx, data-labels, and data-unit.
+- **Documentation**
+	- New document `GETSTARTED.md`.
 
 ### Examples
 
