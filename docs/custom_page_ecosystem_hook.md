@@ -1,10 +1,10 @@
-# HMITiles for Domoticz Guide: Creating HMI Custom Pages Using the Ecosystem Hook
-
+# Creating HMI Custom Pages Using the Ecosystem Hook
+_HMITiles for Domoticz Guide_
 Follow this blueprint to integrate advanced telemetry tiles (such as values, virtual text timestamps, and historical trend lines) into your custom dashboards. This guide ensures your pages comply with high-performance HMI design rules and sync perfectly with the core `hmitiles.js` engine without creating conflicting network loops.
 
 ---
 
-## ⚠️ Architectural Core Rule: No Separate Loops
+## Architectural Core Rule: No Separate Loops
 
 **DO NOT** create a separate `window.addEventListener('DOMContentLoaded', ...)` block or secondary polling routines (`setInterval`) inside your custom pages.
 
