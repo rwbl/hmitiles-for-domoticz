@@ -14,7 +14,6 @@
         { "title": "Stock", "file": "blueprints/stock/index.html" },
         { "title": "Switches", "file": "blueprints/switches/index.html" },
         { "title": "Theme Dark (experimental)", "file": "blueprints/themedark/index.html" },
-        { "title": "Theme Normal", "file": "blueprints/themenormal/index.html" },
         { "title": "Values", "file": "blueprints/values/index.html" },
         { "title": "Values Multi", "file": "blueprints/valuesmulti/index.html" }
       ]
