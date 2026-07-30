@@ -18,28 +18,28 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 ### Blueprints
 
 - **Alarm**
-	- Added critical, high, and medium warning symbols (! and ▲).
-	- Added custom left border colors for alert levels (critical, high, medium).
+	- New critical, high, and medium warning symbols (! and ▲).
+	- New custom left border colors for alert levels (critical, high, medium).
 	- Removed tile background alarm colors to reduce visual noise (now locks to standard theme background).
 - **Dimmer/Slider**
-	- Added attributes to set min, max, step and scale (use 1 to show a simple scale with min | mid | max).
+	- New attributes to set min, max, step and scale (use 1 to show a simple scale with min | mid | max).
 - **Gauge**
-	- Added gauge90needle and compass (Type Wind) tiles.
+	- New gauge90needle and compass (Type Wind) tiles.
 - **Input**
-	- Added color support. Color saved as HEX value #RRGGBB.
+	- New color support. Color saved as HEX value #RRGGBB.
 	- Fixed input handling whilst the data gets refreshed.
 - **Logmonitor**
-	- Added a new full-page log tile template.
+	- New a new full-page log tile template.
 - **MyFirstTile**
 	- New example showing a simple tile with a single device using `data-type="value"` (used by `GETSTARTED.md`).
 - **Progressbar**
-	- Added attributes to set min, max, step and scale (use 1 to show a simple scale with min | mid | max).
+	- New attributes to set min, max, step and scale (use 1 to show a simple scale with min | mid | max).
 - **Setpoint/SetpointProcessValue**
-	- Added attributes to set min, max.
+	- New attributes to set min, max.
 - **Stock**
 	- New data-type `stock` to display for a single device its current value, 24hr last, 24hr change, 24hr change percentage.
 - **Values**
-	- Added a `multiple values` option by passing semicolon-separated indices (e.g., `data-device-idx="idx1;idx2;idx3"`).
+	- New `multiple values` option by passing semicolon-separated indices (e.g., `data-device-idx="idx1;idx2;idx3"`).
 	- Fixed state tracking and value updates for nested inner-tile device definitions.
 
 ### Core
@@ -48,30 +48,30 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 	- Fixed several core initialization bugs.
 	- Fixed race condition `addEventListener` when using `module`.
 - **hmitiles-preparser.js**
-	- Split data parsing into dedicated functions by Type, SubType, and SwitchType to improve code maintenance.
+	- New split data parsing into dedicated functions by Type, SubType, and SwitchType to improve code maintenance.
 	- Refactored the core normalization and feature extraction pipeline.
 	- Removed function getUnit. Define the unit in HTML tile attribute `data-unit="unit"`.
 	- Note: Not all Domoticz device types are fully parsed yet.
 - **hmitiles-processor.js**
-	- Added a fast registry lookup map (deviceRegistry) and a global runtime override hook.
+	- New fast registry lookup map (deviceRegistry) and a global runtime override hook.
 	- Migrated all device asset data access over to the new registry map.
 	- Moved the tile layout processing engine from `hmitiles.js` into this file to clean up core maintenance.
 - **hmitiles.css**
-	- Added layout styles for the new hmi tiles, like compass, gauge.
-	- Added mobile device support.
+	- New layout styles for the new hmi tiles, like compass, gauge.
+	- New mobile device support.
 	- Fixed several visual alignment bugs.
 - **hmitiles-dark.css**
-	- Added dark-theme styling support for the new compass and gauge elements.
+	- New dark-theme styling support for the new compass and gauge elements.
 	- Fixed text contrast and specificity bugs in dark ambient mode.
 - **HTML Attributes**
-	- Added new tracking configuration attributes for tiles: data-device-idx, data-labels, and data-unit.
+	- New tracking configuration attributes for tiles: data-device-idx, data-labels, and data-unit.
 - **Documentation**
 	- New document `GETSTARTED.md`.
 
 ### Examples
 
 - **RailYard**
-	- Added the RailYard client (a standalone train and layout control dashboard built for testing and demonstration).
+	- New RailYard client (a standalone train and layout control dashboard built for testing and demonstration).
 
 ---
 
