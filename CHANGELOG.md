@@ -8,6 +8,8 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 
 ### Blueprints
 
+- **Devices**
+	- New modular component tile layout with optional name-filtering (`data-filter`) and custom structural height sizing (`data-max-height`).
 - **Roomplan**
 	- New full custom page build from a room plan. Uses the room plan idx and sort order to display all defined devices.
 

@@ -23,6 +23,7 @@ import { parseDigits, parseFloats, decodeBase64, replaceString, getPercentChange
 import { setTileValue, getHistorySensor, preParseDeviceData, processTileStateAndAlarm } from './hmitiles-preparser.js';
 // UI functions
 import { updateCommunicationsStatus, updateTile, fetchAndRenderChart, fetchDayLog, DEBUG } from './hmitiles.js';
+import { buildDevicesList } from './hmitiles-devices.js'; 
 
 // =========================================================================
 // PROCESSDEVICES
@@ -125,19 +126,27 @@ export function processDevices(devices) {
         if (idxArray.length === 1) {
 
             // SINGLE DEVICE MODE: Use the true, unmodified native Domoticz object
-            device = deviceRegistry[idxArray[0]];
-			// Lifecycle restoration guard: Snapshot the true raw data string BEFORE mutations!
-			// Snapshot the true raw data string BEFORE the preparser mutates it!
-			rawData = String(device.Data || "").trim();
-			rawValue = device.Data; 
-			// Data shown in the badge
-			badgeText = device.Data || "";
+			if (idxArray[0] > 0) {
+				device = deviceRegistry[idxArray[0]];
+				// Lifecycle restoration guard: Snapshot the true raw data string BEFORE mutations!
+				// Snapshot the true raw data string BEFORE the preparser mutates it!
+				rawData = String(device.Data || "").trim();
+				rawValue = device.Data; 
+				// Data shown in the badge
+				badgeText = device.Data || "";
 
-			// Run data preparation normalization step safely
-			// Every tile instance receives a clean, un-mutated input!
-			// The output is a modified device.Data property depending device type and HTML defintion
-			preParseDeviceData(device, tileElement);
-			
+				// Run data preparation normalization step safely
+				// Every tile instance receives a clean, un-mutated input!
+				// The output is a modified device.Data property depending device type and HTML defintion
+				preParseDeviceData(device, tileElement);
+			} else {
+				// Build the virtual device object strictly for multi-device matching
+				device = {
+					idx: 0,		
+					Data: "",	
+					LastUpdate: ""
+				};			
+			}
         } else {
 
             // MULTI-DEVICE MODE: Construct a unified virtual CSV payload object
@@ -974,6 +983,32 @@ export function processDevices(devices) {
 
 				badgeText = device.tileState;
 				valueText = `${device.tileWindBearing} ${device.tileWindDirection} ${device.tileValue} ${device.tileUnit} ${device.tileWindTemp}`;
+				rawValue = 0;
+				break;
+			}
+
+			// =========================================================================
+			// SAFETY FALLBACK: UNKNOWN OR UNHANDLED TILE TYPES
+			// =========================================================================
+			case "devices": {
+				const gridContainer = tileElement.querySelector('.hmi-value-grid');
+				if (!gridContainer) break;
+
+				// Read custom layout attributes directly from the markup block
+				const maxHeight = tileElement.getAttribute('data-max-height');
+				const filterKeyword = tileElement.getAttribute('data-filter');
+
+				// Apply the custom max-height property to the scrolling frame if provided
+				if (maxHeight) {
+					gridContainer.style.maxHeight = maxHeight;
+				}
+
+				// Call the updated builder module, passing the optional keyword filter
+				if (typeof buildDevicesList === "function") {
+					const rowsHtml = await buildDevicesList(filterKeyword);
+					gridContainer.innerHTML = rowsHtml;
+					valueText = gridContainer.innerHTML;
+				}
 				rawValue = 0;
 				break;
 			}

@@ -1,7 +1,7 @@
 /* ==========================================================================
  File:		hmitiles.css
  Brief:		Clean, industry-inspired layout rules for smart home HMI panels.
- Date: 		2026-07-25
+ Date: 		2026-07-30
  Author: 	Robert W.B. Linn (c) 2026 MIT
  Content:
 			-HMI PALETTE LIGHT
@@ -193,7 +193,7 @@ hr.hmi-divider-short {
 
 
 /* =========================================================================
-   HIGH-PERFORMANCE RESPONSIVE BREAKPOINTS (ISA-101 Industry Standards)
+   HIGH-PERFORMANCE RESPONSIVE BREAKPOINTS (HMI Industry Standards)
    ========================================================================= */
 
 /* Tablet Optimization (Typically screens under 1024px wide) */
@@ -1471,6 +1471,56 @@ hr.hmi-divider-short {
     fill: #ffffff !important;       /* Solid crisp white provides excellent contrasting weight balance */
     stroke: #777777 !important;
     stroke-width: 0.75 !important;
+}
+
+/* ==========================================================================
+   DEVICES-LIST
+   ========================================================================== */
+
+/* Constrain the scrolling box segment safely inside standard layout grids */
+.hmi-device-scroll-container {
+    height: 320px;            /* Gives it a crisp, fixed baseline size matching other cards */
+    overflow-y: scroll;       /* Keeps scroll tracking elements permanently locked in view */
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+/* ISA-101 Clean data row elements */
+.hmi-device-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    font-size: 0.9rem;
+    line-height: 1.2;
+}
+
+.hmi-device-row:nth-child(even) {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.hmi-device-name {
+    font-weight: 600;
+    color: #333333;
+    text-align: left;
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 15px;
+}
+
+.hmi-device-data {
+    color: #1a73e8;
+    font-weight: 500;
+    text-align: right;
+    flex: 0 0 auto;
+    max-width: 60%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* ==========================================================================

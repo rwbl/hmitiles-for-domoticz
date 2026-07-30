@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+Brief: 			HMITiles Blueprint Roomplan Devices
+Data-Type:		Not required
+Data-Class:		roomplan
+Date: 			2026-07-29
+Author: 		Robert W.B. Linn (c) 2026 MIT
+Description:	List all devices ny name and data.
+Attributes		For the main tag, set the mandatory attributes
+				class="hmi-panel"			
+				data-class="devices" 		
+Order:			The order of the devices is by name.
+Tile Header:	The device name is set as the tile header (top left).
+Notes:			In progress to support all device types.
+				If a device type is not found, the default for the data-type "value" is applied.
+				See hmitiles-roomplan.js and hmitiles-roomplan.json for details.
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HMITiles Devices</title>
+    <!-- Core HMITiles Framework Assets -->
+    <link rel="stylesheet" href="/templates/core/hmitiles.css">
+	<!-- Link backward to the HMI tile engine -->
+	<!-- Ensure type="module" is declared so the browser resolves the import statement -->
+	<script type="module" src="/templates/core/hmitiles.js"></script>
+</head>
+<body>
+
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+				<h2>HMITiles Devices</h2>
+			</div>
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
+			</div>
+		</div>
+	</header>
+
+	<main class="hmi-panel"> 
+
+		<!-- The Devices Inventory List Component Tile -->
+		<!-- Fully decoupled, modular tile structure ready for the processor grid -->
+		<!-- Example 1: Standard inventory tile with a custom max-height -->
+		<div class="hmi-pack-tile" 
+			data-type="devices"
+			data-device-idx="0"
+			data-max-height="250px">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Devices Inventory</div>
+			</div>
+			<!-- The scrolling box acts as the value layout grid segment -->
+			<div class="hmi-value-grid hmi-device-scroll-container">
+				<div class="hmi-loading">Querying Domoticz devices...</div>
+			</div>
+		</div>
+
+		<!-- Example 2: Highly specialized card filtering for Ampere/Power meters only -->
+		<div class="hmi-pack-tile" 
+			data-device-idx="0" 
+			data-type="devices" 
+			data-filter="Ampere" 
+			data-max-height="250px">
+			<div class="hmi-tile-header">
+				<div class="hmi-pack-label">Devices Inventory - Filter Ampere</div>
+			</div>
+			<div class="hmi-value-grid hmi-device-scroll-container">
+				<div class="hmi-loading">Querying power sensors...</div>
+			</div>
+		</div>
+
+	</main>
+</body>
+</html>

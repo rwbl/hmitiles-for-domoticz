@@ -1,7 +1,7 @@
 /**
  * @file hmitiles.js
  * @brief Core JavaScript engine for the HMITiles-for-Domoticz framework.
- * @date 2026-07-27
+ * @date 2026-07-30
  * @author Robert W.B. Linn (c) 2026 MIT
  * @description 
  * Manages industrial-inspired tile updates, trend lines, network polling, 
@@ -30,6 +30,7 @@ const REFRESH_RATE = 5000;
 
 // Imports from the preparser: conversion, domoticz helpers
 import { buildRoomplanLayout } from './hmitiles-roomplan.js';
+
 import { parseDigits, parseFloats, decodeBase64, replaceString, getPercentChange } from './hmitiles-preparser.js';
 import { setTileValue, getHistorySensor, preParseDeviceData } from './hmitiles-preparser.js';
 import { processDevices } from './hmitiles-processor.js';
@@ -883,6 +884,7 @@ window.goToHMITilesIndex = goToHMITilesIndex;
  * @listens DOMContentLoaded
  */
 async function initHMITiles() {
+	
 	// Check if this page requires dynamic roomplan layout creation first
     const roomplanPanel = document.querySelector('[data-class="roomplan"]');
     if (roomplanPanel) {
@@ -890,7 +892,8 @@ async function initHMITiles() {
         // Now fully defined via the import statement above!
         await buildRoomplanLayout(roomplanPanel);
     }	
-    // Call Controls
+	
+	// Call Controls
     bindControls(); 
     	
     // Get Domoticz data
