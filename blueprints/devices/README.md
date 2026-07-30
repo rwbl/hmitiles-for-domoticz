@@ -21,7 +21,7 @@ To insert an inventory overview list anywhere on your dashboard, simply configur
 | Attribute | Expected Value | Description |
 | :--- | :--- | :--- |
 | `data-device-idx` | `"0"` | Set to `0` to signal to the preprocessor engine that this tile handles system-wide configurations rather than a singular hardware component. |
-| `data-type` | `"devices"` | Tells the core processor engine to initialize the synchronized device list pipeline inside the card grid. |
+| `data-type` | `"devices"` | Tells the core processor engine to initialize the synchronized device list pipeline inside the tile grid. |
 | `data-max-height` | `"NNNpx"` *(Optional)* | Enforces a custom physical layout boundary limit on the internal scrollable container frame directly from HTML. |
 | `data-filter` | `"Text"` *(Optional)* | Activates a case-insensitive string filter matching against the device name (`device.Name`) to narrow down the visible results. |
 
@@ -34,8 +34,8 @@ Instead of manually mapping status layouts for every sensor or logger across hea
 2. **Payload Fetch Request:** It triggers a background asynchronous network call to pull the complete list of system assets:  
    `http://IP:PORT/json.htm?type=command&param=getdevices&used=true`
 3. **Array Parsing & Filtering:** It loops over the returned data, runs your optional case-insensitive text string parameter search against `device.Name`, and excludes non-matching records in memory.
-4. **ISA-101 Text Alignment Formatting:** It converts the remaining datasets into strict high-density listing lines, pairing left-aligned bold device names with right-aligned blue process telemetry values.
-5. **Frame Allocation Transformation:** It injects the HTML layout strings cleanly directly inside the card container's `.hmi-value-grid` and enforces a locked track vertical scroll viewport (`overflow-y: scroll`) to prevent layout horizontal shifts when values change.
+4. **Text Alignment Formatting:** It converts the remaining datasets into strict high-density listing lines, pairing left-aligned bold device names with right-aligned blue process telemetry values.
+5. **Frame Allocation Transformation:** It injects the HTML layout strings cleanly directly inside the tile container's `.hmi-value-grid` and enforces a locked track vertical scroll viewport (`overflow-y: scroll`) to prevent layout horizontal shifts when values change.
 
 ---
 
@@ -62,7 +62,7 @@ To deploy this high-density device inventory ledger alongside your regular gauge
 You can pass custom attributes to isolate specific smart home hardware types or restrict screen space usages based on the physical dashboard requirements.
 
 ### Example 1: Specialized Sensor Filtering
-This card isolates and lists only devices containing the word "Ampere" in their name, constrained to a maximum vertical height footprint of 250 pixels:
+This tile isolates and lists only devices containing the word "Ampere" in their name, constrained to a maximum vertical height footprint of 250 pixels:
 ```html
 <div class="hmi-pack-tile" data-device-idx="0" data-type="devices" data-filter="Ampere" data-max-height="250px">
     <div class="hmi-tile-header">
@@ -75,7 +75,7 @@ This card isolates and lists only devices containing the word "Ampere" in their 
 ```
 
 ### Example 2: General System Overview
-A broader card configuration that lists all active devices with a generous, deep scroll area footprint:
+A broader tile configuration that lists all active devices with a generous, deep scroll area footprint:
 ```html
 <div class="hmi-pack-tile" data-device-idx="0" data-type="devices" data-max-height="450px">
     <div class="hmi-tile-header">
