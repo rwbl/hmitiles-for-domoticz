@@ -129,6 +129,18 @@ function parseSingleValue(device) {
 }
 
 /* ================================
+ * UTILITY GENERIC FUNCTIONS
+ * ================================ */
+
+// getPercentageChange
+// console.log(getPercentChange(100, 150)); //  50 (50% increase)
+// console.log(getPercentChange(100, 75));  // -25 (25% decrease)
+export function getPercentChange(oldVal, newVal) {
+  if (oldVal === 0) return newVal === 0 ? 0 : Infinity; 
+  return ((newVal - oldVal) / oldVal) * 100;
+}
+
+/* ================================
  * UTILITY DOMOTICS FUNCTIONS
  * ================================ */
 
@@ -326,13 +338,11 @@ function updateDashboardTimestamp() {
 
 /**
  * Main orchestration function for device preprocessing and payload standardization.
- * 
- * @param {Object} device - The shared Domoticz device data reference object.
- * @param {HTMLElement} tileElement - The active target HTML DOM card chassis component.
- */
-/**
  * Master Pre-Parser Entry Point.
  * Standardizes raw Domoticz values and executes real-time alarm thresholds.
+ * @param {Object} device - The shared Domoticz device data reference object.
+ * @param {HTMLElement} tileElement - The active target HTML DOM card chassis component.
+ * @returns Device data as a standard semicolon row to feed columns perfectly.
  */
 export function preParseDeviceData(device, tileElement) {
     if (!device || !device.Data || !tileElement) return;
@@ -452,50 +462,66 @@ function preParseGeneral(device, tileElement) {
 
         case "Barometer":
 			return `${device.Barometer};${device.ForecastStr}`;
+
 		case "Counter Incremental":
 			return `${parseFloats(device.Counter)};${parseFloats(device.CounterToday)}`;
+
 		case "Custom Sensor":
 			// Converts "250 unit" -> "250"
 			return parseSingleValue(device);
+
 		case "Distance":
 			// Converts "250 cm" -> "250"
 			return parseSingleValue(device);
+
         case "kWh": {
             // Wrap the strings in an object so the function can assign properties safely!
             const cleanToday = parseSingleValue({ Data: device.CounterToday || "0" });
             const cleanUsage = parseSingleValue({ Data: device.Usage || "0" });
             return `${cleanToday};${cleanUsage}`;
         }
+
 		case "Leaf Wetness":
 			// Converts "250" -> "250"
 			return parseSingleValue(device);
+
 		case "Managed Counter":
 			return `${parseFloats(device.Counter)}`;
+
 		case "Percentage":
 			return `${parseSingleValue(device)}`;
+
 		case "Pressure":
 			// Converts "250 Bar" -> "250"
 			return parseSingleValue(device);
+
 		case "Soil Moisture":
 			// Converts "250 cb" -> "250"
 			return parseSingleValue(device);
+
 		case "Solar Radiation":
 			// Converts "250 Watt/m2" -> "250"
 			return parseSingleValue(device);
+
 		case "Sound Level":
 			// Converts "65 dB" -> "65"
 			return parseSingleValue(device);
+
 		case "Text":
 			return device.Data;
+
 		case "Visibility":
 			// Converts "10.3 km" -> "10.3"
 			return parseSingleValue(device);
+
 		case "Voltage":
 			// Converts "250 V" -> "250"
 			return parseSingleValue(device);
+
 		case "Waterflow":
 			// Converts "0 l/min" -> "0"
 			return parseSingleValue(device);
+
         // Catch-all fallback for all single-value General devices (Distance, Pressure, Sound, etc.)
         default:
             return parseSingleValue(device);

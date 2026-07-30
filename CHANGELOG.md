@@ -4,6 +4,13 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 
 ---
 
+## 2.3.0 - 2026-07-30 (BETA)
+
+### Blueprints
+
+- **Roomplan**
+	- New full custom page build from a room plan. Uses the room plan idx and sort order to display all defined devices.
+
 ## 2.2.0 - 2026-07-27
 
 ### Blueprints

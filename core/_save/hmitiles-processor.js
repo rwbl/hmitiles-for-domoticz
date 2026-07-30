@@ -1,7 +1,7 @@
 /**
  * @file hmitiles-preparser.js
  * @brief Process devices and assign values to the hmitiles.
- * @date 2026-07-24
+ * @date 2026-07-21
  * @author Robert W.B. Linn (c) 2026 MIT
  * @description
  * This core engine parses, formats, and transforms telemetry device arrays received 
@@ -19,10 +19,10 @@
 // =========================================================================
 
 // Helper functions
-import { parseDigits, parseFloats, decodeBase64, replaceString, getPercentChange } from './hmitiles-preparser.js';
-import { setTileValue, getHistorySensor, preParseDeviceData, processTileStateAndAlarm } from './hmitiles-preparser.js';
+import { parseDigits, parseFloats, decodeBase64, replaceString } from './hmitiles-preparser.js';
+import { setTileValue, getUnit, getHistorySensor, preParseDeviceData } from './hmitiles-preparser.js';
 // UI functions
-import { updateCommunicationsStatus, updateTile, fetchAndRenderChart, fetchDayLog, DEBUG } from './hmitiles.js';
+import { updateCommunicationsStatus, updateTile, fetchAndRenderChart, DEBUG } from './hmitiles.js';
 
 // =========================================================================
 // PROCESSDEVICES
@@ -42,8 +42,7 @@ export function processDevices(devices) {
     // FAST MEMORY REGISTRY MATRIX MAP & GLOBAL OVERRIDE HOOK
     // =========================================================================
     const deviceRegistry = {};
-
-    // Loop over all devices for the current domoticz user
+    
     devices.forEach(device => {
         // Enforce broad fallbacks for property format safety
         const currentIdx = device.idx || device.Idx;
@@ -56,8 +55,7 @@ export function processDevices(devices) {
         if (typeof DEBUG !== 'undefined' && DEBUG) {
             console.log("[processDevices] Registry Map caching:", dictionaryKey, device.Data);
         }
-		
-		// Hook
+
         let hookRawValue = device.Data; 
         let hookDisplayStatus = device.Data || "";
 
@@ -81,9 +79,7 @@ export function processDevices(devices) {
 
     let loopCounterIndex = 0;
 
-	// Loop async over all tiles defined in HTML.
-	// Async is required because some tiles use await inside this loop.
-	tiles.forEach(async (tileElement) => {
+    tiles.forEach(tileElement => {
 		// Using LET inside the sub-loop means they can be re-assigned freely by 
 		// the components, but they are guaranteed to reset perfectly back to the 
 		// original Domoticz string whenever moving to a duplicate twin tile!
@@ -95,6 +91,8 @@ export function processDevices(devices) {
 		let valueText = rawValue;
 		// Text shown in the data text box 
 		let dataText = "";
+		// Text for the device unit
+		let unitText = "";
 
 		// Reused logic variables once for the entire scope
 		let labelConfig = "";
@@ -103,7 +101,7 @@ export function processDevices(devices) {
 		let columns = [];
 
         // Read the mandatory tile type attribute (tag)
-        let tileType = tileElement.getAttribute('data-type') || "standard";
+        const tileType = tileElement.getAttribute('data-type') || "standard";
 		
 		// Read the mandatoty data-device-idx
 		const rawIdxAttr = tileElement.getAttribute('data-device-idx');
@@ -221,56 +219,6 @@ export function processDevices(devices) {
 			}
 
 			// =========================================================================
-			// STOCK - MUST BE PRIOR "VALUE" as re-using that tileType 
-			// =========================================================================
-			case "stock": {
-				const gridContainer = tileElement.querySelector('.hmi-value-grid');
-				if (!gridContainer) break;
-
-				// CLEAN SYNCHRONOUS RESOLUTION: Await the returned array natively
-				let dataPoints = await fetchDayLog(device);	// See hmitiles.js
-
-				// Check if there are datapoints
-				if (dataPoints) {
-					
-					if (dataPoints.length > 1) {
-						// SUBTRACTION MATRIX: Current (New) minus Initial (Old)
-						// Index 0 = 24 Hours Ago Baseline | Last Index = Current Live Price
-						const initialPrice = dataPoints[0];
-						const currentPrice = dataPoints[dataPoints.length - 1];
-						const valueDiff = currentPrice - initialPrice;
-						const valueDiffPct = initialPrice !== 0 ? (valueDiff / initialPrice) * 100 : 0;
-
-						// Format directional prefixes (+ for positive trends, minus is native)
-						const trendSign = valueDiff > 0 ? "+" : "";
-						
-						// 1. Handle Alarm first by usig the abs valueDiffPct
-						// UNBIASED VOLATILITY ALARM ENFORCEMENT
-						// Evaluates the absolute change percentage regardless of direction!
-						// Matches both downward drops and upward spikes natively against state-maps.
-						const evaluation = processTileStateAndAlarm(tileElement, Math.abs(valueDiffPct));
-						// Set the tile state which could be added as 5th column next
-						device.tileState = evaluation.text;
-						
-						// 2. Next Update the device data with the 4 column values
-						device.Data = `${currentPrice};${initialPrice};${valueDiff};${valueDiffPct.toFixed(0)}`;
-						valueText = device.Data;
-					}
-				} else {
-					device.Data = "--;--;--;--";
-					device.LastUpdate = `No historical data found for range Day (idx ${device.idx})`;
-					valueText = device.LastUpdate;
-				} 
-
-				rawValue = 0;	// Not used
-
-				// Do not break here but set the tileType to value so next case is triggered.
-				// This ensures the data is displayed as value.
-				tileType = "value";
-				// break;
-			}
-
-			// =========================================================================
 			// VALUE (SINGLE TO MULTI-COLUMN)
 			// =========================================================================
 			// Synchronously parses unified multi-value data structures and 
@@ -291,7 +239,6 @@ export function processDevices(devices) {
 					break;
 				}
 
-				// Get the data
 				const rawDataParts = String(device.Data).split(';');
 				htmlGridString = "<div class='hmi-multivalue-row'>";
 				
@@ -338,12 +285,12 @@ export function processDevices(devices) {
 			// =========================================================================
 			// VALUEIMAGE
 			// =========================================================================
-			// TODO
 			case "valueimage":
 				badgeText = device.Data || "--";
-				// Get unit
-				const unitText = element.getAttribute('data-unit') || "";
-				badgeText = badgeText + unitText;	
+				unitText = tileElement.getAttribute('data-unit') || "";
+				if (unitText.length > 0) {
+					badgeText = badgeText + " " + unitText;	
+				}
 				valueText = "";
 				rawValue = parseFloat(device.Data) || 0;
 				break;
@@ -355,29 +302,19 @@ export function processDevices(devices) {
 				const targetGridContainer = tileElement.querySelector('.hmi-value-grid');
 				if (!targetGridContainer) break;
 
-				// =========================================================================
-				// PROCESSOR LOCK REFRESH GUARD
-				// If the tile is actively in editing mode, back off completely! 
-				// Do not overwrite the user's input and do not force badgeText back to SYNCED.
-				// =========================================================================
-				if (tileElement.getAttribute('data-input-mode') === 'editing') {
-					if (DEBUG) console.log(`[processDevices] data-type input edit lock for idx ${device.idx}.`);
-					return; // Immediately exit this specific processing function loop pass!
-				}
-
 				// Read current device status text to use as a placeholder or initial value
 				rawValue = device.Data ? String(device.Data) : "";
 
 				// Read input type
 				const inputType = tileElement.getAttribute('data-input-type').toLowerCase() || "text";
-				const inputPlaceholder = tileElement.getAttribute('data-input-placeholder') || "";
+				const placeholderPrompt = (inputType === "number") ? "Enter number..." : "Enter text...";
 
 				// Build the rich input row and assign to data text
 				dataText = `
 					<input type="${inputType}" 
 						   class="hmi-input-field" 
 						   value="${rawValue}" 
-						   placeholder="${inputPlaceholder}">
+						   placeholder="${placeholderPrompt}">
 					<div class="hmi-action-row">
 						<button class="hmi-btn-cancel">Cancel</button>
 						<button class="hmi-btn-ok">OK</button>
@@ -392,84 +329,106 @@ export function processDevices(devices) {
 			// =========================================================================
 			// SWITCH
 			// =========================================================================
-            case "switch": {
-                const badgeElement = tileElement.querySelector('.hmi-badge');
-                const dataAction = (tileElement.getAttribute('data-action') || "").toUpperCase(); // "ON", "OFF", "TOGGLE"
-                const dataLevel = tileElement.getAttribute('data-level'); 
-                
-                const rawDeviceData = String(device.Data || "OFF").trim().toUpperCase();
-                const isDeviceOn = (rawDeviceData === "ON");
+			case "switch": {
+				const badgeElement = tileElement.querySelector('.hmi-badge');
+				const dataOnText = tileElement.getAttribute('data-on-text');
+				const dataOffText = tileElement.getAttribute('data-off-text');
+				const dataLevel = tileElement.getAttribute('data-level'); 
+				const dataAction = tileElement.getAttribute('data-action'); // "On", "Off", or "Toggle"
+				
+				let isTileActive = false;
+				let isSelector = (dataLevel !== null);
 
-                // =========================================================================
-                // 1. VISUAL STATE: Should this specific button light up?
-                // =========================================================================
-                let isTileActive = false;
-
-                if (dataLevel !== null) {
-                    // Selector: Active if current level matches the button's level attribute
-                    isTileActive = (parseDigits(device.Data) === (parseInt(dataLevel, 10) || 0));
-                } else if (dataAction === "OFF") {
-                    // "Off" Button: Lights up only when the physical device is OFF
-                    isTileActive = !isDeviceOn;
-                } else {
-                    // "On" Button, "Toggle" Button, or Standard Single Tile: Lights up when device is ON
-                    isTileActive = isDeviceOn;
-                }
-
-                // =========================================================================
-                // 2. TEXT VALUE: What text should this button show?
-                // =========================================================================
-                const dataOnText = tileElement.getAttribute('data-on-text') || "ON";
-                const dataOffText = tileElement.getAttribute('data-off-text') || "OFF";
-                if (dataOnText && dataOffText) {
-					valueText = isDeviceOn ? dataOnText : dataOffText;
+				// Multi-state Selector Button Row Track
+				if (isSelector) {
+					const currentLevel = parseDigits(device.Data);
+					const targetLevel = parseInt(dataLevel, 10) || 0;
+					isTileActive = (targetLevel === currentLevel);
+				} 
+				// Binary Switch Track (Handles Explicit On/Off & New Toggle Rows)
+				else if (dataAction !== null) {
+					const rawDeviceStatus = String(device.Data || "OFF").trim().toUpperCase();
+					
+					// If the HTML specifies a structural "Toggle" keyword action
+					if (dataAction.toUpperCase() === "TOGGLE") {
+						isTileActive = (rawDeviceStatus === "ON" || rawDeviceStatus === "PANIC");
+					} else {
+						// Check direct-match against server status OR match Domoticz native hardware emergency states
+						if (rawDeviceStatus === "PANIC" && dataAction.toUpperCase() === "ON") {
+							isTileActive = true;
+						} else if ((rawDeviceStatus === "NORMAL" || rawDeviceStatus === "OK") && dataAction.toUpperCase() === "OFF") {
+							isTileActive = true;
+						} else {
+							isTileActive = (rawDeviceStatus === dataAction.toUpperCase());
+						}
+					}
+				} 
+				// Fallback Single-Button Legacy Tiles Track
+				else {
+					const fallbackStatus = device.Data.toUpperCase();
+					isTileActive = (fallbackStatus === "ON" || fallbackStatus === "PANIC");
+				}
+					
+				// =========================================================================
+				// FRAMEWORK VALUE-TEXT DEFINITION (PRESERVES NATIVE LABELS)
+				// =========================================================================
+				if (isTileActive) {
+					// Fall back to attribute mappings first, then default to hardcoded "ON"
+					valueText = dataOnText ? dataOnText : "ON";
+					if (badgeElement) badgeElement.classList.add('hmi-active-state');
+				} else {
+					// Fall back to attribute mappings first, then default to hardcoded "OFF"
+					valueText = dataOffText ? dataOffText : "OFF";
+					if (badgeElement) badgeElement.classList.remove('hmi-active-state');
+				}
+				
+				// =========================================================================
+				// SAFE CONDITIONAL TEXT GENERATOR (FIXES THE BREAK)
+				// =========================================================================
+				if (badgeElement) {
+					// ONLY overwrite the label text if the element is an explicit Toggle row 
+					// OR if custom data-on/off text mapping attributes are actively supplied!
+					if ((dataAction && dataAction.toUpperCase() === "TOGGLE") || dataOnText || dataOffText) {
+						badgeElement.textContent = valueText;
+					}
+					// Otherwise, if it's an E-STOP or Standby button, we leave the HTML text completely alone!
 				}
 
-                // const dataOnText = tileElement.getAttribute('data-on-text') || "ON";
-                // const dataOffText = tileElement.getAttribute('data-off-text') || "OFF";
-                // valueText = isDeviceOn ? dataOnText : dataOffText;
+				if (isSelector || dataAction !== null) {
+					badgeText = ""; 
+				} else {
+					badgeText = device.Data; 
+				}
 
-                // =========================================================================
-                // 3. APPLY TO THE BUTTON (BADGE)
-                // =========================================================================
-                if (badgeElement) {
-                    // Light up or dim the button based on visual state
-                    badgeElement.classList.toggle('hmi-active-state', isTileActive);
-
-                    // Update button label text ONLY if it's a generic Toggle or uses custom overrides
-                    if (tileElement.hasAttribute('data-on-text') || tileElement.hasAttribute('data-off-text')) {
-                        badgeElement.textContent = valueText;
-                    }
-                }
-
-                // Clear badge text for row components; preserve raw text for legacy single cards
-                badgeText = (dataLevel !== null || dataAction !== "") ? "" : device.Data;
-                rawValue = isTileActive ? 1 : 0;
-                break;
-            }
-
+				rawValue = isTileActive ? 1 : 0;
+				break;
+			}
+			
 			// =========================================================================
 			// SELECTOR DROPDOWN
 			// =========================================================================
 			// Dynamic selector dropdown engine (with base64 decryption).
+			// The levels parsed from device.Data is 0,1,2,3. 
+			// To set the value it must be miltiplied by 10 to align with the Domotict device settings.
 			// =========================================================================
 			case "selector": {
 				const targetGridContainer = tileElement.querySelector('.hmi-value-grid');
 				if (!targetGridContainer) break;
 
-				// Get selector options decoded as string array
 				const rawNames = device.LevelNames ? String(device.LevelNames) : "";
 				const decodedNames = decodeBase64(rawNames); 
 				const optionsArray = decodedNames ? decodedNames.split('|') : ["OFF"];
 
-				// Get current level 0, 10 .. NN
-				const currentLevel = device.Level;
+				// FIX: Find where device.Data ("AWAY") sits inside clean options array!
+				// This gives you the exact live active level index automatically (0, 10, 20, 30)
+				const activeIndex = optionsArray.findIndex(name => name.trim().toUpperCase() === String(device.Data).trim().toUpperCase());
+				const currentLevel = activeIndex !== -1 ? activeIndex * 10 : 0;
 
-				// Create dropdown options with selected level
 				let dropdownOptionsHtml = "";
 				optionsArray.forEach((name, index) => {
 					const levelValue = index * 10; 
 					const isSelected = (levelValue === currentLevel) ? 'selected="selected"' : '';
+					
 					dropdownOptionsHtml += `
 						<option value="${levelValue}" ${isSelected}>${name.trim().toUpperCase()}</option>
 					`;
@@ -516,44 +475,23 @@ export function processDevices(devices) {
 					}
 				}
 				
-				const sliderMin = tileElement.getAttribute('data-min') || '0';
-				const sliderMax = tileElement.getAttribute('data-max') || '100';
-				const sliderMid = (sliderMax - sliderMin) / 2;
-				const sliderStep = tileElement.getAttribute('data-step') || '1';
-				const sliderScale = tileElement.getAttribute('data-scale') || '0';
-				
-				let htmlSliderScale = "";
-				if (sliderScale === '1') {
-					// Minimalist Scale Tracker Row
-					htmlSliderScale = `
-						<div class="hmi-slider-scale">
-							<span class="hmi-scale-tick tick-left">${sliderMin}</span>
-							<span class="hmi-scale-tick tick-center">${sliderMid}</span>
-							<span class="hmi-scale-tick tick-right">${sliderMax}</span>
-						</div>					
-					`
-				}
-				
 				dataText = `
 					<div class="hmi-multivalue-row">
 						<div class="hmi-multivalue-col">
 							<span class="hmi-multi-number">${cleanLevelVal}${unitText}</span>
 						</div>
 					</div>
-						<div class="layout-slider" 
-							 data-device-idx="${device.idx}">
-							<input type="range"
-								   min="${sliderMin}" 
-								   max="${sliderMax}" 
-								   step="${sliderStep}"
-								   value="${cleanLevelVal}"
-								   class="hmi-slider">
-							${htmlSliderScale}
-						</div>
+					<div class="layout-slider" data-device-idx="${device.idx}">
+						<input type="range"
+							   min="0" 
+							   max="100" 
+							   value="${cleanLevelVal}"
+							   class="hmi-slider">
 					</div>
 				`;
 				break;
 			}
+
 
 			// =========================================================================
 			// PROGRESSBAR
@@ -565,24 +503,6 @@ export function processDevices(devices) {
 
 				const cleanVal = parseFloats(device.Data).toFixed(0); 
 
-				const barMin = tileElement.getAttribute('data-min') || '0';
-				const barMax = tileElement.getAttribute('data-max') || '100';
-				const barMid = (barMax - barMin) / 2;
-				const barStep = tileElement.getAttribute('data-step') || '1';
-				const barScale = tileElement.getAttribute('data-scale') || '0';
-				
-				let htmlBarScale = "";
-				if (barScale === '1') {
-					// Minimalist Scale Tracker Row
-					htmlBarScale = `
-						<div class="hmi-bar-scale">
-							<span class="hmi-scale-tick tick-left">${barMin}</span>
-							<span class="hmi-scale-tick tick-center">${barMid}</span>
-							<span class="hmi-scale-tick tick-right">${barMax}</span>
-						</div>					
-					`
-				}
-	
 				dataText = `
 					<div class="hmi-multivalue-row">
 						<div class="hmi-multivalue-col">
@@ -592,7 +512,6 @@ export function processDevices(devices) {
 					<div class="hmi-bar-container">
 						<div class="hmi-bar-fill" style="width: ${cleanVal}%"></div>
 					</div>
-					<div>${htmlBarScale}</div>
 				`;
 				break;
 			}
@@ -605,7 +524,8 @@ export function processDevices(devices) {
 				const targetGridContainer = tileElement.querySelector('.hmi-value-grid');
 				if (!targetGridContainer) break;
 
-				const unitText = tileElement.getAttribute('data-unit') || "";
+				// Get unit using preparser function to extract unit straight from Domoticz properties
+				unitText = getUnit(device);
 
 				// Parse out the target input Setpoint (SP) value
 				const targetSetpoint = parseFloats(device.Data);
@@ -712,28 +632,6 @@ export function processDevices(devices) {
 				rawValue = 0;
 				break;
 			}
-
-			// =========================================================================
-			// 24-HR STOCK
-			// =========================================================================
-			case "Xstock": {
-				const gridContainer = tileElement.querySelector('.hmi-value-grid');
-				if (!gridContainer) break;
-				console.log(">>>", "STOCK");
-
-				// CLEAN SYNCHRONOUS RESOLUTION: Await the returned array natively
-				let dataPoints = await fetchDayLog(device);
-
-				if (dataPoints && dataPoints.length > 1) {
-					valueText = `${dataPoints[0]} - ${dataPoints[dataPoints.length - 1]}`;
-				} else {
-					valueText = "No data";
-				} 
-				
-				rawValue = 0;
-				console.log(">>>", "STOCK DONE", valueText);
-				break;
-			}
 							
 			// =========================================================================
 			// 180° GAUGE
@@ -834,7 +732,7 @@ export function processDevices(devices) {
 			}
 
 			// =========================================================================
-			// 90° GAUGE (North to East - Direct SVG Rendering)
+			// 90° SERVO GAUGE (North to East - Direct SVG Rendering)
 			// =========================================================================
 			case "gauge90needle": {
 				const gridContainer = tileElement.querySelector('.hmi-value-grid');
@@ -856,7 +754,7 @@ export function processDevices(devices) {
 				}
 				if (device.tileUnit == undefined) device.tileUnit = "";
 
-				// Compute percentage 0% to 100%
+				// Compute percentage of your servo (0% to 100%)
 				let percent = (device.tileValue / maxVal) * 100;
 				if (percent > 100) percent = 100;
 				if (percent < 0)   percent = 0;
@@ -914,14 +812,14 @@ export function processDevices(devices) {
 				// If the data payload contains multiple segments, read from segment index 1.
 				// device.Data structure WB;WD;WS;WG;T;C
 				const rawDataStr = String(device.Data || "").trim();
-				const items = rawDataStr.split(';');
+				const segments = rawDataStr.split(';');
 				
 				// Set custom device properties
-				device.tileWindBearing = items.length > 1 ? `${items[0].trim().toUpperCase()}°` : "";
-				device.tileWindDirection = items.length > 1 ? items[1].trim().toUpperCase() : "N";
-				device.tileValue = parseFloat(items[2]);	// ws
-				device.tileWindTemp = items.length > 1 ? `${items[4].trim().toUpperCase()}°C` : "";
-				device.tileUnit = tileElement.getAttribute('data-unit') || "";
+				device.tileValue = parseFloat(segments[2]);
+				device.tileUnit = getUnit(device);
+				device.tileWindBearing = segments.length > 1 ? `${segments[0].trim().toUpperCase()}°` : "";
+				device.tileWindDirection = segments.length > 1 ? segments[1].trim().toUpperCase() : "N";
+				device.tileWindTemp = segments.length > 1 ? `${segments[4].trim().toUpperCase()}°C` : "";
 
 				// Cardinal direction angle dictionary map
 				// Maps standard hardware string compass headings straight to absolute degrees

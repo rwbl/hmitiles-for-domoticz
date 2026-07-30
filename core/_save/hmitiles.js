@@ -1,8 +1,9 @@
 /**
  * @file hmitiles.js
  * @brief Core JavaScript engine for the HMITiles-for-Domoticz framework.
- * @date 2026-07-27
+ * @date 2026-07-21
  * @author Robert W.B. Linn (c) 2026 MIT
+ * @version 2.0.0-Beta
  * @description 
  * Manages industrial-inspired tile updates, trend lines, network polling, 
  * and interactive controls for the Domoticz platform.
@@ -15,23 +16,23 @@
 // Set to true to see logs in console, false to hide
 export const DEBUG = false; 
 
-// Domoticz server URL (f.e. running on Windows 11, Ubuntu or Raspberry Pi 5 OS Trixie)
-const DOMOTICZ_URL = (window.parent && window.parent.$ && window.parent.$.domoticzurl) 
-    ? window.parent.$.domoticzurl 
-    : window.location.origin;
-if (DEBUG) console.log("[HMITILES]", DOMOTICZ_URL, DEBUG);
+// Domoticz server URL with two options
+// Option 1: Domoticz server (f.e. running on Windows 11 or Raspberry Pi 5 OS Trixie)
+const DOMOTICZ_URL = window.parent && window.parent.$ ? window.parent.$.domoticzurl : window.location.origin;
+// Option 2: Python simulator (folder tools)
+// const DOMOTICZ_URL ="http://127.0.0.1:8080";
 
-// Set refresh rate high to see immediate response on user interaction or data updates
-const REFRESH_RATE = 5000;
+// Set refresh rate to 1 minute (60000) minimum for Domoticz
+const REFRESH_RATE = 5000;		// Tests
+// const REFRESH_RATE = 60000;
 
 // =========================================================================
 // IMPORTS
 // =========================================================================
 
 // Imports from the preparser: conversion, domoticz helpers
-import { buildRoomplanLayout } from './hmitiles-roomplan.js';
-import { parseDigits, parseFloats, decodeBase64, replaceString, getPercentChange } from './hmitiles-preparser.js';
-import { setTileValue, getHistorySensor, preParseDeviceData } from './hmitiles-preparser.js';
+import { parseDigits, parseFloats, decodeBase64, replaceString } from './hmitiles-preparser.js';
+import { setTileValue, getUnit, getHistorySensor, preParseDeviceData } from './hmitiles-preparser.js';
 import { processDevices } from './hmitiles-processor.js';
 
 // IMPORTANT: Bridge the isolation wall: Expose the helper globally to inline index.html scripts!
@@ -39,7 +40,7 @@ import { processDevices } from './hmitiles-processor.js';
 window.parseDigits = parseDigits;
 window.parseFloats = parseFloats;
 window.replaceString = replaceString;
-window.getPercentChange = getPercentChange;
+window.getUnit = getUnit;
 window.getHistorySensor = getHistorySensor;
 
 // From hmitiles-processor
@@ -50,8 +51,6 @@ window.updateTile = updateTile;
 // From this engine
 // Expose the logger to the global browser scope
 window.addDomoticzLog = addDomoticzLog;
-
-window.buildRoomplanLayout = buildRoomplanLayout;
 
 // =========================================================================
 // FETCHDOMOTICZDATA
@@ -138,10 +137,7 @@ export function updateTile(element, data) {
 	// Last value (if exists in HTML element)
 	const lastValueLabel = element.querySelector('.hmi-last-value');
     if (lastValueLabel) {
-		const unit = element.getAttribute('data-unit') || "";
-		// If the unit is a percent sign, lock it tightly; otherwise, add the high-performance space separator!
-		const separator = (unit === "%") ? "" : " ";
-		lastValueLabel.textContent = `${data.value}${separator}${unit}`;
+		lastValueLabel.textContent = data.value;
     }
 	
 	// Last update (if exists in HTML element)
@@ -177,11 +173,11 @@ function updateTileBadge(element, text) {
  * @returns {void}
  */
 function bindControls() {
-    bindSwitchControls();   	// Clicks for buttons/switches
-    bindStepperControls();  	// Clicks for thermostat plus/minus
-    bindInputControls();    	// Clicks for OK/Cancel data entry
-	bindChartControls();    	// Click events for opening device charts in new tab
-    bindAnalogControls();   	// Change events for Sliders and Selectors
+    bindSwitchControls();   // Clicks for buttons/switches
+    bindStepperControls();  // Clicks for thermostat plus/minus
+    bindInputControls();    // Clicks for OK/Cancel data entry
+	bindChartControls();    // Click events for opening device charts in new tab
+    bindAnalogControls();   // Change events for Sliders and Selectors
 }
 
 /**
@@ -223,7 +219,6 @@ function bindSwitchControls() {
 
 /**
  * Attaches a permanent global event listener to handle plus/minus thermostat setpoint changes.
- * Safely enforces data-min and data-max threshold boundaries and locks background updates during interaction.
  */
 function bindStepperControls() {
     document.body.addEventListener('click', async function(event) {
@@ -240,103 +235,29 @@ function bindStepperControls() {
         const displaySpan = tile.querySelector('.hmi-value');
         if (!displaySpan) return;
         
-        // ENGAGE CORE REFRESH LOCK
-        // Blocks the 5s loop from wiping out active sequential button clicks
-        tile.setAttribute('data-input-mode', 'editing');
-
-        // READ BOUNDARY ATTRIBUTES NATIVELY
-        const minLimit = tile.getAttribute('data-min') !== null ? parseFloat(tile.getAttribute('data-min')) : Number.NEGATIVE_INFINITY;
-        const maxLimit = tile.getAttribute('data-max') !== null ? parseFloat(tile.getAttribute('data-max')) : Number.POSITIVE_INFINITY;
-
         const currentVal = parseFloats(displaySpan.textContent);
-        let calculatedValue = currentVal + actionStep;
-
-        // =========================================================================
-        // BOUNDARY CLAMPING CORE
-        // Enforces custom data-min and data-max attribute configurations
-        // =========================================================================
-        if (calculatedValue < minLimit) calculatedValue = minLimit;
-        if (calculatedValue > maxLimit) calculatedValue = maxLimit;
-
-        const nextSetpoint = calculatedValue.toFixed(1);
+        const nextSetpoint = (currentVal + actionStep).toFixed(1);
 
         // Optimistic UI response: update the screen value instantly with zero lags
-        displaySpan.textContent = `${nextSetpoint}`;
+        displaySpan.textContent = `${nextSetpoint}${tile.getAttribute('data-unit') || ""}`;
 
         const commandUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=setsetpoint&idx=${idx}&setpoint=${nextSetpoint}`;
         
-        if (DEBUG) console.log("[bindStepperControls] url:", commandUrl);
+        if (DEBUG) console.log("[Stepper Dispatched URL]", commandUrl);
         try {
             await fetch(commandUrl);
-            
-            // RELEASE REFRESH LOCK SAFELY
-            // Allows standard status sync updates to resume following network transaction completion
-            const badge = tile.querySelector('.hmi-badge');
-            if (badge) badge.textContent = "SYNCED";
-            
-            // Small debounce window matching the input framework rules
-            setTimeout(() => {
-                tile.setAttribute('data-input-mode', 'readonly');
-            }, 500);
         } catch (err) {
-            console.error("bindStepperControls] Error setting setpoint:", err);
-            tile.setAttribute('data-input-mode', 'readonly');
+            console.error("Climate adjustment execution failed:", err);
         }
     });
 }
 
 /**
  * Attaches permanent global event listeners to handle data entry typing, OK, and Cancel actions.
- * Manages an attribute-based lock (data-input-mode="editing") to block periodic background UI refreshes.
- * Seamlessly routes strings, numbers, and hex-color payloads to matching Domoticz hardware endpoints.
  */
 function bindInputControls() {
-    
-	// =========================================================================
-    // POINTERDOWN
-	// ABSOLUTE EARLIEST INTERCEPT (Fixes the Color Picker Refresh Flaw)
-    // Fires the exact millisecond the user touches or clicks the color box,
-    // locking the tile BEFORE the native OS dialog can pause the JS engine.
-    // =========================================================================
-    document.body.addEventListener('pointerdown', function(event) {
-        const colorInput = event.target.closest('.hmi-pack-tile[data-type="input"] .hmi-input-field[type="color"]');
-        if (!colorInput) return;
-
-        const tile = colorInput.closest('.hmi-pack-tile');
-        if (tile) {
-            if (DEBUG) console.log(`[bindInputControls] Pointerdown Lock idx ${tile.getAttribute('data-device-idx')}`);
-            tile.setAttribute('data-input-mode', 'editing');
-        }
-
-        const badge = tile?.querySelector('.hmi-badge');
-        if (badge) badge.textContent = "EDITING";
-    });
-
-	// =========================================================================
-    // FOCUS LOCK INTERCEPT (For Text and Number Fields)
-    // Instantly locks the tile the moment the cursor enters a field, 
-    // protecting it even if the user pauses before typing.
-    // =========================================================================
-    document.body.addEventListener('focus', function(event) {
-        const inputField = event.target.closest('.hmi-pack-tile[data-type="input"] .hmi-input-field');
-        if (!inputField) return;
-
-        const tile = inputField.closest('.hmi-pack-tile');
-        if (tile && tile.getAttribute('data-input-mode') !== 'editing') {
-            if (DEBUG) console.log(`[bindInputControls] Focus Lock text/number idx #${tile.getAttribute('data-device-idx')}`);
-            tile.setAttribute('data-input-mode', 'editing');
-            
-            const badge = tile.querySelector('.hmi-badge');
-            if (badge) badge.textContent = "EDITING";
-        }
-    }, true); // CRITICAL: 'true' enables event capturing so focus can be intercepted globally!
-
-    // =========================================================================
-    // CLICK
     // Handle Button Click Actions (OK and Cancel)
-    // =========================================================================
     document.body.addEventListener('click', async function(event) {
-        
         const inputButton = event.target.closest('.hmi-pack-tile[data-type="input"] .hmi-action-row button');
         if (!inputButton) return;
 
@@ -345,12 +266,6 @@ function bindInputControls() {
 
         const idx = parseInt(tile.getAttribute('data-device-idx'), 10);
         const inputField = tile.querySelector('.hmi-input-field');
-		
-        // =========================================================================
-        // UNLOCK TILE ON ACTION END
-        // Release the attribute-based editing lock so refreshes can resume
-        // =========================================================================
-        tile.setAttribute('data-input-mode', 'readonly');
 
         // CANCEL OPTION: Direct fallback roll-back command
         if (inputButton.classList.contains('hmi-btn-cancel')) {
@@ -364,21 +279,7 @@ function bindInputControls() {
             const freshValue = inputField.value.trim();
             if (freshValue === "") return;
 
-            // =========================================================================
-            // HARDWARE ROUTING MATRIX: Route based on input data configuration type
-            // =========================================================================
-            const isColorInput = (inputField.getAttribute('type') === 'color');
-            let commandUrl = "";
-            
-            if (isColorInput) {
-                // Strip the leading '#' character for standard Domoticz hardware hex requirements
-                const cleanHexValue = freshValue.replace('#', '');
-                // commandUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=setcolbrightnessvalue&idx=${idx}&hex=${cleanHexValue}&iswhite=false`;
-                commandUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=udevice&idx=${idx}&nvalue=0&svalue=${encodeURIComponent(freshValue)}`;
-            } else {
-                // Default Text / Numeric Device Entry Route
-                commandUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=udevice&idx=${idx}&nvalue=0&svalue=${encodeURIComponent(freshValue)}`;
-            }
+            const commandUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=udevice&idx=${idx}&nvalue=0&svalue=${encodeURIComponent(freshValue)}`;
             
             if (DEBUG) console.log("[Data Entry Transmitted URL]", commandUrl);
             try {
@@ -397,10 +298,7 @@ function bindInputControls() {
         }
     });
 
-    // =========================================================================
-    // KEYPRESS
     // Handle Keyboard Enter-key Shortcuts directly inside the fields
-    // =========================================================================
     document.body.addEventListener('keypress', function(event) {
         const inputField = event.target.closest('.hmi-pack-tile[data-type="input"] .hmi-input-field');
         if (!inputField) return;
@@ -415,25 +313,14 @@ function bindInputControls() {
         }
     });
 
-    // =========================================================================
-    // INPUT
-    // Fires instantly whenever text/numbers/colors are modified inside an entry box
-    // =========================================================================
+    // Fires instantly whenever text/numbers are modifies inside an entry box
     document.body.addEventListener('input', function(event) {
         const inputField = event.target.closest('.hmi-pack-tile[data-type="input"] .hmi-input-field');
         if (!inputField) return;
 
         const tile = inputField.closest('.hmi-pack-tile');
-        
-        // =========================================================================
-        // LOCK TILE ON FIRST INPUT TRIGGER
-        // Block background intervals from rendering over this tile during edits
-        // =========================================================================
-        if (tile) {
-            tile.setAttribute('data-input-mode', 'editing');
-        }
-
         const badge = tile?.querySelector('.hmi-badge');
+        
         if (badge) {
             // Instantly transition badge text to alert the user changes are in-progress
             badge.textContent = "EDITING"; 
@@ -499,7 +386,7 @@ function bindAnalogControls() {
         }
 
         const commandUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=switchlight&idx=${idx}&switchcmd=${switchCmd}&level=${targetLevel}`;
-        if (DEBUG) console.log("[bindAnalogControls] url:", commandUrl);
+        if (DEBUG) console.log("[Analog Dispatched URL]", commandUrl);
         
         try {
             const response = await fetch(commandUrl);
@@ -509,7 +396,7 @@ function bindAnalogControls() {
                 setTimeout(fetchDomoticzData, 400); // Trigger fast dashboard refresh sync
             }
         } catch (error) {
-            console.error(`[bindAnalogControls] Failed to dispatch analog control execution:`, error);
+            console.error(`Failed to dispatch analog control execution:`, error);
         }
     });
 }
@@ -517,6 +404,68 @@ function bindAnalogControls() {
 // =========================================================================
 // COMMANDS
 // =========================================================================
+
+/**
+ * Dispatches an asynchronous switch execution command link to the network.
+ * @async
+ * @function sendSwitchCommand
+ * @param {number} idx - The unique Domoticz database hardware index identifier code.
+ * @param {string} command - The target action string (e.g., "On", "Off", "Turn On", "Turn Off", "Toggle", "Stop").
+ * @param {number} level - The level set by Dimmer or Selector.
+ * @returns {Promise<void>}
+ */
+async function sendSwitchCommand(idx, command, level = 0) {
+    // Maps the command. Default is Off.
+    let switchCmdValue = "Off";
+	let targetLevel = level;
+ 	
+    if (command === "On" || command === "Turn On") {
+        switchCmdValue = "On";
+    } else if (command === "Toggle") {
+        switchCmdValue = "Toggle";
+    } else if (command === "Stop") {
+        switchCmdValue = "Stop";
+    } else if (command === "Set Level") {
+        switchCmdValue = "Set%20Level"; // For dimmers and selectors
+    }
+    const commandUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=switchlight&idx=${idx}&switchcmd=${switchCmdValue}&level=${targetLevel}`;
+    if (DEBUG) console.log("[sendSwitchCommand]", commandUrl);
+
+    try {
+        const response = await fetch(commandUrl);
+        if (!response.ok) throw new Error(`HTTP request failed: ${response.status}`);
+        const result = await response.json();
+        if (result.status === "OK") {
+            setTimeout(fetchDomoticzData, 300);
+        }
+    } catch (error) {
+        console.error(`[sendSwitchCommand] Failed to dispatch:`, error);
+    }
+}
+
+/**
+ * Dispatches an asynchronous temperature setpoint modification command to the Domoticz server.
+ * @async
+ * @function sendSetpointCommand
+ * @param {number} idx - The unique Domoticz database hardware index identifier code.
+ * @param {string|number} targetTemperature - The target thermostat temperature value (e.g., 21.5).
+ * @returns {Promise<void>}
+ */
+async function sendSetpointCommand(idx, targetTemperature) {
+    const commandUrl = `${DOMOTICZ_URL}/json.htm?type=command&param=setsetpoint&idx=${idx}&setpoint=${targetTemperature}`;
+	if (DEBUG) console.log("sendSetpointCommand", commandUrl);
+
+    try {
+        const response = await fetch(commandUrl);
+        if (!response.ok) throw new Error(`HTTP request failed`);
+        const result = await response.json();
+        if (result.status === "OK") {
+            setTimeout(fetchDomoticzData, 500);
+        }
+    } catch (error) {
+        console.error(`Failed to dispatch thermostat execution:`, error);
+    }
+}
 
 
 // =========================================================================
@@ -692,7 +641,7 @@ function setupLogInjectionListeners(tileElement) {
 export async function addDomoticzLog(level = 1, message) {
     if (!message) return false;
 
-    // Use global URL configuration
+    // Use your global URL configuration safely
     const baseUrl = typeof DOMOTICZ_URL !== 'undefined' ? DOMOTICZ_URL : '';
     const customPrefix = "[HMITiles]";
     
@@ -787,46 +736,6 @@ function renderEmbeddedSparkline(container, dataPoints) {
 }
 
 // =========================================================================
-// INTEGRATED DAY LOG POINTS
-// =========================================================================
-
-/**
- * Fetches 24-hour log data from Domoticz and returns a clean array of numerical data points.
- * @param {Object} device - The standard Domoticz device registry node object
- * @returns {Promise<Array|undefined>} Resolves to an array of floats, or undefined on failure
- */
-export async function fetchDayLog(device) {
-    try {
-        const idx = parseInt(device.idx, 10);
-        const sensor = getHistorySensor(device);
-        const baseUrl = window.DOMOTICZ_URL || window.location.origin;
-        const targetUrl = `${baseUrl}/json.htm?type=command&param=graph&sensor=${sensor}&idx=${idx}&range=day`;
-        // console.log("[fetchDayLog]", targetUrl);
-		
-        const response = await fetch(targetUrl);
-        if (!response.ok) throw new Error();
-        const data = await response.json();
-        
-        if (data.result && data.result.length > 0) {
-            // Compile numerical array
-            const parsedPoints = data.result.map(item => {
-                const valueKeys = Object.keys(item).filter(key => key !== "d");
-                const activeMetricKey = valueKeys[0];
-                return activeMetricKey ? parseFloat(item[activeMetricKey] || 0) : 0;
-            });
-
-            // console.log("[fetchDayLog] points extracted:", parsedPoints.length, "data:", parsedPoints);	
-            return parsedPoints; // RULE: Return the array directly to the caller!
-        }
-        
-        return undefined;
-    } catch (err) {
-        console.error("[fetchDayLog] Tracking error:", err);
-        return undefined;
-    }
-}
-
-// =========================================================================
 // OPENURLS
 // =========================================================================
 
@@ -878,41 +787,28 @@ window.goToHMITilesIndex = goToHMITilesIndex;
 // =========================================================================
 
 /**
- * Global initialization handler to bind control listeners and 
- * kickstart background network polling cycles.
+ * Global initialization handler to bind control listeners and kickstart background network polling cycles.
  * @listens DOMContentLoaded
  */
-async function initHMITiles() {
-	// Check if this page requires dynamic roomplan layout creation first
-    const roomplanPanel = document.querySelector('[data-class="roomplan"]');
-    if (roomplanPanel) {
-        if (DEBUG) console.log("[initHMITiles] Roomplan panel detected, building DOM layout...");
-        // Now fully defined via the import statement above!
-        await buildRoomplanLayout(roomplanPanel);
-    }	
-    // Call Controls
+window.addEventListener('DOMContentLoaded', () => {
+
+	// Sets up the permanent background delegated event hooks
     bindControls(); 
     	
-    // Get Domoticz data
+	// Get the domoticz device data for all devices
     fetchDomoticzData();
 
-    // Start Intervall (REFRESH_RATE Millisekunden)
+	// And do this every 60 secs (or any other value > 60 secs)
     setInterval(fetchDomoticzData, REFRESH_RATE);
 
-    // =========================================================================
+	// =========================================================================
     // SYSTEM LOGGING INITIALIZATION ENGINE (SINGLE TIMING LOOP)
     // =========================================================================
-    const logTile = document.querySelector('[data-type="logmonitor"]');
+	const logTile = document.querySelector('[data-type="logmonitor"]');
     if (logTile) {
         fetchDomoticzServerLogs();
-        setInterval(fetchDomoticzServerLogs, 5000); 
-    }
-}
-
-// Check if DOM already loaded as required for type="module"
-if (document.readyState === 'loading') {
-    window.addEventListener('DOMContentLoaded', initHMITiles);
-} else {
-    initHMITiles(); // If already loaded (mainly Ubuntu/Linux), call immediate!
-}
+        setInterval(fetchDomoticzServerLogs, 5000); // Simple, low-overhead 5s polling cycle (5000)
+    }	
+	
+});
 

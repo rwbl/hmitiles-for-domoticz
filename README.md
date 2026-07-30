@@ -1,34 +1,45 @@
 # HMITiles Custom Pages Framework for Domoticz
 
 > [!WARNING]
-> **MAJOR UPDATE**: **v2.2.0**, a massive, ground-up rewrite introducing a purely declarative, script-free HTML architecture. Check out the latest breaking changes and migration details in the [CHANGELOG.md](./CHANGELOG.md).
+> **BETA**: **v2.3.0** introduces the `Roomplan` blueprint for automated dashboard generation. Check out the latest updates and configuration details in the [CHANGELOG.md](./CHANGELOG.md).
 
-**HMITiles for Domoticz** is a lightweight, decoupled HTML/CSS/JS framework designed to visualize and control your smart home devices using structured, high-density tiles.
+**HMITiles for Domoticz** is a lightweight, independent web dashboard framework designed to monitor and control your smart home using clean, space-saving tiles.
 
-This open-source framework brings High-Performance Human Machine Interface (HMI) principles to the smart home environment.  
-The core focus is clarity, consistency, and situational awareness—not visual special effects or decorative UI clutter.
+By bringing the efficiency of professional industrial control panels (HMI) to home automation, this project focuses entirely on clarity, speed, and 
+instant situational awareness—deliberately avoiding heavy animations, decorative clutter, or useless UI widgets.
+
+## Key Highlights
+
+* High-Density Layouts: Compact, information-rich tile designs that pack critical smart home data onto a single screen.
+* Purely Declarative: Build or customize your entire dashboard directly in HTML without writing a single line of JavaScript.
+* Automatic Roomplan Pages: Zero-configuration page creation. Generate full control pages instantly straight from your existing Domoticz Roomplans.
+* Ultra-Lightweight: Zero heavy dependencies, ensuring instant page loading and blistering performance on wall-mounted tablets, phones, or old browsers.
 
 ---
 
 ## Blueprints (Selection)
 
-#### Workbench (Development / Testing Area) 
+### Workbench (Development / Testing Area) 
 ![Workbench](blueprints/workbench/workbench.png)
 
-#### Theme Dark (Experimental)
+### Theme Dark (Experimental)
 ![Theme Dark](blueprints/themedark/themedark.png)
 
 
-#### Example
+## Application Example
 ![Solar Dashboard](examples/solardashboard/solardashboard.png)
 
 ---
 
 ## Overview
 
-**HMITiles-for-Domoticz** provides a collection of reusable, industrial-inspired modular components for Domoticz custom layouts. These tiles combine seamlessly into responsive grid matrices to monitor complex home telemetry data points. Designed as an extensible blueprint, it decouples user interface presentation from backend data fetching, allowing developers to create clean, high-performance layouts easily.
+**HMITiles-for-Domoticz** provides a collection of clean, industrial-inspired modular components to build custom layouts.  
+These tiles combine into flexible grids designed to display complex smart home data at a single glance. 
+By separating the user interface design from the backend data synchronization, the framework acts as an adaptable blueprint. 
+This allows developers and hobbyists to create high-performance, tailored dashboards with ease.
 
-The framework started as a personal open-source project, evolving from earlier layout prototypes developed under a [B4X HMITiles](http://www.b4x.com/android/forum/threads/hmitiles.169774/) design concept.
+**Project Origin**  
+This framework started as a personal open-source project, evolving from earlier layout prototypes and design concepts originally developed under the B4X HMITiles platform.
 
 ---
 

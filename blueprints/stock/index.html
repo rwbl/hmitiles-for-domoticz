@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+Brief: 			HMITiles Blueprint Stock
+Data-Type:		stock
+Date: 			2026-07-25
+Author: 		Robert W.B. Linn (c) 2026 MIT
+Description:	Display devices data in stock tile.
+-->
+<head>
+    <meta charset="UTF-8">
+    <title>HMITiles Stock</title>
+
+    <!-- Link backward to reuse shared global common styles -->
+    <link rel="stylesheet" href="/templates/core/hmitiles.css">
+	
+	<!-- Link backward to the HMI tile engine -->
+	<!-- Ensure type="module" is declared so the browser resolves the import statement -->
+	<script type="module" src="/templates/core/hmitiles.js"></script>
+</head>
+
+<body>
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+				<h2>HMITiles Stock</h2>
+			</div>
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
+			</div>
+		</div>
+	</header>
+
+	<main class="hmi-panel">
+	
+        <!-- 
+			STOCK
+			Domoticz Type General / SubType Custom Sensor
+			Display value of any kind. 
+			For tests used custom sensor (taking Unit rom device.Data property).
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			data-type="stock" 
+			data-device-idx="39"
+			data-labels="0:LAST:CURRENCY;1:PREV CLS:CURRENCY;2:CHG:CURRENCY;3:CHG:%">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">STOCK XYZ</div></div>
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-update" data-field="LastUpdate"></div>
+		</div>
+
+        <!-- 
+			STOCK ALARM
+			Domoticz Type General / SubType Custom Sensor
+			Display value of any kind. 
+			For tests used custom sensor (taking Unit rom device.Data property).
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			data-type="stock" 
+			data-device-idx="39"
+			data-labels="0:LAST:CURRENCY;1:PREV CLS:CURRENCY;2:CHG:CURRENCY;3:CHG:%"
+			data-state-map="0:OK,10:FAIR,20:MODERATE,30:POOR,90:BAD"
+			data-alarm-direction="up">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">STOCK XYZ - ALARM TEST</div></div>
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-update" data-field="LastUpdate"></div>
+		</div>
+
+        <!-- 
+			STOCK
+			Domoticz Type General / SubType Custom Sensor
+			Display value of any kind. 
+			For tests used custom sensor (taking Unit rom device.Data property).
+		-->
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			data-type="stock" 
+			data-device-idx="1"
+			data-labels="0:LAST:CURRENCY;1:PREV CLS:CURRENCY;2:CHG:CURRENCY;3:CHG:%">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">STOCK XYZ - NO DATA TEST</div></div>
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-update" data-field="LastUpdate"></div>
+		</div>
+
+
+	</main>
+
+</body>
+</html>

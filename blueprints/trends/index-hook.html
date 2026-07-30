@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MultiTrend</title>
+
+    <script>
+        window.DOMOTICZ_URL = window.parent && window.parent.$ ? window.parent.$.domoticzurl : window.location.origin;
+    </script>
+
+    <link rel="stylesheet" href="../core/hmitiles.css">
+    <script type="module" src="../core/hmitiles.js" defer></script>
+
+	<script>
+		window.onHMITileProcess = function(ignoredTileParam, device, rawValue, displayStatus) {
+			const currentIdx = parseInt(device.idx, 10);
+			const trendContainer = document.querySelector(`[data-chart-idx="${currentIdx}"]`);
+			if (trendContainer) {
+				// Pass the whole device object so your graph engine can read the hardware type!
+				fetchTrendData(device, trendContainer);
+				
+				// Automated timestamp synchronization
+				const updateRow = trendContainer.closest('.hmi-pack-tile')?.querySelector('.hmi-last-update');
+				if (updateRow && device.LastUpdate) {
+					updateRow.textContent = device.LastUpdate;
+				}
+				
+			}
+			return false;
+		};
+
+		async function fetchTrendData(device, container) {
+			try {
+				const idx = parseInt(device.idx, 10);
+				const sensor = getHistorySensor(device);
+				const baseUrl = window.DOMOTICZ_URL || window.location.origin;
+				const targetUrl = `${baseUrl}/json.htm?type=command&param=graph&sensor=${sensor}&idx=${idx}&range=day`;
+				
+				const response = await fetch(targetUrl);
+				if (!response.ok) throw new Error();
+				const data = await response.json();
+				
+				if (data.result && data.result.length > 0) {
+					// Automated dynamic key extractor
+					const points = data.result.map(item => {
+						// Get all text parameter property keys inside this data item object row
+						const objectKeys = Object.keys(item);
+						
+						// Filter out the standard date tracking timestamp key string ("d")
+						const valueKeys = objectKeys.filter(key => key !== "d");
+						
+						// Grab the very first remaining key name natively (e.g. "co2", "mm", "te" ...)!
+						const activeMetricKey = valueKeys[0];
+						
+						// Return the numeric parsed float value bound to that dynamic key string securely
+						return activeMetricKey ? parseFloat(item[activeMetricKey] || 0) : 0;
+					});
+			
+					renderSparkline(container, points, unit="");
+				} else {
+					container.innerHTML = "<span style='color:#999; font-size:12px;'>No historical logs</span>";
+				}
+			} catch (err) {
+				console.error("Trend loop pipeline tracking error:", err);
+				container.innerHTML = "<span style='color:#ff0000; font-size:12px;'>API Error</span>";
+			}
+		}
+
+		function renderSparkline(container, dataPoints, unit="") {
+			const width = 300;
+			const height = 100;
+			const padding = 5;
+
+			const min = Math.min(...dataPoints);
+			const max = Math.max(...dataPoints);
+			const range = max - min === 0 ? 1 : max - min;
+
+			const coords = dataPoints.map((val, index) => {
+				const x = padding + (index / (dataPoints.length - 1)) * (width - padding * 2);
+				const y = (height - padding) - ((val - min) / range) * (height - padding * 2);
+				return `${x},${y}`;
+			});
+
+			container.innerHTML = `
+				<div class="hmi-sparkline-svg-wrapper">
+					<svg viewBox="0 0 ${width} ${height}" class="hmi-sparkline-svg" preserveAspectRatio="none">
+						<path class="hmi-trend-line" d="M ${coords.join(' L ')}" />
+					</svg>
+				</div>
+				<div class="hmi-trend-stats">
+					<div><span class="hmi-stat-label">MIN:</span> ${Math.round(min)}${unit}</div>
+					<div><span class="hmi-stat-label">MAX:</span> ${Math.round(max)}${unit}</div>
+				</div>
+			`;
+		}
+	</script>
+</head>
+
+<body>
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+				<h2>HMITiles MultiTrend</h2>
+			</div>
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
+			</div>
+		</div>
+	</header>
+
+    <main class="hmi-panel">
+
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Air Quality</div></div>
+			<div class="hmi-value-grid"><div class="hmi-sparkline-container" data-chart-idx="3">Loading...</div></div>
+			<div class="hmi-last-update" data-field="LastUpdate">YYYY-MM-DD hh:mm:ss</div>
+		</div>
+
+		<div class="hmi-pack-tile">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Rain</div></div>
+			<div class="hmi-value-grid"><div class="hmi-sparkline-container" data-chart-idx="19">Loading...</div></div>
+			<div class="hmi-last-update" data-field="LastUpdate">YYYY-MM-DD hh:mm:ss</div>
+		</div>
+    </main>
+
+</body>
+</html>

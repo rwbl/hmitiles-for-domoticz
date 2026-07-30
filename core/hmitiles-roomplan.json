@@ -1,0 +1,179 @@
+{
+  "mappings": [
+    {
+      "type": "General","subtype": "Custom Sensor","switchtype": "","labels": "0::",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "General","subtype": "Counter Incremental","switchtype": "","labels": "0:Counter:;1:CounterToday:",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "General","subtype": "kWh","switchtype": "","labels": "0:CounterToday:Wh;1:Usage:W",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "General","subtype": "Text","switchtype": "","labels": "0::",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "General","subtype": "Percentage","switchtype": "","labels": "0::%",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "General","subtype": "Barometer","switchtype": "","labels": "0:Pressure:hPa;1:Forcast:",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "General","subtype": "Leaf Wetness","switchtype": "","labels": "0:Level:",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "General","subtype": "Pressure","switchtype": "","labels": "0::bar",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "General","subtype": "Soil Moisture","switchtype": "","labels": "0:Moisture:cb",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "General","subtype": "Solar Radiation","switchtype": "","labels": "0:Radiation:W/m2",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "General","subtype": "Sound Level","switchtype": "","labels": "0:Level:db",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "General","subtype": "Visibility","switchtype": "","labels": "0:Distance:km",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "General","subtype": "Voltage","switchtype": "","labels": "0::V",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "General","subtype": "Waterflow","switchtype": "","labels": "0:Flow:l/min",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "Current","subtype": "","switchtype": "","labels": "0:P1:A;0:P2:A;0:P3:A",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "P1 Smart Meter","subtype": "Electric","switchtype": "","labels": "0::",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "P1 Smart Meter","subtype": "Gas","switchtype": "","labels": "0:Counter:Wh;1:CounterToday:W;2:Price:ct",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "Usage","subtype": "Electric","switchtype": "","labels": "0::W",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "UV","subtype": "","switchtype": "","labels": "0:UV:uvi",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "Lux","subtype": "","switchtype": "","labels": "0:Brightness:lux",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "Weight","subtype": "","switchtype": "","labels": "0::kg",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "Light/Switch",
+      "subtype": "Switch",
+      "switchtype": "On/Off",
+      "labels": "",
+      "html": "<div class=\"hmi-pack-tile\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-switch-button-row\"><div class=\"hmi-pack-innertile hmi-switch-col-cell\" data-type=\"switch\" data-device-idx=\"{{idx}}\" data-action=\"Toggle\" data-on-text=\"ON\" data-off-text=\"OFF\"><div class=\"hmi-badge hmi-clickable-badge\"></div></div></div></div>"
+    },
+    {
+      "type": "Light/Switch",
+      "subtype": "Switch",
+      "switchtype": "Push On Button",
+      "labels": "",
+      "html": "<div class=\"hmi-pack-tile\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-switch-button-row\"><div class=\"hmi-pack-innertile hmi-switch-col-cell\" data-type=\"switch\" data-device-idx=\"{{idx}}\" data-action=\"On\" data-on-text=\"ON\" data-off-text=\"ON\"><div class=\"hmi-badge hmi-clickable-badge\"></div></div></div></div>"
+    },
+    {
+      "type": "Light/Switch",
+      "subtype": "Switch",
+      "switchtype": "Dimmer",
+      "labels": "",
+      "html": "<div class=\"hmi-pack-tile\" data-type=\"dimmer\" data-device-idx=\"{{idx}}\" data-unit=\"%\" data-step=\"1\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "Thermostat",
+      "subtype": "Setpoint",
+      "switchtype": "",
+      "labels": "",
+      "html": "<div class=\"hmi-pack-tile\" data-type=\"setpoint\" data-device-idx=\"{{idx}}\" data-step=\"0.5\" data-unit=\"°C\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "Air Quality",
+      "subtype": "Voc",
+      "switchtype": "",
+      "labels": "0::ppm",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "Humidity",
+      "subtype": "",
+      "switchtype": "",
+      "labels": "0:Hum:%RH;1:HumStat:",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "Temp",
+      "subtype": "",
+      "switchtype": "",
+      "labels": "0:Temp:°C",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "Temp + Humidity",
+      "subtype": "",
+      "switchtype": "",
+      "labels": "0:Temp:°C;1:Hum:%RH;2:HumStat:",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "Temp + Humidity + Baro",
+      "subtype": "",
+      "switchtype": "",
+      "labels": "0:Temp:°C;1:Hum:%RH;2:HumStat:;3:Pressure:hPa;4:ForeCast:",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "Temp + Baro",
+      "subtype": "",
+      "switchtype": "",
+      "labels": "0:Temp:°C;1:Pressure:hPa;2:ForeCast:",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "Rain",
+      "subtype": "TFA",
+      "switchtype": "",
+      "labels": "0:Rain:mm;1:Total:mm",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "Wind",
+      "subtype": "",
+      "switchtype": "",
+      "labels": "0:Bearing:°;1:Dir:°;2:Speed:bft;3:Gust:bft;4:Temp:°C;5:Chill:°C",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    },
+    {
+      "type": "DEFAULT_FALLBACK",
+      "subtype": "",
+      "switchtype": "",
+      "labels": "0:VALUE:UNIT",
+      "html": "<div class=\"hmi-pack-tile hmi-clickable-tile\" data-type=\"value\" data-device-idx=\"{{idx}}\" data-labels=\"{{labels}}\"><div class=\"hmi-tile-header\"><div class=\"hmi-pack-label\">{{name}}</div></div><div class=\"hmi-value-grid\"></div><div class=\"hmi-last-update\"></div></div>"
+    }
+  ]
+}
