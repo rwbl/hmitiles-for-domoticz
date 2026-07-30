@@ -1,7 +1,7 @@
 # HMITiles Custom Pages Framework for Domoticz
 
 > [!WARNING]
-> **BETA**: **v2.3.0** introduces the `Roomplan` blueprint for automated dashboard generation. Check out the latest updates and configuration details in the [CHANGELOG.md](./CHANGELOG.md).
+> **BETA**: **v2.3.0** introduces the `Roomplan` blueprint for automated dashboard generation and list of devices tile. Check out the latest updates and configuration details in the [CHANGELOG.md](./CHANGELOG.md).
 
 **HMITiles for Domoticz** is a lightweight, independent web dashboard framework designed to monitor and control your smart home using clean, space-saving tiles.
 
