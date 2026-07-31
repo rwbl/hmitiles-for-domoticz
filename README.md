@@ -83,10 +83,12 @@ Selecting any blueprint directory on GitHub will automatically render its locali
 HMITiles-for-Domoticz/
 ├── core/                           	# Standard shared framework engines
 │   ├── hmitiles.css                	# Global styling for all tiles and layouts
-│   └── hmitiles.js                 	# Shared UI logic (bulk polling loop, hook dispatcher)
-│   └── hmitiles-preparser.js           # Pre-parse Domoticz specific devices data into HMITiles standard format used by the processor
-│   └── hmitiles-processor.js           # Process a HMI tile based on its data-type
-├── blueprints/                     	# Custom page usage examples & tutorials
+│   ├── hmitiles.js                 	# Shared UI logic (bulk polling loop, hook dispatcher)
+│   ├── hmitiles-preparser.js           # Pre-parse Domoticz specific devices data into HMITiles standard format used by the processor
+│   ├── hmitiles-processor.js           # Process a HMI tile based on its data-type
+│   ├── hmitiles-roomplan.js            # Generates a custom page from roomplan devices
+│   └── hmitiles-devices.js           	# List all used devices name & data in a HMI tile
+├── blueprints/                     	# Examples how to use HMI tiles with tutorials
 │   ├── myfirsttile/      		        # Simple Tile example to get started.
 │   │   ├── index.html              	# Standalone workbench interface markup
 │   │   ├── MyFirstTile.html     	    # Domoticz custom page tab navigation file
@@ -101,7 +103,7 @@ HMITiles-for-Domoticz/
 │   │   ├── Workbench.html  	        # Domoticz custom page wrapper definition
 │   │   ├── README.md               	# Detailed usage instructions
 │   │   └── workbench.png  	            # Layout preview graphic
-│   └── ...								# More blueprints tiles & pages
+│   └── ...								# More blueprints
 ├── examples/                     		# Custom page example applications
 │   ├── solardashboard/      			# Solar Dashboard with live data & trends
 │   └── ...								# More application examples
@@ -128,14 +130,33 @@ See also [GETSTARTED.md](./GETSTARTED.md).
 Your Domoticz `/www/templates/` server folder path must reflect this exact layout:
 ```
 domoticz/www/templates/
-├── hmitiles.css            # Framework shared styles
-├── hmitiles-dark.css       # Framework shared styles dark theme
-├── hmitiles.js             # Core polling and hook loop engine
-├── hmitiles-preparser.js   # Pre parses Domoticz devices to be used by the processor
-├── hmitiles-processor.js   # Process data-types to be displayed as HMITiles
+├── hmitiles.css,hmitiles-dark.css
+├── hmitiles.js,hmitiles-preparser.js,hmitiles-processor.js,hmitiles-roomplan.js,hmitiles-devices.js
 ├── MyFirstTile.html     	# Domoticz tab navigation wrapper file
 └── blueprints/myfirsttile/ # Dedicated application folder assets
-	└── index.html          # Main HTML structure and page hook scripts
+	└── index.html          # Main HTML structure
+```
+
+**Example index.html for MyFirstTile**
+```
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>HMITiles MyFistTile</title>
+    <link rel="stylesheet" href="/templates/core/hmitiles.css">
+	<script type="module" src="/templates/core/hmitiles.js"></script>
+</head>
+
+<body>
+	<main class="hmi-panel">
+		<div class="hmi-pack-tile hmi-clickable-tile" data-type="value",data-device-idx="1",data-labels="0:VALUE:UNIT">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">MyDevice</div></div>
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-update"></div>
+		</div>
+	</main>
+</body>
+</html>
 ```
 ---
 
