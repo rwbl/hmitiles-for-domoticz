@@ -17,7 +17,7 @@ Create your first simple tile showing the value of a Domoticz device.
 
 ### 1. Domoticz Device
 Select a Domoticz device containing a single value or create a new virtual device (like a custom sensor). 
-Note the `idx` of this device.
+Note the index `idx` of this device.
 
 ### 2. HMITile HTML File
 In the Domoticz templates folder (`www/templates`), create a new file named `MyFirstTile.html` with the content below. 
