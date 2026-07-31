@@ -137,7 +137,7 @@ domoticz/www/templates/
 └── MyFirstTile.html     	# Domoticz tab navigation wrapper file
 ```
 
-**Example index.html for MyFirstTile**
+**Example index.html for MyFirstTile showing device value & unit for idx 1**
 ```
 <!DOCTYPE html>
 <head>
