@@ -158,6 +158,9 @@ domoticz/www/templates/
 </body>
 </html>
 ```
+
+![Workbench](blueprints/myfirsttile/myfirsttile.png)
+
 ---
 
 ## Project Status
