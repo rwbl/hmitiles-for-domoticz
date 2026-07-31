@@ -127,14 +127,14 @@ Follow these steps to deploy and run the `SingleTilePage` blueprint example dire
 See also [GETSTARTED.md](./GETSTARTED.md).
 
 ### Final Domoticz Directory Structure
-Your Domoticz `/www/templates/` server folder path must reflect this exact layout:
+Your Domoticz `/www/templates/` server folder path must reflect this exact layout with subfolders `core` and `blueprints`.
 ```
 domoticz/www/templates/
-├── hmitiles.css,hmitiles-dark.css
-├── hmitiles.js,hmitiles-preparser.js,hmitiles-processor.js,hmitiles-roomplan.js,hmitiles-devices.js
-├── MyFirstTile.html     	# Domoticz tab navigation wrapper file
+├── core/hmitiles.css,hmitiles-dark.css
+├── core/hmitiles.js,hmitiles-preparser.js,hmitiles-processor.js,hmitiles-roomplan.js,hmitiles-devices.js
 └── blueprints/myfirsttile/ # Dedicated application folder assets
-	└── index.html          # Main HTML structure
+│   └── index.html          # Main HTML structure
+└── MyFirstTile.html     	# Domoticz tab navigation wrapper file
 ```
 
 **Example index.html for MyFirstTile**
