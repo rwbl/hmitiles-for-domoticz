@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+Brief: 			HMITiles Blueprint Clock
+Data-Type:		clock
+Date: 			2026-08-04
+Author: 		Robert W.B. Linn (c) 2026 MIT
+Description:	Display clock HH:mm:ss.
+				The `clock` tile engine provides an autonomous, high-performance real-time clock displaying local client-side time updating every second. 
+				To maintain maximum engine performance, it completely bypasses the Domoticz backend data loop. 
+				By isolating execution entirely inside the browser using a drift-synchronized worker, it avoids unnecessary network requests and server overhead while perfectly mimicking your dashboard's standard tile layout.
+				Configuration Parameters (HTML Data Attributes)
+				data-type="clock" - Explicitly targets the isolated real-time client loop engine. |
+				data-clock-format="HH:mm:ss" or "HH:mm" - Optional format toggle to display or hide the running seconds readout. |
+				
+Important:		Only ONE clock tile can be defined per custom dashboard page layout. The initialization engine relies on a single persistent element binding structure (`#hmi-live-clock`).
+-->
+<head>
+    <meta charset="UTF-8">
+    <title>HMITiles Clock</title>
+
+    <!-- Link backward to reuse shared global common styles -->
+    <link rel="stylesheet" href="/templates/core/hmitiles.css">
+	
+	<!-- Link backward to the HMI tile engine -->
+	<!-- Ensure type="module" is declared so the browser resolves the import statement -->
+	<script type="module" src="/templates/core/hmitiles.js"></script>
+</head>
+
+<body>
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+				<h2>HMITiles Clock</h2>
+			</div>
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
+			</div>
+		</div>
+	</header>
+
+	<main class="hmi-panel">
+	
+		<!-- 
+			CLOCK
+			Domoticz No Type required
+		-->
+		<div class="hmi-pack-tile" 
+			 data-type="clock"
+			 data-clock-format="HH:mm:ss">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">System Clock</div></div>
+			<div class="hmi-value-grid" id="hmi-live-clock"></div>
+		</div>
+
+	</main>
+
+</body>
+</html>

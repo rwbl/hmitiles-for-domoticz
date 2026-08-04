@@ -1524,5 +1524,31 @@ hr.hmi-divider-short {
 }
 
 /* ==========================================================================
+   CLOCK
+   ========================================================================== */
+
+/* Target the grid container specifically when inside a clock tile */
+[data-type="clock"] .hmi-value-grid {
+    font-family: Arial, Helvetica, "Liberation Sans", sans-serif !important;
+    font-size: 22px;           
+    font-weight: bold;         
+    letter-spacing: 0.5px;     
+    color: #222222;            
+    line-height: 1.4;          
+
+    /* Maintain anti-flicker stability */
+    font-variant-numeric: tabular-nums; 
+    
+    /* Force full-width block display to break any row-constrained grid boxes */
+    display: block !important;
+    width: 100% !important;
+    text-align: center !important;
+    
+    /* Distribute margin to center the element block inside the tile layout */
+    margin: 10px auto 0 auto !important; 
+    box-sizing: border-box;
+}
+
+/* ==========================================================================
    END
    ========================================================================== */

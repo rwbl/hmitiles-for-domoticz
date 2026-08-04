@@ -875,6 +875,41 @@ function goToHMITilesIndex() {
 window.goToHMITilesIndex = goToHMITilesIndex;
 
 // =========================================================================
+// CLOCK
+// =========================================================================
+
+function initHMITileClock() {
+    const clockTile = document.querySelector('[data-type="clock"]');
+    if (!clockTile) return;
+
+    const clockDisplay = clockTile.querySelector('#hmi-live-clock');
+    if (!clockDisplay) return;
+
+    // Read your custom attribute format, fallback to HH:mm:ss if omitted
+    const format = clockTile.getAttribute('data-clock-format') || 'HH:mm:ss';
+
+    function tick() {
+        const now = new Date();
+        const fullTime = now.toTimeString().split(' ')[0]; // Returns clean "HH:mm:ss"
+
+        // Handle formatting check
+        clockDisplay.textContent = (format === 'HH:mm') ? fullTime.substring(0, 5) : fullTime;
+    }
+
+    // Render immediately on load
+    tick();
+
+    // Precision Sync: Wait precisely for the turn of the next physical second 
+    // before initializing the 1000ms loop to prevent micro-stuttering.
+    setTimeout(() => {
+        tick();
+        setInterval(tick, 1000);
+    }, 1000 - new Date().getMilliseconds());
+}
+
+// Call this right after your main Domoticz UI generation finishes
+
+// =========================================================================
 // MAIN
 // =========================================================================
 
@@ -892,15 +927,20 @@ async function initHMITiles() {
         // Now fully defined via the import statement above!
         await buildRoomplanLayout(roomplanPanel);
     }	
-	
+
+	// Init the HMI clock
+	initHMITileClock();
+
 	// Call Controls
     bindControls(); 
     	
     // Get Domoticz data
     fetchDomoticzData();
 
-    // Start Intervall (REFRESH_RATE Millisekunden)
-    setInterval(fetchDomoticzData, REFRESH_RATE);
+    // Start Intervall (REFRESH_RATE Milliseconds)
+    setInterval(
+		fetchDomoticzData, 
+		REFRESH_RATE);
 
     // =========================================================================
     // SYSTEM LOGGING INITIALIZATION ENGINE (SINGLE TIMING LOOP)

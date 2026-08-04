@@ -4,10 +4,12 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 
 ---
 
-## 2.3.0 - 2026-07-30 (BETA)
+## 2.3.0 - 2026-08-04 (BETA)
 
 ### Blueprints
 
+- **Clock**
+	- New autonomous, high-performance real-time clock displaying local client-side time updating every second. 
 - **Devices**
 	- New modular component tile layout to list all devices with optional name-filtering (`data-filter`) and custom structural height sizing (`data-max-height`).
 - **Roomplan**

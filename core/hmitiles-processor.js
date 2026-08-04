@@ -140,7 +140,7 @@ export function processDevices(devices) {
 				// The output is a modified device.Data property depending device type and HTML defintion
 				preParseDeviceData(device, tileElement);
 			} else {
-				// Build the virtual device object strictly for multi-device matching
+				// Build the virtual device object strictly for tiles using non domoticz devices
 				device = {
 					idx: 0,		
 					Data: "",	
