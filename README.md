@@ -79,7 +79,7 @@ Selecting any blueprint directory on GitHub will automatically render its locali
 
 ## Repository Structure HMITiles-for-Domoticz
 ```
-docs/                                   # Additiona user documentation
+docs/                                   # Additional user documentation
 hmitiles/                               # Main folder containing the framework (to be copied to Domoticz folder `www/templates`
  ├── core/                           	# Standard shared framework engines
  │   ├── hmitiles.css                	# Global styling for all tiles and layouts
@@ -153,10 +153,13 @@ domoticz/www/templates/
 
 <body>
 	<main class="hmi-panel">
-		<div class="hmi-pack-tile hmi-clickable-tile" data-type="value",data-device-idx="1",data-labels="0:VALUE:UNIT">
+		<div class="hmi-pack-tile hmi-clickable-tile" 
+			data-type="value" 
+			data-device-idx="39"
+			data-labels="0:VALUE:UNIT">
 			<div class="hmi-tile-header"><div class="hmi-pack-label">MyDevice</div></div>
 			<div class="hmi-value-grid"></div>
-			<div class="hmi-last-update"></div>
+			<div class="hmi-last-update" data-field="LastUpdate"></div>
 		</div>
 	</main>
 </body>
