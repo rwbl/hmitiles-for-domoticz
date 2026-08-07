@@ -77,39 +77,39 @@ Selecting any blueprint directory on GitHub will automatically render its locali
 
 ---
 
-## Repository Structure
-
+## Repository Structure HMITiles-for-Domoticz
+Main folder is `hmitiles`.
 ```
-HMITiles-for-Domoticz/
-├── core/                           	# Standard shared framework engines
-│   ├── hmitiles.css                	# Global styling for all tiles and layouts
-│   ├── hmitiles.js                 	# Shared UI logic (bulk polling loop, hook dispatcher)
-│   ├── hmitiles-preparser.js           # Pre-parse Domoticz specific devices data into HMITiles standard format used by the processor
-│   ├── hmitiles-processor.js           # Process a HMI tile based on its data-type
-│   ├── hmitiles-roomplan.js            # Generates a custom page from roomplan devices
-│   └── hmitiles-devices.js           	# List all used devices name & data in a HMI tile
-├── blueprints/                     	# Examples how to use HMI tiles with tutorials
-│   ├── myfirsttile/      		        # Simple Tile example to get started.
-│   │   ├── index.html              	# Standalone workbench interface markup
-│   │   ├── MyFirstTile.html     	    # Domoticz custom page tab navigation file
-│   │   ├── README.md               	# Detailed usage instructions
-│   │   └── myfirsttile.png  	        # Layout preview graphic
-│   ├── values/ 	                    # Example using value tile
-│   │   ├── Values.html     	        # Domoticz custom page tab navigation file
-│   │   ├── values/         	        # Core application directory
-│   │   └── index.html              	# Main blueprint page structure
-│   ├── workbench/      		        # Tile design test bed folder
-│   │   ├── index.html              	# Standalone workbench interface markup
-│   │   ├── Workbench.html  	        # Domoticz custom page wrapper definition
-│   │   ├── README.md               	# Detailed usage instructions
-│   │   └── workbench.png  	            # Layout preview graphic
-│   └── ...								# More blueprints
-├── examples/                     		# Custom page example applications
-│   ├── solardashboard/      			# Solar Dashboard with live data & trends
-│   └── ...								# More application examples
-├── LICENSE                         	# MIT open-source license
-├── GETSTARTED.md                       # Step-by-step guideline on how to create your first simple tile showing the value of a Domoticz device
-└── README.md                       	# Documentation entry point manual
+hmitiles/
+ ├── core/                           	# Standard shared framework engines
+ │   ├── hmitiles.css                	# Global styling for all tiles and layouts
+ │   ├── hmitiles.js                 	# Shared UI logic (bulk polling loop, hook dispatcher)
+ │   ├── hmitiles-preparser.js          # Pre-parse Domoticz specific devices data into HMITiles standard format used by the processor
+ │   ├── hmitiles-processor.js          # Process a HMI tile based on its data-type
+ │   ├── hmitiles-roomplan.js           # Generates a custom page from roomplan devices
+ │   └── hmitiles-devices.js           	# List all used devices name & data in a HMI tile
+ ├── blueprints/                     	# Examples how to use HMI tiles with tutorials
+ │   ├── myfirsttile/      		        # Simple Tile example to get started.
+ │   │   ├── index.html              	# Standalone workbench interface markup
+ │   │   ├── MyFirstTile.html     	    # Domoticz custom page tab navigation file
+ │   │   ├── README.md               	# Detailed usage instructions
+ │   │   └── myfirsttile.png  	        # Layout preview graphic
+ │   ├── values/ 	                    # Example using value tile
+ │   │   ├── Values.html     	        # Domoticz custom page tab navigation file
+ │   │   ├── values/         	        # Core application directory
+ │   │   └── index.html              	# Main blueprint page structure
+ │   ├── workbench/      		        # Tile design test bed folder
+ │   │   ├── index.html              	# Standalone workbench interface markup
+ │   │   ├── Workbench.html  	        # Domoticz custom page wrapper definition
+ │   │   ├── README.md               	# Detailed usage instructions
+ │   │   └── workbench.png  	        # Layout preview graphic
+ │   └── ...							# More blueprints
+ ├── examples/                     		# Custom page example applications
+ │   ├── solardashboard/      			# Solar Dashboard with live data & trends
+ │   └── ...							# More application examples
+ ├── LICENSE                         	# MIT open-source license
+ ├── GETSTARTED.md                      # Step-by-step guideline on how to create your first simple tile showing the value of a Domoticz device
+ └── README.md                       	# Documentation entry point manual
 ```
 
 ---
