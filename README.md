@@ -78,9 +78,9 @@ Selecting any blueprint directory on GitHub will automatically render its locali
 ---
 
 ## Repository Structure HMITiles-for-Domoticz
-Main folder is `hmitiles`.
 ```
-hmitiles/
+docs/                                   # Additiona user documentation
+hmitiles/                               # Main folder containing the framework (to be copied to Domoticz folder `www/templates`
  ├── core/                           	# Standard shared framework engines
  │   ├── hmitiles.css                	# Global styling for all tiles and layouts
  │   ├── hmitiles.js                 	# Shared UI logic (bulk polling loop, hook dispatcher)
@@ -107,9 +107,9 @@ hmitiles/
  ├── examples/                     		# Custom page example applications
  │   ├── solardashboard/      			# Solar Dashboard with live data & trends
  │   └── ...							# More application examples
- ├── LICENSE                         	# MIT open-source license
- ├── GETSTARTED.md                      # Step-by-step guideline on how to create your first simple tile showing the value of a Domoticz device
- └── README.md                       	# Documentation entry point manual
+─ LICENSE                         		# MIT open-source license
+─ GETSTARTED.md                      	# Step-by-step guideline on how to create your first simple tile showing the value of a Domoticz device
+─ README.md                       		# Documentation entry point manual
 ```
 
 ---
