@@ -4,12 +4,13 @@
 Download the [repository](https://github.com/rwbl/hmitiles-for-domoticz) from GitHub.
 
 ## Install
-From the repository `hmitiles-for-domoticz-main.zip`, unpack the folders `blueprints` and `core` to the Domoticz folder `www/templates`.
+From the repository `hmitiles-for-domoticz-main.zip`, unpack the folder `hmitiles` to the Domoticz folder `www/templates/hmitiles`.
 
 Folder structure (example Ubuntu):
 ```
-/home/username/domoticz/www/templates/blueprints
-/home/username/domoticz/www/templates/core
+/home/username/domoticz/www/templates/hmitiles/blueprints
+/home/username/domoticz/www/templates/hmitiles/core
+/home/username/domoticz/www/templates/hmitiles/examples
 ```
 
 ## First Tile
@@ -29,13 +30,11 @@ This defines an HMITile of device type `value` (`data-type="value"`).
 <head>
     <meta charset="UTF-8">
     <title>HMITiles Values</title>
-
     <!-- Link backward to reuse shared global common styles -->
-    <link rel="stylesheet" href="/templates/core/hmitiles.css">
-	
-    <!-- Link backward to the HMI tile engine -->
+    <link rel="stylesheet" href="/templates/hmitiles/core/hmitiles.css">
+	<!-- Link backward to the HMI tile engine -->
     <!-- Ensure type="module" is declared so the browser resolves the import statement -->
-    <script type="module" src="/templates/core/hmitiles.js"></script>
+    <script type="module" src="/templates/hmitiles/core/hmitiles.js"></script>
 </head>
 
 <body>
@@ -59,7 +58,7 @@ Update the attribute `data-device-idx` with your specific device `idx` inside yo
 *Note: If your sensor displays a specific unit like temperature, you can change `data-labels="0:Data:"` to `data-labels="0:Temperature:°C"`.*
 
 ### 4. Show HMITile
-To see your first HMITile, do a hard refresh of your browser (**Ctrl + F5**) to clear the cache, then open it from 
+To see this first HMITile, do a hard refresh of your browser (**Ctrl + F5**) to clear the cache, then open it from 
 the Domoticz **Custom** menu under the submenu **MyFirstTile**.
 
 ---
@@ -71,7 +70,7 @@ To fine-tune the background polling mechanism, configure the variables at the to
 ### Setting the Polling Interval (`REFRESH_RATE`)
 JavaScript timing loops (`setInterval`) expect intervals to be declared explicitly in **milliseconds**. 
 
-Setting this too low will overload your web server, while setting it using seconds (e.g., `60`) will freeze your browser tab by hammering the network every 60 milliseconds.
+Setting this too low will overload your web server, while setting it using seconds (e.g., `60`) will freeze your browser tab by refreshing the network every 60 milliseconds.
 
 ```javascript
 // =========================================================================

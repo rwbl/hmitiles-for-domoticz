@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+Brief:  		HMITiles Blueprint Regulators
+Data-Type:		progressbar, dimmer, slider
+Date:  		 	2026-07-25
+Author:   		Robert W.B. Linn @ 2026 MIT
+Description:	Progressbar as device value indicator.
+				Dimmer or slider to set device value.
+Attributes:		Unit: data-unit="UNIT"
+				Scale:
+				Bar/Dimmer/Slider min value: data-min="0"
+				Bar/Dimmer/Slider max value: data-max="100"
+				Bar/Dimmer/Slider step value: data-step="10"
+				Bar/Dimmer/Slider simple scale min mid max: data-scale="1" else set to "0"
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <title>HMITiles Regulators</title>
+
+    <!-- Link backward to reuse shared global common styles -->
+    <link rel="stylesheet" href="/templates/hmitiles/core/hmitiles.css">
+	
+	<!-- Link backward to the HMI tile engine -->
+	<!-- Ensure type="module" is declared so the browser resolves the import statement -->
+	<script type="module" src="/templates/hmitiles/core/hmitiles.js"></script>
+</head>
+
+<body>
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+				<h2>HMITiles Regulators</h2>
+			</div>
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
+			</div>
+		</div>
+	</header>
+
+	<main class="hmi-panel">
+	
+		<!-- 
+			PROGRESSBAR
+			Domoticz Type Any value
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="progressbar" 
+			data-device-idx="4" 
+			data-unit="%">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Percentage Indicator</div></div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			PROGRESSBAR SCALE
+			Domoticz Type Any value
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="progressbar" 
+			data-device-idx="4" 
+			data-unit="%"
+			data-min="0"
+			data-max="100"
+			data-scale="1">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Percentage Indicator</div></div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			DIMMER
+			Domoticz Type Light/Switch / SubType Switch / SwitchType Dimmer
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="dimmer" 
+			data-device-idx="12" 
+			data-unit="%"
+			data-step="1">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Dimmer Set Value</div></div>
+			<div class="hmi-value-grid"></div>
+		</div>
+
+		<!-- 
+			SLIDER
+			Domoticz Type Light/Switch / SubType Switch / SwitchType Dimmer
+		-->
+		<div class="hmi-pack-tile" 
+			data-type="slider" 
+			data-device-idx="12" 
+			data-unit="%"
+			data-min="0"
+			data-max="100"
+			data-step="10"
+			data-scale="1">
+			<div class="hmi-tile-header"><div class="hmi-pack-label">Slider Set Value</div></div>
+			<div class="hmi-value-grid"></div>
+			<div class="hmi-last-update" data-field="LastUpdate"></div>
+		</div>
+
+	</main>
+
+</body>
+</html>

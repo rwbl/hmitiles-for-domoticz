@@ -1,7 +1,7 @@
 # HMITiles Custom Pages Framework for Domoticz
 
 > [!WARNING]
-> **BETA**: **v2.3.0** new `Roomplan` blueprint for automated dashboard generation; new tile to list of devices name & data properties. Check out the latest updates and configuration details in the [CHANGELOG.md](./CHANGELOG.md).
+> **BETA**: **v2.3.0** new folder structure `www/templates/hmitiles`; new `Roomplan` blueprint for automated dashboard generation; new tile to list of devices name & data properties. Check out the latest updates and configuration details in the [CHANGELOG.md](./CHANGELOG.md).
 
 **HMITiles for Domoticz** is a lightweight, independent web dashboard framework designed to monitor and control your smart home using clean, space-saving tiles.
 
@@ -20,14 +20,14 @@ instant situational awareness—deliberately avoiding heavy animations, decorati
 ## Blueprints (Selection)
 
 ### Workbench (Development / Testing Area) 
-![Workbench](blueprints/workbench/workbench.png)
+![Workbench](hmitiles/blueprints/workbench/workbench.png)
 
 ### Theme Dark (Experimental)
-![Theme Dark](blueprints/themedark/themedark.png)
+![Theme Dark](hmitiles/blueprints/themedark/themedark.png)
 
 
 ## Application Example
-![Solar Dashboard](examples/solardashboard/solardashboard.png)
+![Solar Dashboard](hmitiles/examples/solardashboard/solardashboard.png)
 
 ---
 
@@ -118,22 +118,24 @@ HMITiles-for-Domoticz/
 
 Follow these steps to deploy and run the `SingleTilePage` blueprint example directly inside your local Domoticz installation.
 
-1. **Deploy Core Framework**: Copy all files from the `core/` repository folder into your Domoticz `/www/templates/` directory.
-2. **Select the Blueprint**: Navigate into the repository folder `blueprints/myfirsttile/`.
-3. **Deploy Custom Page Wrapper**: Copy the file `MyFirstTile.html` into your Domoticz `/www/templates/` directory.
-4. **Deploy Application Subfolder**: Copy the entire subfolder `myfirsttile/` into your Domoticz `/www/templates/` directory.
-5. **Launch Interface**: Open your Domoticz Web UI -> select the **Custom** tab -> click **MyFirstTile**. The custom dashboard view `MyFirstTile` will load immediately.
+1. **Deploy Core Framework**: Copy the repository folder `hmitiles/` to the Domoticz `/www/templates` folder, i.e. `www/templates/hmitiles`.
+2. **Select the Blueprint**: Navigate into the repository folder `hmitiles/blueprints/myfirsttile/`.
+3. **Deploy Custom Page Wrapper**: Copy the file `MyFirstTile.html` into the Domoticz `/www/templates/` folder.
+4. **Launch Interface**: Open the Domoticz Web UI -> select the **Custom** tab -> click **MyFirstTile**. The custom dashboard view `MyFirstTile` will load immediately.
 
 See also [GETSTARTED.md](./GETSTARTED.md).
 
 ### Final Domoticz Directory Structure
-Your Domoticz `/www/templates/` server folder path must reflect this exact layout with subfolders `core` and `blueprints`.
+The Domoticz `/www/templates/` server folder path must reflect this exact layout with subfolders `hmitiles`, `hmitiles/core` and `hmitiles/blueprints`.
 ```
 domoticz/www/templates/
-├── core/hmitiles.css,hmitiles-dark.css
-├── core/hmitiles.js,hmitiles-preparser.js,hmitiles-processor.js,hmitiles-roomplan.js,hmitiles-devices.js
-└── blueprints/myfirsttile/ # Dedicated application folder assets
-│   └── index.html          # Main HTML structure
+├── hmitiles/
+│	└─ core/
+│	│  └─ hmitiles.css,hmitiles-dark.css
+│	│  └─ hmitiles.js,hmitiles-preparser.js,hmitiles-processor.js,hmitiles-roomplan.js,hmitiles-devices.js
+│	└── blueprints/
+|      └─ myfirsttile/ 		# Dedicated application folder assets
+│	   └─ index.html        # Main HTML structure
 └── MyFirstTile.html     	# Domoticz tab navigation wrapper file
 ```
 
@@ -143,8 +145,8 @@ domoticz/www/templates/
 <head>
     <meta charset="UTF-8">
     <title>HMITiles MyFistTile</title>
-    <link rel="stylesheet" href="/templates/core/hmitiles.css">
-	<script type="module" src="/templates/core/hmitiles.js"></script>
+    <link rel="stylesheet" href="/templates/hmitiles/core/hmitiles.css">
+	<script type="module" src="/templates/hmitiles/core/hmitiles.js"></script>
 </head>
 
 <body>
@@ -159,7 +161,7 @@ domoticz/www/templates/
 </html>
 ```
 
-![Workbench](blueprints/myfirsttile/myfirsttile.png)
+![Workbench](hmitiles/blueprints/myfirsttile/myfirsttile.png)
 
 ---
 

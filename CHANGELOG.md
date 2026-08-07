@@ -4,7 +4,7 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 
 ---
 
-## 2.3.0 - 2026-08-04 (BETA)
+## 2.3.0 - 2026-08-07 (BETA)
 
 ### Blueprints
 
@@ -12,8 +12,14 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 	- New autonomous, high-performance real-time clock displaying local client-side time updating every second. 
 - **Devices**
 	- New modular component tile layout to list all devices with optional name-filtering (`data-filter`) and custom structural height sizing (`data-max-height`).
+- **Logmonitor**
+	- New attribute `data-log-height`to set the log terminal height (default 140px).
 - **Roomplan**
-	- New full custom page build from a room plan. Uses the room plan idx and sort order to display all defined devices.
+	- New full custom page build from a room plan. Uses the room plan `idx` and sort order to display all defined devices.
+
+### Core
+- **Folder Structure**
+	- New subfolder `www/templates/hmitiles`. Moved subfolders `blueprints,core,examples` to subfolder `hmitiles`.
 
 ## 2.2.0 - 2026-07-27
 
@@ -31,7 +37,7 @@ All notable changes to **HMITiles Custom Pages Framework for Domoticz** - are do
 	- New color support. Color saved as HEX value #RRGGBB.
 	- Fixed input handling whilst the data gets refreshed.
 - **Logmonitor**
-	- New a new full-page log tile template.
+	- New full-page width log tile template.
 - **MyFirstTile**
 	- New example showing a simple tile with a single device using `data-type="value"` (used by `GETSTARTED.md`).
 - **Progressbar**

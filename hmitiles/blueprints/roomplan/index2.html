@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+Brief: 			HMITiles Blueprint Roomplan SolarDashboard
+Data-Type:		Not required
+Data-Class:		roomplan
+Date: 			2026-07-29
+Author: 		Robert W.B. Linn (c) 2026 MIT
+Description:	Display for a selected roomplan all devices with the defined order.
+Attributes		For the main tag, set the mandatory attributes
+				class="hmi-panel"			
+				data-class="roomplan" 		
+				data-class-idx="NNN"		- Idx of the roomplan.
+Order:			The order of the roomplan devices, is set in Domoticz.
+Tile Header:	The device name is set as the tile header (top left).
+Notes:			In progress to support all device types.
+				If a device type is not found, the default for the data-type "value" is applied.
+				See hmitiles-roomplan.js and hmitiles-roomplan.json for details.
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HMITiles Roomplan SolarDashboard</title>
+    <!-- Core HMITiles Framework Assets -->
+    <link rel="stylesheet" href="/templates/hmitiles/core/hmitiles.css">
+	<!-- Link backward to the HMI tile engine -->
+	<!-- Ensure type="module" is declared so the browser resolves the import statement -->
+	<script type="module" src="/templates/hmitiles/core/hmitiles.js"></script>
+</head>
+<body>
+
+	<header class="hmi-header-container">
+		<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+			<div style="display: flex; align-items: center; gap: 15px;">
+				<button class="hmi-exit-btn" onclick="goToDomoticzDashboard()">&#9664; Main Menu</button>
+				<h2>HMITiles Roomplan SolarDashboard</h2>
+			</div>
+			<div>
+				<button class="hmi-exit-btn" onclick="goToHMITilesIndex()">HMITiles Index &#9654;</button>
+			</div>
+		</div>
+	</header>
+
+	<main class="hmi-panel"
+		data-class="roomplan" 
+		data-class-idx="2">
+		<div class="hmi-loading">Querying Domoticz room plan assets...</div>
+	</main>
+
+</body>
+</html>

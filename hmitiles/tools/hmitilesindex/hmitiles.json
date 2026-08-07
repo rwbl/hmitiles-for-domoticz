@@ -1,0 +1,47 @@
+{
+  "groups": [
+    {
+      "category": "Blueprint Tiles",
+      "pages": [
+        { "title": "MyFirstTile", "file": "hmitiles/blueprints/myfirsttile/index.html" },
+        { "title": "Alarm", "file": "hmitiles/blueprints/alarm/index.html" },
+        { "title": "Clock", "file": "hmitiles/blueprints/clock/index.html" },
+        { "title": "Gauge", "file": "hmitiles/blueprints/gauge/index.html" },
+        { "title": "Info", "file": "hmitiles/blueprints/info/index.html" },
+        { "title": "Input", "file": "hmitiles/blueprints/input/index.html" },
+        { "title": "Log Monitor", "file": "hmitiles/blueprints/logmonitor/index.html" },
+        { "title": "Regulators", "file": "hmitiles/blueprints/regulators/index.html" },
+        { "title": "Setpoint", "file": "hmitiles/blueprints/setpoint/index.html" },
+        { "title": "Stock", "file": "hmitiles/blueprints/stock/index.html" },
+        { "title": "Switches", "file": "hmitiles/blueprints/switches/index.html" },
+        { "title": "Theme Dark (experimental)", "file": "hmitiles/blueprints/themedark/index.html" },
+        { "title": "Theme Normal", "file": "hmitiles/blueprints/themenormal/index.html" },
+        { "title": "Values", "file": "hmitiles/blueprints/values/index.html" },
+        { "title": "Values Multi", "file": "hmitiles/blueprints/valuesmulti/index.html" }
+      ]
+    },
+    {
+      "category": "Workbench",
+      "pages": [
+        { "title": "Workbench", "file": "hmitiles/blueprints/workbench/index.html" },
+        { "title": "Roomplan SolarDashboard", "file": "hmitiles/blueprints/roomplan/index2.html" },
+        { "title": "Roomplan Weather", "file": "hmitiles/blueprints/roomplan/index4.html" },
+        { "title": "Devices", "file": "hmitiles/blueprints/devices/index.html" }
+      ]
+    },
+    {
+      "category": "Blueprint Charts",
+      "pages": [
+        { "title": "Trends", "file": "hmitiles/blueprints/trends/index.html" }
+      ]
+    },
+    {
+      "category": "Application Examples",
+      "pages": [
+        { "title": "Solar Dashboard", "file": "hmitiles/examples/solardashboard/index.html" },
+        { "title": "Pico Tiles", "file": "hmitiles/examples/picotiles/index.html" },
+        { "title": "RailYard", "file": "hmitiles/examples/railyard/index.html" }
+      ]
+    }
+  ]
+}
