@@ -107,9 +107,11 @@ hmitiles/                               # Main folder containing the framework (
  ├── examples/                     		# Custom page example applications
  │   ├── solardashboard/      			# Solar Dashboard with live data & trends
  │   └── ...							# More application examples
-─ LICENSE                         		# MIT open-source license
+─ CHANGELOG.md							# History of project changes
 ─ GETSTARTED.md                      	# Step-by-step guideline on how to create your first simple tile showing the value of a Domoticz device
+─ LICENSE                         		# MIT open-source license
 ─ README.md                       		# Documentation entry point manual
+─ TODO.md                         		# ToDo's and idea's
 ```
 
 ---
