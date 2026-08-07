@@ -15,7 +15,7 @@ The data is displayed in 4-columns:
 **Note**
 The origin intention of this tile, was to display stock data, but it can be used for any single device data.
 
-**Preview**
+**Preview**  
 ![Stock](stock.png)
 
 **IMPORTANT**
@@ -41,7 +41,7 @@ To build out dashboard data grid columns, configure the following core attribute
 ---
 
 ### Stock Value
-Display stock data.
+Display stock data for Domoticz device with idx 39.
 ```html
 <div class="hmi-pack-tile hmi-clickable-tile" 
 	data-type="stock" 
